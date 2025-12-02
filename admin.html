@@ -1,1189 +1,1459 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Living Piece — Admin</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Living Piece — Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-      :root {
-        --bg: #0a0a0a;
-        --bg-card: #111111;
-        --bg-card-hover: #161616;
-        --bg-input: #1a1a1a;
-        --border: rgba(255, 255, 255, 0.08);
-        --border-hover: rgba(255, 255, 255, 0.15);
-        --text: #f5f5f5;
-        --text-soft: #a3a3a3;
-        --text-muted: #666666;
-        --accent: #0ea5e9;
-        --accent-hover: #38bdf8;
-        --success: #22c55e;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --radius: 8px;
-        --radius-lg: 12px;
-      }
+    :root {
+      --bg: #0a0a0a;
+      --bg-card: #111111;
+      --bg-card-hover: #161616;
+      --bg-input: #1a1a1a;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --text: #f5f5f5;
+      --text-soft: #a3a3a3;
+      --text-muted: #666666;
+      --accent: #0ea5e9;
+      --accent-hover: #38bdf8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
 
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        line-height: 1.5;
-        min-height: 100vh;
-      }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
 
-      /* Navigation */
-      .nav-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 100;
-        padding: 10px 24px;
-        background: rgba(10, 10, 10, 0.9);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        justify-content: center;
-      }
+    /* Navigation */
+    .nav-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 10px 24px;
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+    }
 
-      .nav-tabs {
-        display: flex;
-        gap: 4px;
-        background: rgba(255, 255, 255, 0.05);
-        padding: 4px;
-        border-radius: 10px;
-      }
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px;
+      border-radius: 10px;
+    }
 
-      .nav-tab {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 16px;
-        border-radius: 8px;
-        text-decoration: none;
-        color: var(--text-soft);
-        font-size: 13px;
-        font-weight: 500;
-        transition: all 0.2s ease;
-      }
+    .nav-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text-soft);
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
 
-      .nav-tab:hover {
-        color: var(--text);
-        background: rgba(255, 255, 255, 0.05);
-      }
+    .nav-tab:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
 
-      .nav-tab.active {
-        background: var(--accent);
-        color: white;
-      }
+    .nav-tab.active {
+      background: var(--accent);
+      color: white;
+    }
 
-      .nav-tab svg {
-        width: 16px;
-        height: 16px;
-      }
+    .nav-tab svg {
+      width: 16px;
+      height: 16px;
+    }
 
-      /* Main Container */
-      .main-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 80px 24px 24px;
-        min-height: 100vh;
-      }
+    /* Main Container */
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 80px 24px 24px;
+      min-height: 100vh;
+    }
 
-      /* Three Column Layout */
+    /* Three Column Layout */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr 300px;
+      gap: 20px;
+      min-height: calc(100vh - 104px);
+    }
+
+    @media (max-width: 1200px) {
       .admin-layout {
-        display: grid;
-        grid-template-columns: 220px 1fr 300px;
-        gap: 20px;
-        min-height: calc(100vh - 104px);
+        grid-template-columns: 200px 1fr;
       }
-
-      @media (max-width: 1200px) {
-        .admin-layout {
-          grid-template-columns: 200px 1fr;
-        }
-        .stems-library {
-          display: none;
-        }
-      }
-
-      @media (max-width: 800px) {
-        .admin-layout {
-          grid-template-columns: 1fr;
-        }
-        .tracks-sidebar {
-          max-height: 200px;
-        }
-      }
-
-      /* Sidebar - Tracks List */
-      .tracks-sidebar {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        max-height: calc(100vh - 104px);
-        position: sticky;
-        top: 80px;
-      }
-
-      .sidebar-header {
-        padding: 16px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .sidebar-title {
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        margin-bottom: 4px;
-      }
-
-      .sidebar-helper {
-        font-size: 11px;
-        color: var(--text-muted);
-        line-height: 1.4;
-      }
-
-      .new-track-btn {
-        width: 100%;
-        padding: 10px 14px;
-        margin-top: 12px;
-        background: var(--accent);
-        color: white;
-        border: none;
-        border-radius: var(--radius);
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        transition: background 0.2s ease;
-      }
-
-      .new-track-btn:hover {
-        background: var(--accent-hover);
-      }
-
-      .tracks-list {
-        flex: 1;
-        overflow-y: auto;
-        padding: 8px;
-      }
-
-      .track-item {
-        padding: 10px 12px;
-        border-radius: var(--radius);
-        cursor: pointer;
-        transition: all 0.15s ease;
-        margin-bottom: 4px;
-        border: 1px solid transparent;
-      }
-
-      .track-item:hover {
-        background: var(--bg-card-hover);
-        border-color: var(--border);
-      }
-
-      .track-item.active {
-        background: rgba(14, 165, 233, 0.15);
-        border-color: rgba(14, 165, 233, 0.3);
-      }
-
-      .track-item-title {
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .track-item.active .track-item-title {
-        color: var(--accent);
-      }
-
-      .track-item-meta {
-        font-size: 11px;
-        color: var(--text-muted);
-        margin-top: 2px;
-      }
-
-      .track-item-inactive {
-        opacity: 0.5;
-      }
-
-      /* Main Editor Panel */
-      .editor-panel {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        min-width: 0;
-      }
-
-      .editor-empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 300px;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        color: var(--text-muted);
-        font-size: 14px;
-      }
-
-      /* Cards */
-      .card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-      }
-
-      .card-header {
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 16px;
-        flex-wrap: wrap;
-      }
-
-      .card-header-content {
-        flex: 1;
-        min-width: 200px;
-      }
-
-      .card-title {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text);
-        margin-bottom: 4px;
-      }
-
-      .card-helper {
-        font-size: 12px;
-        color: var(--text-muted);
-        line-height: 1.4;
-      }
-
-      .card-body {
-        padding: 20px;
-      }
-
-      .card-actions {
-        display: flex;
-        gap: 8px;
-        flex-shrink: 0;
-      }
-
-      /* Form Elements */
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 16px;
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .form-group.full-width {
-        grid-column: 1 / -1;
-      }
-
-      .form-label {
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--text-soft);
-      }
-
-      .form-helper {
-        font-size: 11px;
-        color: var(--text-muted);
-        margin-top: 2px;
-      }
-
-      .form-input,
-      .form-select,
-      .form-textarea {
-        padding: 10px 12px;
-        background: var(--bg-input);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        color: var(--text);
-        font-size: 13px;
-        transition: border-color 0.2s ease;
-        width: 100%;
-      }
-
-      .form-input:focus,
-      .form-select:focus,
-      .form-textarea:focus {
-        outline: none;
-        border-color: var(--accent);
-      }
-
-      .form-textarea {
-        min-height: 80px;
-        resize: vertical;
-      }
-
-      .form-select {
-        cursor: pointer;
-      }
-
-      .form-checkbox-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 0;
-      }
-
-      .form-checkbox {
-        width: 16px;
-        height: 16px;
-        accent-color: var(--accent);
-        cursor: pointer;
-      }
-
-      .form-checkbox-label {
-        font-size: 13px;
-        color: var(--text);
-        cursor: pointer;
-      }
-
-      /* Buttons */
-      .btn {
-        padding: 8px 14px;
-        border-radius: var(--radius);
-        font-size: 12px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        border: 1px solid transparent;
-        white-space: nowrap;
-      }
-
-      .btn-primary {
-        background: var(--accent);
-        color: white;
-        border-color: var(--accent);
-      }
-
-      .btn-primary:hover {
-        background: var(--accent-hover);
-        border-color: var(--accent-hover);
-      }
-
-      .btn-secondary {
-        background: transparent;
-        color: var(--text-soft);
-        border-color: var(--border);
-      }
-
-      .btn-secondary:hover {
-        background: var(--bg-card-hover);
-        color: var(--text);
-        border-color: var(--border-hover);
-      }
-
-      .btn-danger {
-        background: transparent;
-        color: var(--danger);
-        border-color: var(--danger);
-      }
-
-      .btn-danger:hover {
-        background: var(--danger);
-        color: white;
-      }
-
-      .btn-sm {
-        padding: 5px 10px;
-        font-size: 11px;
-      }
-
-      .btn-icon {
-        padding: 6px;
-        width: 28px;
-        height: 28px;
-        justify-content: center;
-      }
-
-      .btn svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-      }
-
-      /* Tables */
-      .table-wrapper {
-        overflow-x: auto;
-        margin: 0 -20px;
-        padding: 0 20px;
-      }
-
-      .data-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 12px;
-      }
-
-      .data-table th {
-        text-align: left;
-        padding: 10px 8px;
-        background: var(--bg-input);
-        color: var(--text-muted);
-        font-weight: 500;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
-        white-space: nowrap;
-      }
-
-      .data-table td {
-        padding: 8px;
-        border-top: 1px solid var(--border);
-        vertical-align: middle;
-      }
-
-      .data-table .form-input,
-      .data-table .form-select {
-        padding: 6px 8px;
-        font-size: 12px;
-        width: auto;
-        min-width: 0;
-      }
-
-      .data-table .form-checkbox {
-        width: 14px;
-        height: 14px;
-      }
-
-      .table-actions {
-        display: flex;
-        gap: 4px;
-        justify-content: flex-end;
-      }
-
-      /* Accordion / Collapsible */
-      .accordion-item {
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        margin-bottom: 8px;
-        overflow: hidden;
-      }
-
-      .accordion-header {
-        padding: 12px 16px;
-        background: var(--bg-input);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        transition: background 0.15s ease;
-      }
-
-      .accordion-header:hover {
-        background: var(--bg-card-hover);
-      }
-
-      .accordion-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex: 1;
-        min-width: 0;
-      }
-
-      .accordion-name {
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .accordion-meta {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-
-      .badge {
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 10px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
-      }
-
-      .badge-core {
-        background: rgba(14, 165, 233, 0.2);
-        color: var(--accent);
-      }
-
-      .badge-secondary {
-        background: rgba(168, 85, 247, 0.2);
-        color: #a855f7;
-      }
-
-      .badge-vox {
-        background: rgba(236, 72, 153, 0.2);
-        color: #ec4899;
-      }
-
-      .badge-snack {
-        background: rgba(245, 158, 11, 0.2);
-        color: var(--warning);
-      }
-
-      .takes-count {
-        font-size: 11px;
-        color: var(--text-muted);
-      }
-
-      .accordion-toggle {
-        width: 20px;
-        height: 20px;
-        color: var(--text-muted);
-        transition: transform 0.2s ease;
-        flex-shrink: 0;
-      }
-
-      .accordion-item.open .accordion-toggle {
-        transform: rotate(180deg);
-      }
-
-      .accordion-body {
-        display: none;
-        padding: 16px;
-        border-top: 1px solid var(--border);
-      }
-
-      .accordion-item.open .accordion-body {
-        display: block;
-      }
-
-      .accordion-section {
-        margin-bottom: 16px;
-      }
-
-      .accordion-section:last-child {
-        margin-bottom: 0;
-      }
-
-      .accordion-section-title {
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        margin-bottom: 10px;
-      }
-
-      .accordion-section-helper {
-        font-size: 11px;
-        color: var(--text-muted);
-        margin-bottom: 10px;
-      }
-
-      /* Stems Library */
       .stems-library {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        max-height: calc(100vh - 104px);
-        position: sticky;
-        top: 80px;
-      }
-
-      .library-header {
-        padding: 16px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .library-title {
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        margin-bottom: 4px;
-      }
-
-      .library-helper {
-        font-size: 11px;
-        color: var(--text-muted);
-        line-height: 1.4;
-      }
-
-      .upload-zone {
-        margin: 16px;
-        padding: 24px 16px;
-        border: 2px dashed var(--border);
-        border-radius: var(--radius);
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .upload-zone:hover,
-      .upload-zone.drag-over {
-        border-color: var(--accent);
-        background: rgba(14, 165, 233, 0.05);
-      }
-
-      .upload-zone-icon {
-        width: 32px;
-        height: 32px;
-        color: var(--text-muted);
-        margin: 0 auto 8px;
-      }
-
-      .upload-zone-text {
-        font-size: 12px;
-        color: var(--text-soft);
-        margin-bottom: 4px;
-      }
-
-      .upload-zone-hint {
-        font-size: 11px;
-        color: var(--text-muted);
-      }
-
-      .upload-input {
         display: none;
       }
+    }
 
-      .upload-progress {
-        padding: 0 16px;
-        font-size: 11px;
+    @media (max-width: 800px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
       }
-
-      .upload-progress-item {
-        padding: 6px 0;
-        color: var(--text-soft);
+      .tracks-sidebar {
+        max-height: 200px;
       }
+    }
 
-      .upload-progress-item.success {
-        color: var(--success);
-      }
+    /* Sidebar - Tracks List */
+    .tracks-sidebar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 104px);
+      position: sticky;
+      top: 80px;
+    }
 
-      .upload-progress-item.error {
-        color: var(--danger);
-      }
+    .sidebar-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
 
-      .stems-list {
-        flex: 1;
-        overflow-y: auto;
-        padding: 8px 16px 16px;
-      }
+    .sidebar-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
 
-      .stem-file {
-        padding: 10px 12px;
-        background: var(--bg-input);
-        border-radius: var(--radius);
-        margin-bottom: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-      }
+    .sidebar-helper {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
 
-      .stem-file-name {
-        font-size: 12px;
-        color: var(--text);
-        flex: 1;
-        min-width: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+    .new-track-btn {
+      width: 100%;
+      padding: 10px 14px;
+      margin-top: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s ease;
+    }
 
-      .stem-file-actions {
-        display: flex;
-        gap: 4px;
-        flex-shrink: 0;
-      }
+    .new-track-btn:hover {
+      background: var(--accent-hover);
+    }
 
-      .stems-empty {
-        text-align: center;
-        padding: 24px;
-        color: var(--text-muted);
-        font-size: 12px;
-      }
+    .tracks-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+    }
 
-      /* Status Messages */
-      .status-toast {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        padding: 12px 20px;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        font-size: 13px;
-        color: var(--text);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
-        opacity: 0;
-        transform: translateY(10px);
-        transition: all 0.2s ease;
-        pointer-events: none;
-      }
+    .track-item {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-bottom: 4px;
+      border: 1px solid transparent;
+    }
 
-      .status-toast.visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .track-item:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border);
+    }
 
-      .status-toast.success {
-        border-color: var(--success);
-      }
+    .track-item.active {
+      background: rgba(14, 165, 233, 0.15);
+      border-color: rgba(14, 165, 233, 0.3);
+    }
 
-      .status-toast.error {
-        border-color: var(--danger);
-      }
+    .track-item-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-      /* Cover Upload */
-      .cover-upload {
-        display: flex;
-        gap: 16px;
-        align-items: flex-start;
-      }
+    .track-item.active .track-item-title {
+      color: var(--accent);
+    }
 
-      .cover-preview {
-        width: 120px;
-        height: 120px;
-        border-radius: var(--radius);
-        background: var(--bg-input);
-        border: 2px dashed var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        flex-shrink: 0;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        position: relative;
-      }
+    .track-item-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
 
-      .cover-preview:hover {
-        border-color: var(--accent);
-        background: rgba(14, 165, 233, 0.05);
-      }
+    .track-item-inactive {
+      opacity: 0.5;
+    }
 
-      .cover-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+    /* Main Editor Panel */
+    .editor-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
 
-      .cover-preview svg {
-        width: 32px;
-        height: 32px;
-        color: var(--text-muted);
-      }
+    .editor-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
 
-      .cover-preview .cover-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.2s ease;
-      }
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
 
-      .cover-preview:hover .cover-overlay {
-        opacity: 1;
-      }
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
 
-      .cover-overlay svg {
-        color: white;
-      }
+    .card-header-content {
+      flex: 1;
+      min-width: 200px;
+    }
 
-      .cover-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
 
-      .cover-input {
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Navigation -->
-    <nav class="nav-header">
-      <div class="nav-tabs">
-        <a href="living-piece-player.html" class="nav-tab" id="nav-listening">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M9 18V5l12-2v13" />
-            <circle cx="6" cy="18" r="3" />
-            <circle cx="18" cy="16" r="3" />
-          </svg>
-          Listening
-        </a>
-        <a href="living-piece-playlist.html" class="nav-tab">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M21 15V6" />
-            <path d="M18.5 18a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
-            <path d="M12 12H3" />
-            <path d="M16 6H3" />
-            <path d="M12 18H3" />
-          </svg>
-          Playlist
-        </a>
-        <a href="#" class="nav-tab active">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <circle cx="12" cy="12" r="3" />
-            <path
-              d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
-            />
-          </svg>
-          Admin
-        </a>
-      </div>
-    </nav>
+    .card-helper {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
 
-    <!-- Main Container -->
-    <div class="main-container">
-      <div class="admin-layout">
-        <!-- Left: Sidebar with Releases and Tracks -->
-        <div
-          style="
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: calc(100vh - 104px);
-            position: sticky;
-            top: 80px;
-          "
-        >
-          <!-- Releases Section -->
-          <aside
-            class="tracks-sidebar"
-            style="max-height: 240px; flex-shrink: 0"
-          >
-            <div class="sidebar-header">
-              <div class="sidebar-title">Releases</div>
-              <div class="sidebar-helper">Albums, EPs, singles</div>
-              <button
-                class="new-track-btn"
-                id="btn-new-release"
-                style="
-                  background: transparent;
-                  border: 1px solid var(--border);
-                  color: var(--text-soft);
-                "
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  width="14"
-                  height="14"
-                >
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-                New Release
-              </button>
-            </div>
-            <div class="tracks-list" id="releases-list">
-              <!-- Populated by JS -->
-            </div>
-          </aside>
+    .card-body {
+      padding: 20px;
+    }
 
-          <!-- Tracks Section -->
-          <aside class="tracks-sidebar" style="flex: 1; min-height: 200px">
-            <div class="sidebar-header">
-              <div class="sidebar-title">Tracks</div>
-              <div class="sidebar-helper">
-                Select a track to edit its modes, stem groups and takes.
-              </div>
-              <button class="new-track-btn" id="btn-new-track">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  width="14"
-                  height="14"
-                >
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-                New Track
-              </button>
-            </div>
-            <div class="tracks-list" id="tracks-list">
-              <!-- Populated by JS -->
-            </div>
-          </aside>
-        </div>
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
 
-        <!-- Middle: Editor Panel -->
-        <main class="editor-panel" id="editor-panel">
-          <div class="editor-empty">Select a track to begin editing</div>
-        </main>
+    /* Form Elements */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
 
-        <!-- Right: Stems Library -->
-        <aside class="stems-library" id="stems-library">
-          <div class="library-header">
-            <div class="library-title">Stems Library</div>
-            <div class="library-helper">
-              Upload and manage audio files. Attach them to stem groups as
-              takes.
-            </div>
-          </div>
-          <div class="upload-zone" id="upload-zone">
-            <svg
-              class="upload-zone-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-              <polyline points="17,8 12,3 7,8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-soft);
+    }
+
+    .form-helper {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      padding: 10px 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 13px;
+      transition: border-color 0.2s ease;
+      width: 100%;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-select {
+      cursor: pointer;
+    }
+
+    .form-checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0;
+    }
+
+    .form-checkbox {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .form-checkbox-label {
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-soft);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 11px;
+    }
+
+    .btn-icon {
+      padding: 6px;
+      width: 28px;
+      height: 28px;
+      justify-content: center;
+    }
+
+    .btn svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 0 -20px;
+      padding: 0 20px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 10px 8px;
+      background: var(--bg-input);
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 8px;
+      border-top: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .data-table .form-input,
+    .data-table .form-select {
+      padding: 6px 8px;
+      font-size: 12px;
+      width: auto;
+      min-width: 0;
+    }
+
+    .data-table .form-checkbox {
+      width: 14px;
+      height: 14px;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+
+    /* Accordion / Collapsible */
+    .accordion-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      padding: 12px 16px;
+      background: var(--bg-input);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background 0.15s ease;
+    }
+
+    .accordion-header:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .accordion-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .accordion-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .accordion-meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-core {
+      background: rgba(14, 165, 233, 0.2);
+      color: var(--accent);
+    }
+
+    .badge-secondary {
+      background: rgba(168, 85, 247, 0.2);
+      color: #a855f7;
+    }
+
+    .badge-vox {
+      background: rgba(236, 72, 153, 0.2);
+      color: #ec4899;
+    }
+
+    .badge-snack {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+    }
+
+    .badge-variant {
+      background: rgba(139, 92, 246, 0.2);
+      color: #8b5cf6;
+    }
+
+    /* Stem Groups Compact List */
+    .stem-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stem-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--bg-input);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .stem-row:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .stem-row.active {
+      background: rgba(14, 165, 233, 0.1);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+    }
+
+    .stem-row.variant {
+      margin-left: 24px;
+      border-left: 2px solid rgba(139, 92, 246, 0.4);
+    }
+
+    .stem-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      min-width: 100px;
+    }
+
+    .stem-badges {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .stem-meta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-left: auto;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .stem-volume {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stem-takes {
+      min-width: 50px;
+    }
+
+    .stem-snack-info {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--warning);
+    }
+
+    .stem-mute-arrow {
+      color: var(--text-muted);
+      font-size: 10px;
+    }
+
+    .rhythmic-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--warning);
+      opacity: 0.7;
+    }
+
+    /* Side Panel */
+    .side-panel-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 200;
+    }
+
+    .side-panel-overlay.open {
+      display: block;
+    }
+
+    .side-panel {
+      position: fixed;
+      top: 0;
+      right: -450px;
+      width: 450px;
+      height: 100vh;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border);
+      z-index: 201;
+      transition: right 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .side-panel.open {
+      right: 0;
+    }
+
+    .side-panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .side-panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .side-panel-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .side-panel-close:hover {
+      background: var(--bg-card-hover);
+      color: var(--text);
+    }
+
+    .side-panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .side-panel-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Panel Sections */
+    .panel-section {
+      margin-bottom: 24px;
+    }
+
+    .panel-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .panel-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .panel-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .panel-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .panel-field {
+      flex: 1;
+    }
+
+    .panel-field-label {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    /* Volume Slider */
+    .volume-slider-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .volume-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .volume-value {
+      font-size: 12px;
+      color: var(--text-soft);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* Tags Row */
+    .tags-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Advanced Section */
+    .advanced-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0;
+      cursor: pointer;
+      color: var(--text-soft);
+      font-size: 12px;
+      border: none;
+      background: none;
+      width: 100%;
+    }
+
+    .advanced-toggle:hover {
+      color: var(--text);
+    }
+
+    .advanced-toggle svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.2s ease;
+    }
+
+    .advanced-toggle.open svg {
+      transform: rotate(180deg);
+    }
+
+    .advanced-content {
+      display: none;
+      padding-top: 12px;
+    }
+
+    .advanced-content.open {
+      display: block;
+    }
+
+    /* Conditional Fields */
+    .conditional-field {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .conditional-field.visible {
+      display: block;
+    }
+
+    .conditional-field-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    /* Mini Takes Table */
+    .takes-mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .takes-mini-table th {
+      text-align: left;
+      padding: 8px 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .takes-mini-table td {
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .takes-mini-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .takes-mini-table .form-select,
+    .takes-mini-table .form-input {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+
+    .takes-count {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .accordion-toggle {
+      width: 20px;
+      height: 20px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .accordion-item.open .accordion-toggle {
+      transform: rotate(180deg);
+    }
+
+    .accordion-body {
+      display: none;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .accordion-item.open .accordion-body {
+      display: block;
+    }
+
+    .accordion-section {
+      margin-bottom: 16px;
+    }
+
+    .accordion-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .accordion-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .accordion-section-helper {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* Stems Library */
+    .stems-library {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 104px);
+      position: sticky;
+      top: 80px;
+    }
+
+    .library-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .library-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .library-helper {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .upload-zone {
+      margin: 16px;
+      padding: 24px 16px;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(14, 165, 233, 0.05);
+    }
+
+    .upload-zone-icon {
+      width: 32px;
+      height: 32px;
+      color: var(--text-muted);
+      margin: 0 auto 8px;
+    }
+
+    .upload-zone-text {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .upload-zone-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .upload-input {
+      display: none;
+    }
+
+    .upload-progress {
+      padding: 0 16px;
+      font-size: 11px;
+    }
+
+    .upload-progress-item {
+      padding: 6px 0;
+      color: var(--text-soft);
+    }
+
+    .upload-progress-item.success {
+      color: var(--success);
+    }
+
+    .upload-progress-item.error {
+      color: var(--danger);
+    }
+
+    .stems-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 16px 16px;
+    }
+
+    .stem-file {
+      padding: 10px 12px;
+      background: var(--bg-input);
+      border-radius: var(--radius);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .stem-file-name {
+      font-size: 12px;
+      color: var(--text);
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stem-file-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .stems-empty {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* Status Messages */
+    .status-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--text);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      pointer-events: none;
+    }
+
+    .status-toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .status-toast.success {
+      border-color: var(--success);
+    }
+
+    .status-toast.error {
+      border-color: var(--danger);
+    }
+
+    /* Cover Upload */
+    .cover-upload {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .cover-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: var(--radius);
+      background: var(--bg-input);
+      border: 2px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .cover-preview:hover {
+      border-color: var(--accent);
+      background: rgba(14, 165, 233, 0.05);
+    }
+
+    .cover-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cover-preview svg {
+      width: 32px;
+      height: 32px;
+      color: var(--text-muted);
+    }
+
+    .cover-preview .cover-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .cover-preview:hover .cover-overlay {
+      opacity: 1;
+    }
+
+    .cover-overlay svg {
+      color: white;
+    }
+
+    .cover-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cover-input {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Side Panel for Stem Group Editing -->
+<div class="side-panel-overlay" id="stem-panel-overlay" onclick="closeStemPanel()"></div>
+<div class="side-panel" id="stem-panel">
+  <div class="side-panel-header">
+    <span class="side-panel-title" id="stem-panel-title">Edit Stem Group</span>
+    <button class="side-panel-close" onclick="closeStemPanel()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="side-panel-body" id="stem-panel-body">
+    <!-- Content populated by JS -->
+  </div>
+  <div class="side-panel-footer">
+    <button class="btn btn-primary" onclick="saveStemGroupFromPanel()">Save Changes</button>
+    <button class="btn btn-danger" onclick="deleteStemGroupFromPanel()">Delete</button>
+  </div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav-header">
+  <div class="nav-tabs">
+    <a href="living-piece-player.html" class="nav-tab" id="nav-listening">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 18V5l12-2v13"/>
+        <circle cx="6" cy="18" r="3"/>
+        <circle cx="18" cy="16" r="3"/>
+      </svg>
+      Listening
+    </a>
+    <a href="living-piece-playlist.html" class="nav-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15V6"/><path d="M18.5 18a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+        <path d="M12 12H3"/><path d="M16 6H3"/><path d="M12 18H3"/>
+      </svg>
+      Playlist
+    </a>
+    <a href="#" class="nav-tab active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+      </svg>
+      Admin
+    </a>
+  </div>
+</nav>
+
+<!-- Main Container -->
+<div class="main-container">
+  <div class="admin-layout">
+    
+    <!-- Left: Sidebar with Releases and Tracks -->
+    <div style="display: flex; flex-direction: column; gap: 12px; max-height: calc(100vh - 104px); position: sticky; top: 80px;">
+      
+      <!-- Releases Section -->
+      <aside class="tracks-sidebar" style="max-height: 240px; flex-shrink: 0;">
+        <div class="sidebar-header">
+          <div class="sidebar-title">Releases</div>
+          <div class="sidebar-helper">Albums, EPs, singles</div>
+          <button class="new-track-btn" id="btn-new-release" style="background: transparent; border: 1px solid var(--border); color: var(--text-soft);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M12 5v14M5 12h14"/>
             </svg>
-            <div class="upload-zone-text">Drop audio files here</div>
-            <div class="upload-zone-hint">
-              WAV, MP3, OGG, FLAC, AAC, M4A, AIFF, WebM
-            </div>
-            <input
-              type="file"
-              class="upload-input"
-              id="upload-input"
-              multiple
-              accept=".wav,.mp3,.ogg,.flac,.aac,.m4a,.aiff,.aif,.webm,.opus,audio/*"
-            />
-          </div>
-          <div class="upload-progress" id="upload-progress"></div>
-          <div class="stems-list" id="stems-list">
-            <div class="stems-empty">Select a track to see its stems</div>
-          </div>
-        </aside>
-      </div>
+            New Release
+          </button>
+        </div>
+        <div class="tracks-list" id="releases-list">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
+
+      <!-- Tracks Section -->
+      <aside class="tracks-sidebar" style="flex: 1; min-height: 200px;">
+        <div class="sidebar-header">
+          <div class="sidebar-title">Tracks</div>
+          <div class="sidebar-helper">Select a track to edit its modes, stem groups and takes.</div>
+          <button class="new-track-btn" id="btn-new-track">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            New Track
+          </button>
+        </div>
+        <div class="tracks-list" id="tracks-list">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
     </div>
 
-    <!-- Status Toast -->
-    <div class="status-toast" id="status-toast"></div>
+    <!-- Middle: Editor Panel -->
+    <main class="editor-panel" id="editor-panel">
+      <div class="editor-empty">Select a track to begin editing</div>
+    </main>
 
-    <script>
-      // ============================================
-      // SUPABASE SETUP
-      // ============================================
-      const supabaseUrl = "https://cimngwcwvbspkcqdzqfg.supabase.co";
-      const supabaseKey =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbW5nd2N3dmJzcGtjcWR6cWZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1MzA1MDIsImV4cCI6MjA4MDEwNjUwMn0.L9Tvj4mlSjAtiSVMPkaegRF4laZl_E15ALZFdRhSzUg";
-      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    <!-- Right: Stems Library -->
+    <aside class="stems-library" id="stems-library">
+      <div class="library-header">
+        <div class="library-title">Stems Library</div>
+        <div class="library-helper">Upload and manage audio files. Attach them to stem groups as takes.</div>
+      </div>
+      <div class="upload-zone" id="upload-zone">
+        <svg class="upload-zone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="17,8 12,3 7,8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <div class="upload-zone-text">Drop audio files here</div>
+        <div class="upload-zone-hint">WAV, MP3, OGG, FLAC, AAC, M4A, AIFF, WebM</div>
+        <input type="file" class="upload-input" id="upload-input" multiple accept=".wav,.mp3,.ogg,.flac,.aac,.m4a,.aiff,.aif,.webm,.opus,audio/*" />
+      </div>
+      <div class="upload-progress" id="upload-progress"></div>
+      <div class="stems-list" id="stems-list">
+        <div class="stems-empty">Select a track to see its stems</div>
+      </div>
+    </aside>
 
-      // ============================================
-      // STATE
-      // ============================================
-      let allReleases = [];
-      let allTracks = [];
-      let currentTrack = null;
-      let currentModes = [];
-      let currentStemGroups = [];
-      let currentTakes = [];
-      let stemLibrary = [];
-      let openAccordions = new Set(); // Track which accordions are open
+  </div>
+</div>
 
-      // ============================================
-      // UTILITY FUNCTIONS
-      // ============================================
-      function escapeHtml(text) {
-        if (!text) return "";
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
-      }
+<!-- Status Toast -->
+<div class="status-toast" id="status-toast"></div>
 
-      function showToast(message, type = "") {
-        const toast = document.getElementById("status-toast");
-        toast.textContent = message;
-        toast.className = "status-toast visible " + type;
-        setTimeout(() => {
-          toast.classList.remove("visible");
-        }, 3000);
-      }
+<script>
+// ============================================
+// SUPABASE SETUP
+// ============================================
+const supabaseUrl = 'https://cimngwcwvbspkcqdzqfg.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbW5nd2N3dmJzcGtjcWR6cWZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1MzA1MDIsImV4cCI6MjA4MDEwNjUwMn0.L9Tvj4mlSjAtiSVMPkaegRF4laZl_E15ALZFdRhSzUg';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-      function generateSlug(title) {
-        return title
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "_")
-          .replace(/^_|_$/g, "");
-      }
+// ============================================
+// STATE
+// ============================================
+let allReleases = [];
+let allTracks = [];
+let currentTrack = null;
+let currentModes = [];
+let currentStemGroups = [];
+let currentTakes = [];
+let stemLibrary = [];
+let openAccordions = new Set(); // Track which accordions are open
 
-      function normalizeSelectValue(value) {
-        if (
-          value === "any" ||
-          value === "" ||
-          value === null ||
-          value === undefined
-        ) {
-          return null;
-        }
-        return value;
-      }
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 
-      function denormalizeSelectValue(value) {
-        if (value === null || value === undefined || value === "") {
-          return "any";
-        }
-        return value;
-      }
+function showToast(message, type = '') {
+  const toast = document.getElementById('status-toast');
+  toast.textContent = message;
+  toast.className = 'status-toast visible ' + type;
+  setTimeout(() => {
+    toast.classList.remove('visible');
+  }, 3000);
+}
 
-      // ============================================
-      // RELEASES CRUD
-      // ============================================
-      async function loadReleases() {
-        const { data, error } = await supabase
-          .from("releases")
-          .select("*")
-          .order("sort_order");
+function generateSlug(title) {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+}
 
-        if (error) {
-          console.error("Error loading releases:", error.message);
-          allReleases = [];
-          renderReleasesList();
-          return;
-        }
+function normalizeSelectValue(value) {
+  if (value === 'any' || value === '' || value === null || value === undefined) {
+    return null;
+  }
+  return value;
+}
 
-        allReleases = data || [];
-        renderReleasesList();
-      }
+function denormalizeSelectValue(value) {
+  if (value === null || value === undefined || value === '') {
+    return 'any';
+  }
+  return value;
+}
 
-      function renderReleasesList() {
-        const container = document.getElementById("releases-list");
-        if (!container) return;
+// ============================================
+// RELEASES CRUD
+// ============================================
+async function loadReleases() {
+  const { data, error } = await supabase
+    .from('releases')
+    .select('*')
+    .order('sort_order');
+  
+  if (error) {
+    console.error('Error loading releases:', error.message);
+    allReleases = [];
+    renderReleasesList();
+    return;
+  }
+  
+  allReleases = data || [];
+  renderReleasesList();
+}
 
-        if (allReleases.length === 0) {
-          container.innerHTML =
-            '<div style="padding: 12px; color: var(--text-muted); font-size: 11px;">No releases yet</div>';
-          return;
-        }
-
-        const typeColors = {
-          album: "#0ea5e9",
-          ep: "#a855f7",
-          single: "#22c55e",
-          compilation: "#f59e0b",
-        };
-
-        container.innerHTML = allReleases
-          .map(
-            (release) => `
-    <div class="track-item ${!release.is_active ? "track-item-inactive" : ""}" 
+function renderReleasesList() {
+  const container = document.getElementById('releases-list');
+  if (!container) return;
+  
+  if (allReleases.length === 0) {
+    container.innerHTML = '<div style="padding: 12px; color: var(--text-muted); font-size: 11px;">No releases yet</div>';
+    return;
+  }
+  
+  const typeColors = {
+    album: '#0ea5e9',
+    ep: '#a855f7', 
+    single: '#22c55e',
+    compilation: '#f59e0b'
+  };
+  
+  container.innerHTML = allReleases.map(release => `
+    <div class="track-item ${!release.is_active ? 'track-item-inactive' : ''}" 
          data-release-id="${release.id}" onclick="editRelease('${release.id}')">
       <div class="track-item-title">${escapeHtml(release.title)}</div>
       <div class="track-item-meta">
-        <span style="color: ${
-          typeColors[release.release_type] || "#666"
-        }; font-size: 10px; text-transform: uppercase;">${
-              release.release_type || "album"
-            }</span>
+        <span style="color: ${typeColors[release.release_type] || '#666'}; font-size: 10px; text-transform: uppercase;">${release.release_type || 'album'}</span>
       </div>
     </div>
-  `
-          )
-          .join("");
-      }
+  `).join('');
+}
 
-      async function createNewRelease() {
-        const title = prompt("Enter release title:");
-        if (!title) return;
+async function createNewRelease() {
+  const title = prompt('Enter release title:');
+  if (!title) return;
+  
+  const slug = generateSlug(title);
+  
+  const { data, error } = await supabase
+    .from('releases')
+    .insert({
+      title: title,
+      slug: slug,
+      release_type: 'album',
+      is_active: true,
+      sort_order: allReleases.length
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    showToast('Error creating release: ' + error.message, 'error');
+    return;
+  }
+  
+  showToast('Release created', 'success');
+  await loadReleases();
+}
 
-        const slug = generateSlug(title);
-
-        const { data, error } = await supabase
-          .from("releases")
-          .insert({
-            title: title,
-            slug: slug,
-            release_type: "album",
-            is_active: true,
-            sort_order: allReleases.length,
-          })
-          .select()
-          .single();
-
-        if (error) {
-          showToast("Error creating release: " + error.message, "error");
-          return;
-        }
-
-        showToast("Release created", "success");
-        await loadReleases();
-      }
-
-      function editRelease(releaseId) {
-        const release = allReleases.find((r) => r.id === releaseId);
-        if (!release) return;
-
-        // Store current release for upload functions
-        window.currentEditingRelease = release;
-
-        // Get tracks in this release
-        const releaseTracks = allTracks.filter(
-          (t) => t.release_id === releaseId
-        );
-        const coverUrl = release.cover_image_url || "";
-
-        const panel = document.getElementById("editor-panel");
-        panel.innerHTML = `
+function editRelease(releaseId) {
+  const release = allReleases.find(r => r.id === releaseId);
+  if (!release) return;
+  
+  // Store current release for upload functions
+  window.currentEditingRelease = release;
+  
+  // Get tracks in this release
+  const releaseTracks = allTracks.filter(t => t.release_id === releaseId);
+  const coverUrl = release.cover_image_url || '';
+  
+  const panel = document.getElementById('editor-panel');
+  panel.innerHTML = `
     <div class="card">
       <div class="card-header">
         <div class="card-header-content">
@@ -1191,17 +1461,13 @@
           <div class="card-helper">Manage this release. Assign tracks from the track editor.</div>
         </div>
         <div class="card-actions">
-          <button class="btn btn-primary" onclick="saveRelease('${
-            release.id
-          }')">Save Release</button>
+          <button class="btn btn-primary" onclick="saveRelease('${release.id}')">Save Release</button>
         </div>
       </div>
       <div class="card-body">
         <div class="cover-upload" style="margin-bottom: 20px;">
           <div class="cover-preview" onclick="document.getElementById('release-cover-input').click()">
-            ${
-              coverUrl
-                ? `
+            ${coverUrl ? `
               <img src="${escapeHtml(coverUrl)}" alt="Cover" />
               <div class="cover-overlay">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
@@ -1210,19 +1476,15 @@
                   <line x1="12" y1="3" x2="12" y2="15"/>
                 </svg>
               </div>
-            `
-                : `
+            ` : `
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                 <circle cx="8.5" cy="8.5" r="1.5"/>
                 <polyline points="21,15 16,10 5,21"/>
               </svg>
-            `
-            }
+            `}
           </div>
-          <input type="file" id="release-cover-input" class="cover-input" accept="image/*" onchange="uploadReleaseCover(this.files[0], '${
-            release.id
-          }')" />
+          <input type="file" id="release-cover-input" class="cover-input" accept="image/*" onchange="uploadReleaseCover(this.files[0], '${release.id}')" />
           <div class="cover-actions">
             <div class="form-label">Release Cover</div>
             <div class="form-helper" style="margin-bottom: 8px;">Square image, min 500x500px recommended</div>
@@ -1234,98 +1496,60 @@
               </svg>
               Upload Image
             </button>
-            ${
-              coverUrl
-                ? `<button class="btn btn-danger btn-sm" onclick="removeReleaseCover('${release.id}')">Remove</button>`
-                : ""
-            }
+            ${coverUrl ? `<button class="btn btn-danger btn-sm" onclick="removeReleaseCover('${release.id}')">Remove</button>` : ''}
           </div>
         </div>
         <div class="form-grid">
           <div class="form-group">
             <label class="form-label">Title</label>
-            <input type="text" class="form-input" id="release-title" value="${escapeHtml(
-              release.title || ""
-            )}" />
+            <input type="text" class="form-input" id="release-title" value="${escapeHtml(release.title || '')}" />
           </div>
           <div class="form-group">
             <label class="form-label">Slug</label>
-            <input type="text" class="form-input" id="release-slug" value="${escapeHtml(
-              release.slug || ""
-            )}" />
+            <input type="text" class="form-input" id="release-slug" value="${escapeHtml(release.slug || '')}" />
           </div>
           <div class="form-group">
             <label class="form-label">Type</label>
             <select class="form-select" id="release-type">
-              <option value="album" ${
-                release.release_type === "album" ? "selected" : ""
-              }>Album</option>
-              <option value="ep" ${
-                release.release_type === "ep" ? "selected" : ""
-              }>EP</option>
-              <option value="single" ${
-                release.release_type === "single" ? "selected" : ""
-              }>Single</option>
-              <option value="compilation" ${
-                release.release_type === "compilation" ? "selected" : ""
-              }>Compilation</option>
+              <option value="album" ${release.release_type === 'album' ? 'selected' : ''}>Album</option>
+              <option value="ep" ${release.release_type === 'ep' ? 'selected' : ''}>EP</option>
+              <option value="single" ${release.release_type === 'single' ? 'selected' : ''}>Single</option>
+              <option value="compilation" ${release.release_type === 'compilation' ? 'selected' : ''}>Compilation</option>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Release Date</label>
-            <input type="date" class="form-input" id="release-date" value="${
-              release.release_date || ""
-            }" />
+            <input type="date" class="form-input" id="release-date" value="${release.release_date || ''}" />
           </div>
           <div class="form-group full-width">
             <label class="form-label">Description</label>
-            <textarea class="form-textarea" id="release-description">${escapeHtml(
-              release.description || ""
-            )}</textarea>
+            <textarea class="form-textarea" id="release-description">${escapeHtml(release.description || '')}</textarea>
           </div>
           <div class="form-group">
             <label class="form-checkbox-row">
-              <input type="checkbox" class="form-checkbox" id="release-active" ${
-                release.is_active ? "checked" : ""
-              } />
+              <input type="checkbox" class="form-checkbox" id="release-active" ${release.is_active ? 'checked' : ''} />
               <span class="form-checkbox-label">Active (visible in player)</span>
             </label>
           </div>
         </div>
         
         <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
-          <div class="card-title" style="margin-bottom: 8px;">Tracks in Release (${
-            releaseTracks.length
-          })</div>
-          ${
-            releaseTracks.length === 0
-              ? '<div style="color: var(--text-muted); font-size: 12px;">No tracks assigned. Edit a track and set its Release field.</div>'
-              : '<div style="display: flex; flex-direction: column; gap: 4px;">' +
-                releaseTracks
-                  .sort((a, b) => (a.track_number || 0) - (b.track_number || 0))
-                  .map(
-                    (t) =>
-                      `<div style="padding: 8px 12px; background: var(--bg-input); border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 12px;"><strong style="color: var(--text-muted); margin-right: 8px;">${
-                  t.track_number || "-"
-                }.</strong>${escapeHtml(t.title)}</span>
-                <button class="btn btn-sm btn-secondary" onclick="selectTrack('${
-                  t.id
-                }')">Edit</button>
+          <div class="card-title" style="margin-bottom: 8px;">Tracks in Release (${releaseTracks.length})</div>
+          ${releaseTracks.length === 0 ? 
+            '<div style="color: var(--text-muted); font-size: 12px;">No tracks assigned. Edit a track and set its Release field.</div>' :
+            '<div style="display: flex; flex-direction: column; gap: 4px;">' + 
+            releaseTracks.sort((a,b) => (a.track_number||0) - (b.track_number||0)).map(t => 
+              `<div style="padding: 8px 12px; background: var(--bg-input); border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px;"><strong style="color: var(--text-muted); margin-right: 8px;">${t.track_number || '-'}.</strong>${escapeHtml(t.title)}</span>
+                <button class="btn btn-sm btn-secondary" onclick="selectTrack('${t.id}')">Edit</button>
               </div>`
-                  )
-                  .join("") +
-                "</div>"
+            ).join('') + '</div>'
           }
         </div>
         
         <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
-          <button class="btn btn-danger btn-sm" onclick="deleteRelease('${
-            release.id
-          }')">Delete Release</button>
-          <button class="btn btn-secondary btn-sm" onclick="copyReleaseLink('${
-            release.id
-          }')">
+          <button class="btn btn-danger btn-sm" onclick="deleteRelease('${release.id}')">Delete Release</button>
+          <button class="btn btn-secondary btn-sm" onclick="copyReleaseLink('${release.id}')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
               <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16,6 12,2 8,6"/><line x1="12" y1="2" x2="12" y2="15"/>
             </svg>
@@ -1335,1279 +1559,1251 @@
       </div>
     </div>
   `;
+  
+  // Clear stems library when editing release
+  document.getElementById('stems-list').innerHTML = '<div class="stems-empty">Select a track to see its stems</div>';
+}
 
-        // Clear stems library when editing release
-        document.getElementById("stems-list").innerHTML =
-          '<div class="stems-empty">Select a track to see its stems</div>';
-      }
+async function saveRelease(releaseId) {
+  const updates = {
+    title: document.getElementById('release-title').value,
+    slug: document.getElementById('release-slug').value,
+    description: document.getElementById('release-description').value,
+    release_type: document.getElementById('release-type').value,
+    release_date: document.getElementById('release-date').value || null,
+    is_active: document.getElementById('release-active').checked
+  };
+  
+  const { error } = await supabase
+    .from('releases')
+    .update(updates)
+    .eq('id', releaseId);
+  
+  if (error) {
+    showToast('Error saving release: ' + error.message, 'error');
+    return;
+  }
+  
+  showToast('Release saved', 'success');
+  await loadReleases();
+  editRelease(releaseId);
+}
 
-      async function saveRelease(releaseId) {
-        const updates = {
-          title: document.getElementById("release-title").value,
-          slug: document.getElementById("release-slug").value,
-          description: document.getElementById("release-description").value,
-          release_type: document.getElementById("release-type").value,
-          release_date: document.getElementById("release-date").value || null,
-          is_active: document.getElementById("release-active").checked,
-        };
+async function uploadReleaseCover(file, releaseId) {
+  if (!file) return;
+  
+  const release = allReleases.find(r => r.id === releaseId);
+  if (!release) return;
+  
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    showToast('Please select an image file', 'error');
+    return;
+  }
+  
+  // Validate file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('Image must be under 5MB', 'error');
+    return;
+  }
+  
+  showToast('Uploading cover...', '');
+  
+  const fileExt = file.name.split('.').pop().toLowerCase();
+  const fileName = `${release.slug}-cover.${fileExt}`;
+  const storagePath = `covers/releases/${fileName}`;
+  
+  // Upload to Supabase Storage
+  const { error: uploadError } = await supabase.storage
+    .from('audio')
+    .upload(storagePath, file, { 
+      cacheControl: '3600',
+      upsert: true 
+    });
+  
+  if (uploadError) {
+    showToast('Upload failed: ' + uploadError.message, 'error');
+    return;
+  }
+  
+  // Get public URL
+  const coverUrl = `${supabaseUrl}/storage/v1/object/public/audio/${storagePath}?v=${Date.now()}`;
+  
+  // Update release in database
+  const { error: updateError } = await supabase
+    .from('releases')
+    .update({ cover_image_url: coverUrl })
+    .eq('id', releaseId);
+  
+  if (updateError) {
+    showToast('Failed to save cover URL: ' + updateError.message, 'error');
+    return;
+  }
+  
+  // Update local data
+  release.cover_image_url = coverUrl;
+  showToast('Cover uploaded!', 'success');
+  editRelease(releaseId);
+}
 
-        const { error } = await supabase
-          .from("releases")
-          .update(updates)
-          .eq("id", releaseId);
+async function removeReleaseCover(releaseId) {
+  const { error } = await supabase
+    .from('releases')
+    .update({ cover_image_url: null })
+    .eq('id', releaseId);
+  
+  if (error) {
+    showToast('Failed to remove cover: ' + error.message, 'error');
+    return;
+  }
+  
+  const release = allReleases.find(r => r.id === releaseId);
+  if (release) release.cover_image_url = null;
+  
+  showToast('Cover removed', 'success');
+  editRelease(releaseId);
+}
 
-        if (error) {
-          showToast("Error saving release: " + error.message, "error");
-          return;
-        }
+async function deleteRelease(releaseId) {
+  if (!confirm('Delete this release? Tracks will be kept but unassigned.')) return;
+  
+  const { error } = await supabase
+    .from('releases')
+    .delete()
+    .eq('id', releaseId);
+  
+  if (error) {
+    showToast('Error deleting release: ' + error.message, 'error');
+    return;
+  }
+  
+  showToast('Release deleted', 'success');
+  document.getElementById('editor-panel').innerHTML = '<div class="editor-empty">Select a track to begin editing</div>';
+  await loadReleases();
+  await loadTracks();
+}
 
-        showToast("Release saved", "success");
-        await loadReleases();
-        editRelease(releaseId);
-      }
+function copyReleaseLink(releaseId) {
+  const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'living-piece-playlist.html');
+  const shareUrl = `${baseUrl}?release=${releaseId}`;
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    showToast('Release link copied!', 'success');
+  });
+}
 
-      async function uploadReleaseCover(file, releaseId) {
-        if (!file) return;
+// ============================================
+// TRACKS CRUD
+// ============================================
+async function loadTracks() {
+  const { data, error } = await supabase
+    .from('tracks')
+    .select('*')
+    .order('title');
+  
+  if (error) {
+    showToast('Error loading tracks: ' + error.message, 'error');
+    return;
+  }
+  
+  allTracks = data || [];
+  renderTracksList();
+}
 
-        const release = allReleases.find((r) => r.id === releaseId);
-        if (!release) return;
-
-        // Validate file type
-        if (!file.type.startsWith("image/")) {
-          showToast("Please select an image file", "error");
-          return;
-        }
-
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          showToast("Image must be under 5MB", "error");
-          return;
-        }
-
-        showToast("Uploading cover...", "");
-
-        const fileExt = file.name.split(".").pop().toLowerCase();
-        const fileName = `${release.slug}-cover.${fileExt}`;
-        const storagePath = `covers/releases/${fileName}`;
-
-        // Upload to Supabase Storage
-        const { error: uploadError } = await supabase.storage
-          .from("audio")
-          .upload(storagePath, file, {
-            cacheControl: "3600",
-            upsert: true,
-          });
-
-        if (uploadError) {
-          showToast("Upload failed: " + uploadError.message, "error");
-          return;
-        }
-
-        // Get public URL
-        const coverUrl = `${supabaseUrl}/storage/v1/object/public/audio/${storagePath}?v=${Date.now()}`;
-
-        // Update release in database
-        const { error: updateError } = await supabase
-          .from("releases")
-          .update({ cover_image_url: coverUrl })
-          .eq("id", releaseId);
-
-        if (updateError) {
-          showToast(
-            "Failed to save cover URL: " + updateError.message,
-            "error"
-          );
-          return;
-        }
-
-        // Update local data
-        release.cover_image_url = coverUrl;
-        showToast("Cover uploaded!", "success");
-        editRelease(releaseId);
-      }
-
-      async function removeReleaseCover(releaseId) {
-        const { error } = await supabase
-          .from("releases")
-          .update({ cover_image_url: null })
-          .eq("id", releaseId);
-
-        if (error) {
-          showToast("Failed to remove cover: " + error.message, "error");
-          return;
-        }
-
-        const release = allReleases.find((r) => r.id === releaseId);
-        if (release) release.cover_image_url = null;
-
-        showToast("Cover removed", "success");
-        editRelease(releaseId);
-      }
-
-      async function deleteRelease(releaseId) {
-        if (
-          !confirm("Delete this release? Tracks will be kept but unassigned.")
-        )
-          return;
-
-        const { error } = await supabase
-          .from("releases")
-          .delete()
-          .eq("id", releaseId);
-
-        if (error) {
-          showToast("Error deleting release: " + error.message, "error");
-          return;
-        }
-
-        showToast("Release deleted", "success");
-        document.getElementById("editor-panel").innerHTML =
-          '<div class="editor-empty">Select a track to begin editing</div>';
-        await loadReleases();
-        await loadTracks();
-      }
-
-      function copyReleaseLink(releaseId) {
-        const baseUrl =
-          window.location.origin +
-          window.location.pathname.replace(
-            "admin.html",
-            "living-piece-playlist.html"
-          );
-        const shareUrl = `${baseUrl}?release=${releaseId}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          showToast("Release link copied!", "success");
-        });
-      }
-
-      // ============================================
-      // TRACKS CRUD
-      // ============================================
-      async function loadTracks() {
-        const { data, error } = await supabase
-          .from("tracks")
-          .select("*")
-          .order("title");
-
-        if (error) {
-          showToast("Error loading tracks: " + error.message, "error");
-          return;
-        }
-
-        allTracks = data || [];
-        renderTracksList();
-      }
-
-      function renderTracksList() {
-        const container = document.getElementById("tracks-list");
-
-        if (allTracks.length === 0) {
-          container.innerHTML =
-            '<div style="padding: 16px; color: var(--text-muted); font-size: 12px;">No tracks yet. Create one to get started.</div>';
-          return;
-        }
-
-        container.innerHTML = allTracks
-          .map((track) => {
-            const release = allReleases.find((r) => r.id === track.release_id);
-            const metaText = release ? escapeHtml(release.title) : track.slug;
-            return `
-      <div class="track-item ${currentTrack?.id === track.id ? "active" : ""} ${
-              !track.is_active ? "track-item-inactive" : ""
-            }" 
+function renderTracksList() {
+  const container = document.getElementById('tracks-list');
+  
+  if (allTracks.length === 0) {
+    container.innerHTML = '<div style="padding: 16px; color: var(--text-muted); font-size: 12px;">No tracks yet. Create one to get started.</div>';
+    return;
+  }
+  
+  container.innerHTML = allTracks.map(track => {
+    const release = allReleases.find(r => r.id === track.release_id);
+    const metaText = release ? escapeHtml(release.title) : track.slug;
+    return `
+      <div class="track-item ${currentTrack?.id === track.id ? 'active' : ''} ${!track.is_active ? 'track-item-inactive' : ''}" 
            data-track-id="${track.id}">
         <div class="track-item-title">${escapeHtml(track.title)}</div>
-        <div class="track-item-meta">${metaText}${
-              !track.is_active ? " · Inactive" : ""
-            }</div>
+        <div class="track-item-meta">${metaText}${!track.is_active ? ' · Inactive' : ''}</div>
       </div>
     `;
-          })
-          .join("");
+  }).join('');
+  
+  container.querySelectorAll('.track-item').forEach(item => {
+    item.addEventListener('click', () => selectTrack(item.dataset.trackId));
+  });
+}
 
-        container.querySelectorAll(".track-item").forEach((item) => {
-          item.addEventListener("click", () =>
-            selectTrack(item.dataset.trackId)
-          );
-        });
-      }
+async function selectTrack(trackId) {
+  const track = allTracks.find(t => t.id === trackId);
+  if (!track) return;
+  
+  currentTrack = track;
+  renderTracksList();
+  
+  // Update Listening tab link to open this track
+  updateListeningLink();
+  
+  // Reset accordion state for new track
+  openAccordions.clear();
+  
+  await Promise.all([
+    loadModes(trackId),
+    loadStemGroups(trackId),
+    loadStemLibrary(track.slug)
+  ]);
+  
+  renderEditor();
+}
 
-      async function selectTrack(trackId) {
-        const track = allTracks.find((t) => t.id === trackId);
-        if (!track) return;
+function updateListeningLink() {
+  const navLink = document.getElementById('nav-listening');
+  if (navLink) {
+    if (currentTrack) {
+      navLink.href = `living-piece-player.html?track=${currentTrack.id}&from=admin`;
+    } else {
+      navLink.href = 'living-piece-player.html';
+    }
+  }
+}
 
-        currentTrack = track;
-        renderTracksList();
+async function createNewTrack() {
+  const title = prompt('Enter track title:');
+  if (!title) return;
+  
+  const slug = generateSlug(title);
+  
+  const { data, error } = await supabase
+    .from('tracks')
+    .insert({
+      title: title,
+      slug: slug,
+      description: '',
+      is_active: true
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    showToast('Error creating track: ' + error.message, 'error');
+    return;
+  }
+  
+  showToast('Track created', 'success');
+  await loadTracks();
+  selectTrack(data.id);
+}
 
-        // Update Listening tab link to open this track
-        updateListeningLink();
+async function saveTrackSettings() {
+  if (!currentTrack) return;
+  
+  const releaseId = document.getElementById('track-release').value || null;
+  
+  const updates = {
+    title: document.getElementById('track-title').value,
+    slug: document.getElementById('track-slug').value,
+    description: document.getElementById('track-description').value,
+    bpm: parseInt(document.getElementById('track-bpm').value) || null,
+    base_key: document.getElementById('track-key').value || null,
+    length_seconds: parseInt(document.getElementById('track-length').value) || null,
+    is_active: document.getElementById('track-active').checked,
+    release_id: releaseId,
+    track_number: parseInt(document.getElementById('track-number').value) || 1
+  };
+  
+  const { error } = await supabase
+    .from('tracks')
+    .update(updates)
+    .eq('id', currentTrack.id);
+  
+  if (error) {
+    showToast('Error saving track: ' + error.message, 'error');
+    return;
+  }
+  
+  Object.assign(currentTrack, updates);
+  showToast('Track settings saved', 'success');
+  await loadTracks();
+}
 
-        // Reset accordion state for new track
-        openAccordions.clear();
+async function uploadTrackCover(file) {
+  if (!file || !currentTrack) return;
+  
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    showToast('Please select an image file', 'error');
+    return;
+  }
+  
+  // Validate file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('Image must be under 5MB', 'error');
+    return;
+  }
+  
+  showToast('Uploading cover...', '');
+  
+  const fileExt = file.name.split('.').pop().toLowerCase();
+  const fileName = `${currentTrack.slug}-cover.${fileExt}`;
+  const storagePath = `covers/tracks/${fileName}`;
+  
+  // Upload to Supabase Storage
+  const { error: uploadError } = await supabase.storage
+    .from('audio')
+    .upload(storagePath, file, { 
+      cacheControl: '3600',
+      upsert: true 
+    });
+  
+  if (uploadError) {
+    showToast('Upload failed: ' + uploadError.message, 'error');
+    return;
+  }
+  
+  // Get public URL
+  const coverUrl = `${supabaseUrl}/storage/v1/object/public/audio/${storagePath}?v=${Date.now()}`;
+  
+  // Update track in database
+  const { error: updateError } = await supabase
+    .from('tracks')
+    .update({ cover_image_url: coverUrl })
+    .eq('id', currentTrack.id);
+  
+  if (updateError) {
+    showToast('Failed to save cover URL: ' + updateError.message, 'error');
+    return;
+  }
+  
+  currentTrack.cover_image_url = coverUrl;
+  showToast('Cover uploaded!', 'success');
+  renderEditor();
+}
 
-        await Promise.all([
-          loadModes(trackId),
-          loadStemGroups(trackId),
-          loadStemLibrary(track.slug),
-        ]);
+async function removeTrackCover() {
+  if (!currentTrack) return;
+  
+  const { error } = await supabase
+    .from('tracks')
+    .update({ cover_image_url: null })
+    .eq('id', currentTrack.id);
+  
+  if (error) {
+    showToast('Failed to remove cover: ' + error.message, 'error');
+    return;
+  }
+  
+  currentTrack.cover_image_url = null;
+  showToast('Cover removed', 'success');
+  renderEditor();
+}
 
-        renderEditor();
-      }
+async function deleteTrack() {
+  if (!currentTrack) return;
+  if (!confirm(`Are you sure you want to delete "${currentTrack.title}"? This will remove all modes, stem groups, and takes.`)) return;
+  
+  const { error } = await supabase
+    .from('tracks')
+    .delete()
+    .eq('id', currentTrack.id);
+  
+  if (error) {
+    showToast('Error deleting track: ' + error.message, 'error');
+    return;
+  }
+  
+  showToast('Track deleted', 'success');
+  currentTrack = null;
+  document.getElementById('editor-panel').innerHTML = '<div class="editor-empty">Select a track to begin editing</div>';
+  document.getElementById('stems-list').innerHTML = '<div class="stems-empty">Select a track to see its stems</div>';
+  await loadTracks();
+}
 
-      function updateListeningLink() {
-        const navLink = document.getElementById("nav-listening");
-        if (navLink) {
-          if (currentTrack) {
-            navLink.href = `living-piece-player.html?track=${currentTrack.id}&from=admin`;
-          } else {
-            navLink.href = "living-piece-player.html";
-          }
-        }
-      }
+// ============================================
+// MODES CRUD
+// ============================================
+async function loadModes(trackId) {
+  const { data, error } = await supabase
+    .from('modes')
+    .select('*')
+    .eq('track_id', trackId)
+    .order('sort_order');
+  
+  if (error) {
+    showToast('Error loading modes: ' + error.message, 'error');
+    return;
+  }
+  
+  currentModes = data || [];
+}
 
-      async function createNewTrack() {
-        const title = prompt("Enter track title:");
-        if (!title) return;
+async function addMode() {
+  if (!currentTrack) return;
+  
+  const { data, error } = await supabase
+    .from('modes')
+    .insert({
+      track_id: currentTrack.id,
+      label: 'New Mode',
+      slug: 'new_mode_' + Date.now(),
+      time_of_day: null,
+      weather_tag: null,
+      sort_order: currentModes.length,
+      is_primary: false
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    showToast('Error adding mode: ' + error.message, 'error');
+    return;
+  }
+  
+  currentModes.push(data);
+  renderModesTable();
+  showToast('Mode added', 'success');
+}
 
-        const slug = generateSlug(title);
+async function saveMode(modeId) {
+  const row = document.querySelector(`tr[data-mode-id="${modeId}"]`);
+  if (!row) return;
+  
+  const updates = {
+    label: row.querySelector('[data-field="label"]').value,
+    slug: row.querySelector('[data-field="slug"]').value,
+    time_of_day: normalizeSelectValue(row.querySelector('[data-field="time_of_day"]').value),
+    weather_tag: normalizeSelectValue(row.querySelector('[data-field="weather_tag"]').value),
+    sort_order: parseInt(row.querySelector('[data-field="sort_order"]').value) || 0,
+    is_primary: row.querySelector('[data-field="is_primary"]').checked
+  };
+  
+  const { error } = await supabase
+    .from('modes')
+    .update(updates)
+    .eq('id', modeId);
+  
+  if (error) {
+    showToast('Error saving mode: ' + error.message, 'error');
+    return;
+  }
+  
+  const mode = currentModes.find(m => m.id === modeId);
+  if (mode) Object.assign(mode, updates);
+  
+  showToast('Mode saved', 'success');
+}
 
-        const { data, error } = await supabase
-          .from("tracks")
-          .insert({
-            title: title,
-            slug: slug,
-            description: "",
-            is_active: true,
-          })
-          .select()
-          .single();
+async function deleteMode(modeId) {
+  if (!confirm('Delete this mode?')) return;
+  
+  const { error } = await supabase
+    .from('modes')
+    .delete()
+    .eq('id', modeId);
+  
+  if (error) {
+    showToast('Error deleting mode: ' + error.message, 'error');
+    return;
+  }
+  
+  currentModes = currentModes.filter(m => m.id !== modeId);
+  renderModesTable();
+  showToast('Mode deleted', 'success');
+}
 
-        if (error) {
-          showToast("Error creating track: " + error.message, "error");
-          return;
-        }
-
-        showToast("Track created", "success");
-        await loadTracks();
-        selectTrack(data.id);
-      }
-
-      async function saveTrackSettings() {
-        if (!currentTrack) return;
-
-        const releaseId =
-          document.getElementById("track-release").value || null;
-
-        const updates = {
-          title: document.getElementById("track-title").value,
-          slug: document.getElementById("track-slug").value,
-          description: document.getElementById("track-description").value,
-          bpm: parseInt(document.getElementById("track-bpm").value) || null,
-          base_key: document.getElementById("track-key").value || null,
-          length_seconds:
-            parseInt(document.getElementById("track-length").value) || null,
-          is_active: document.getElementById("track-active").checked,
-          release_id: releaseId,
-          track_number:
-            parseInt(document.getElementById("track-number").value) || 1,
-        };
-
-        const { error } = await supabase
-          .from("tracks")
-          .update(updates)
-          .eq("id", currentTrack.id);
-
-        if (error) {
-          showToast("Error saving track: " + error.message, "error");
-          return;
-        }
-
-        Object.assign(currentTrack, updates);
-        showToast("Track settings saved", "success");
-        await loadTracks();
-      }
-
-      async function uploadTrackCover(file) {
-        if (!file || !currentTrack) return;
-
-        // Validate file type
-        if (!file.type.startsWith("image/")) {
-          showToast("Please select an image file", "error");
-          return;
-        }
-
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          showToast("Image must be under 5MB", "error");
-          return;
-        }
-
-        showToast("Uploading cover...", "");
-
-        const fileExt = file.name.split(".").pop().toLowerCase();
-        const fileName = `${currentTrack.slug}-cover.${fileExt}`;
-        const storagePath = `covers/tracks/${fileName}`;
-
-        // Upload to Supabase Storage
-        const { error: uploadError } = await supabase.storage
-          .from("audio")
-          .upload(storagePath, file, {
-            cacheControl: "3600",
-            upsert: true,
-          });
-
-        if (uploadError) {
-          showToast("Upload failed: " + uploadError.message, "error");
-          return;
-        }
-
-        // Get public URL
-        const coverUrl = `${supabaseUrl}/storage/v1/object/public/audio/${storagePath}?v=${Date.now()}`;
-
-        // Update track in database
-        const { error: updateError } = await supabase
-          .from("tracks")
-          .update({ cover_image_url: coverUrl })
-          .eq("id", currentTrack.id);
-
-        if (updateError) {
-          showToast(
-            "Failed to save cover URL: " + updateError.message,
-            "error"
-          );
-          return;
-        }
-
-        currentTrack.cover_image_url = coverUrl;
-        showToast("Cover uploaded!", "success");
-        renderEditor();
-      }
-
-      async function removeTrackCover() {
-        if (!currentTrack) return;
-
-        const { error } = await supabase
-          .from("tracks")
-          .update({ cover_image_url: null })
-          .eq("id", currentTrack.id);
-
-        if (error) {
-          showToast("Failed to remove cover: " + error.message, "error");
-          return;
-        }
-
-        currentTrack.cover_image_url = null;
-        showToast("Cover removed", "success");
-        renderEditor();
-      }
-
-      async function deleteTrack() {
-        if (!currentTrack) return;
-        if (
-          !confirm(
-            `Are you sure you want to delete "${currentTrack.title}"? This will remove all modes, stem groups, and takes.`
-          )
-        )
-          return;
-
-        const { error } = await supabase
-          .from("tracks")
-          .delete()
-          .eq("id", currentTrack.id);
-
-        if (error) {
-          showToast("Error deleting track: " + error.message, "error");
-          return;
-        }
-
-        showToast("Track deleted", "success");
-        currentTrack = null;
-        document.getElementById("editor-panel").innerHTML =
-          '<div class="editor-empty">Select a track to begin editing</div>';
-        document.getElementById("stems-list").innerHTML =
-          '<div class="stems-empty">Select a track to see its stems</div>';
-        await loadTracks();
-      }
-
-      // ============================================
-      // MODES CRUD
-      // ============================================
-      async function loadModes(trackId) {
-        const { data, error } = await supabase
-          .from("modes")
-          .select("*")
-          .eq("track_id", trackId)
-          .order("sort_order");
-
-        if (error) {
-          showToast("Error loading modes: " + error.message, "error");
-          return;
-        }
-
-        currentModes = data || [];
-      }
-
-      async function addMode() {
-        if (!currentTrack) return;
-
-        const { data, error } = await supabase
-          .from("modes")
-          .insert({
-            track_id: currentTrack.id,
-            label: "New Mode",
-            slug: "new_mode_" + Date.now(),
-            time_of_day: null,
-            weather_tag: null,
-            sort_order: currentModes.length,
-            is_primary: false,
-          })
-          .select()
-          .single();
-
-        if (error) {
-          showToast("Error adding mode: " + error.message, "error");
-          return;
-        }
-
-        currentModes.push(data);
-        renderModesTable();
-        showToast("Mode added", "success");
-      }
-
-      async function saveMode(modeId) {
-        const row = document.querySelector(`tr[data-mode-id="${modeId}"]`);
-        if (!row) return;
-
-        const updates = {
-          label: row.querySelector('[data-field="label"]').value,
-          slug: row.querySelector('[data-field="slug"]').value,
-          time_of_day: normalizeSelectValue(
-            row.querySelector('[data-field="time_of_day"]').value
-          ),
-          weather_tag: normalizeSelectValue(
-            row.querySelector('[data-field="weather_tag"]').value
-          ),
-          sort_order:
-            parseInt(row.querySelector('[data-field="sort_order"]').value) || 0,
-          is_primary: row.querySelector('[data-field="is_primary"]').checked,
-        };
-
-        const { error } = await supabase
-          .from("modes")
-          .update(updates)
-          .eq("id", modeId);
-
-        if (error) {
-          showToast("Error saving mode: " + error.message, "error");
-          return;
-        }
-
-        const mode = currentModes.find((m) => m.id === modeId);
-        if (mode) Object.assign(mode, updates);
-
-        showToast("Mode saved", "success");
-      }
-
-      async function deleteMode(modeId) {
-        if (!confirm("Delete this mode?")) return;
-
-        const { error } = await supabase
-          .from("modes")
-          .delete()
-          .eq("id", modeId);
-
-        if (error) {
-          showToast("Error deleting mode: " + error.message, "error");
-          return;
-        }
-
-        currentModes = currentModes.filter((m) => m.id !== modeId);
-        renderModesTable();
-        showToast("Mode deleted", "success");
-      }
-
-      function renderModesTable() {
-        const container = document.getElementById("modes-table-body");
-        if (!container) return;
-
-        if (currentModes.length === 0) {
-          container.innerHTML =
-            '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">No modes yet. Add one to define time/weather variations.</td></tr>';
-          return;
-        }
-
-        container.innerHTML = currentModes
-          .map(
-            (mode) => `
+function renderModesTable() {
+  const container = document.getElementById('modes-table-body');
+  if (!container) return;
+  
+  if (currentModes.length === 0) {
+    container.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">No modes yet. Add one to define time/weather variations.</td></tr>';
+    return;
+  }
+  
+  container.innerHTML = currentModes.map(mode => `
     <tr data-mode-id="${mode.id}">
-      <td><input type="text" class="form-input" data-field="label" value="${escapeHtml(
-        mode.label || ""
-      )}" /></td>
-      <td><input type="text" class="form-input" data-field="slug" value="${escapeHtml(
-        mode.slug || ""
-      )}" /></td>
+      <td><input type="text" class="form-input" data-field="label" value="${escapeHtml(mode.label || '')}" /></td>
+      <td><input type="text" class="form-input" data-field="slug" value="${escapeHtml(mode.slug || '')}" /></td>
       <td>
         <select class="form-select" data-field="time_of_day">
-          <option value="any" ${
-            denormalizeSelectValue(mode.time_of_day) === "any" ? "selected" : ""
-          }>Any</option>
-          <option value="morning" ${
-            mode.time_of_day === "morning" ? "selected" : ""
-          }>Morning</option>
-          <option value="afternoon" ${
-            mode.time_of_day === "afternoon" ? "selected" : ""
-          }>Afternoon</option>
-          <option value="evening" ${
-            mode.time_of_day === "evening" ? "selected" : ""
-          }>Evening</option>
-          <option value="night" ${
-            mode.time_of_day === "night" ? "selected" : ""
-          }>Night</option>
+          <option value="any" ${denormalizeSelectValue(mode.time_of_day) === 'any' ? 'selected' : ''}>Any</option>
+          <option value="morning" ${mode.time_of_day === 'morning' ? 'selected' : ''}>Morning</option>
+          <option value="afternoon" ${mode.time_of_day === 'afternoon' ? 'selected' : ''}>Afternoon</option>
+          <option value="evening" ${mode.time_of_day === 'evening' ? 'selected' : ''}>Evening</option>
+          <option value="night" ${mode.time_of_day === 'night' ? 'selected' : ''}>Night</option>
         </select>
       </td>
       <td>
         <select class="form-select" data-field="weather_tag">
-          <option value="any" ${
-            denormalizeSelectValue(mode.weather_tag) === "any" ? "selected" : ""
-          }>Any</option>
-          <option value="sunny" ${
-            mode.weather_tag === "sunny" ? "selected" : ""
-          }>Sunny</option>
-          <option value="rain" ${
-            mode.weather_tag === "rain" ? "selected" : ""
-          }>Rain</option>
-          <option value="warm" ${
-            mode.weather_tag === "warm" ? "selected" : ""
-          }>Warm</option>
-          <option value="cold" ${
-            mode.weather_tag === "cold" ? "selected" : ""
-          }>Cold</option>
+          <option value="any" ${denormalizeSelectValue(mode.weather_tag) === 'any' ? 'selected' : ''}>Any</option>
+          <option value="sunny" ${mode.weather_tag === 'sunny' ? 'selected' : ''}>Sunny</option>
+          <option value="rain" ${mode.weather_tag === 'rain' ? 'selected' : ''}>Rain</option>
+          <option value="warm" ${mode.weather_tag === 'warm' ? 'selected' : ''}>Warm</option>
+          <option value="cold" ${mode.weather_tag === 'cold' ? 'selected' : ''}>Cold</option>
         </select>
       </td>
-      <td><input type="number" class="form-input" data-field="sort_order" value="${
-        mode.sort_order || 0
-      }" style="width: 50px;" /></td>
-      <td style="text-align: center;"><input type="checkbox" class="form-checkbox" data-field="is_primary" ${
-        mode.is_primary ? "checked" : ""
-      } /></td>
+      <td><input type="number" class="form-input" data-field="sort_order" value="${mode.sort_order || 0}" style="width: 50px;" /></td>
+      <td style="text-align: center;"><input type="checkbox" class="form-checkbox" data-field="is_primary" ${mode.is_primary ? 'checked' : ''} /></td>
       <td>
         <div class="table-actions">
-          <button class="btn btn-sm btn-secondary" onclick="saveMode('${
-            mode.id
-          }')">Save</button>
-          <button class="btn btn-sm btn-icon btn-danger" onclick="deleteMode('${
-            mode.id
-          }')" title="Delete">
+          <button class="btn btn-sm btn-secondary" onclick="saveMode('${mode.id}')">Save</button>
+          <button class="btn btn-sm btn-icon btn-danger" onclick="deleteMode('${mode.id}')" title="Delete">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
           </button>
         </div>
       </td>
     </tr>
-  `
-          )
-          .join("");
+  `).join('');
+}
+
+// ============================================
+// STEM GROUPS CRUD
+// ============================================
+async function loadStemGroups(trackId) {
+  const { data: groups, error: groupsError } = await supabase
+    .from('stem_groups')
+    .select('*')
+    .eq('track_id', trackId)
+    .order('display_name');
+  
+  if (groupsError) {
+    showToast('Error loading stem groups: ' + groupsError.message, 'error');
+    return;
+  }
+  
+  currentStemGroups = groups || [];
+  
+  if (currentStemGroups.length > 0) {
+    const groupIds = currentStemGroups.map(g => g.id);
+    const { data: takes, error: takesError } = await supabase
+      .from('stem_takes')
+      .select('*')
+      .in('stem_group_id', groupIds);
+    
+    if (!takesError) {
+      currentTakes = takes || [];
+    }
+  } else {
+    currentTakes = [];
+  }
+}
+
+async function addStemGroup() {
+  if (!currentTrack) return;
+  
+  const { data, error } = await supabase
+    .from('stem_groups')
+    .insert({
+      track_id: currentTrack.id,
+      role: 'new_group',
+      display_name: 'New Group',
+      category: 'secondary',
+      is_required: false,
+      can_be_surprise: false,
+      is_rhythmic: false,
+      volume_default: 1.0,
+      group_type: 'core',
+      variant_of_group_id: null,
+      snack_probability: 50,
+      snack_mute_group_id: null
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    showToast('Error adding stem group: ' + error.message, 'error');
+    return;
+  }
+  
+  currentStemGroups.push(data);
+  renderStemGroupsAccordion();
+  openStemPanel(data.id);
+  showToast('Stem group added', 'success');
+}
+
+// Old saveStemGroup and deleteStemGroup removed - now using panel versions
+
+function renderStemGroupsAccordion() {
+  const container = document.getElementById('stem-groups-accordion');
+  if (!container) return;
+  
+  if (currentStemGroups.length === 0) {
+    container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">No stem groups yet. Add one to organize your audio stems.</div>';
+    return;
+  }
+  
+  // Sort groups: core groups first, then their variants indented below
+  const coreGroups = currentStemGroups.filter(g => g.group_type !== 'variant');
+  const variantGroups = currentStemGroups.filter(g => g.group_type === 'variant');
+  
+  const getCategoryBadge = (group) => {
+    if (group.group_type === 'variant') return '<span class="badge badge-variant">Variant</span>';
+    if (group.group_type === 'snack') return '<span class="badge badge-snack">Snack</span>';
+    if (group.category === 'core') return '<span class="badge badge-core">Core</span>';
+    if (group.category === 'vox') return '<span class="badge badge-vox">Vox</span>';
+    return '<span class="badge badge-secondary">Secondary</span>';
+  };
+  
+  const getVolumePercent = (vol) => Math.round((vol || 1) * 100);
+  
+  const renderRow = (group, isVariant = false) => {
+    const groupTakes = currentTakes.filter(t => t.stem_group_id === group.id);
+    const rhythmicIcon = group.is_rhythmic ? '<svg class="rhythmic-icon" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>' : '';
+    
+    // Snack specific info
+    let snackInfo = '';
+    if (group.group_type === 'snack') {
+      const prob = group.snack_probability || 50;
+      snackInfo = `<span class="stem-snack-info">${prob}%</span>`;
+      if (group.snack_mute_group_id) {
+        const mutedGroup = currentStemGroups.find(g => g.id === group.snack_mute_group_id);
+        if (mutedGroup) {
+          snackInfo += `<span class="stem-mute-arrow">→ mutes ${escapeHtml(mutedGroup.display_name || mutedGroup.role)}</span>`;
+        }
       }
-
-      // ============================================
-      // STEM GROUPS CRUD
-      // ============================================
-      async function loadStemGroups(trackId) {
-        const { data: groups, error: groupsError } = await supabase
-          .from("stem_groups")
-          .select("*")
-          .eq("track_id", trackId)
-          .order("display_name");
-
-        if (groupsError) {
-          showToast(
-            "Error loading stem groups: " + groupsError.message,
-            "error"
-          );
-          return;
-        }
-
-        currentStemGroups = groups || [];
-
-        if (currentStemGroups.length > 0) {
-          const groupIds = currentStemGroups.map((g) => g.id);
-          const { data: takes, error: takesError } = await supabase
-            .from("stem_takes")
-            .select("*")
-            .in("stem_group_id", groupIds);
-
-          if (!takesError) {
-            currentTakes = takes || [];
-          }
-        } else {
-          currentTakes = [];
-        }
+    }
+    
+    // Variant info
+    let variantInfo = '';
+    if (isVariant && group.variant_of_group_id) {
+      const parentGroup = currentStemGroups.find(g => g.id === group.variant_of_group_id);
+      if (parentGroup) {
+        variantInfo = `<span style="font-size: 10px; color: var(--text-muted);">of ${escapeHtml(parentGroup.display_name || parentGroup.role)}</span>`;
       }
-
-      async function addStemGroup() {
-        if (!currentTrack) return;
-
-        const { data, error } = await supabase
-          .from("stem_groups")
-          .insert({
-            track_id: currentTrack.id,
-            role: "new_group",
-            display_name: "New Group",
-            category: "secondary",
-            is_required: false,
-            can_be_surprise: false,
-            is_rhythmic: false,
-            volume_default: 1.0,
-          })
-          .select()
-          .single();
-
-        if (error) {
-          showToast("Error adding stem group: " + error.message, "error");
-          return;
-        }
-
-        currentStemGroups.push(data);
-        renderStemGroupsAccordion();
-        showToast("Stem group added", "success");
-      }
-
-      async function saveStemGroup(groupId) {
-        const accordion = document.querySelector(
-          `.accordion-item[data-group-id="${groupId}"]`
-        );
-        if (!accordion) return;
-
-        const updates = {
-          role: accordion.querySelector('[data-field="role"]').value,
-          display_name: accordion.querySelector('[data-field="display_name"]')
-            .value,
-          category: accordion.querySelector('[data-field="category"]').value,
-          volume_default:
-            parseFloat(
-              accordion.querySelector('[data-field="volume_default"]').value
-            ) || 1.0,
-          is_required: accordion.querySelector('[data-field="is_required"]')
-            .checked,
-          can_be_surprise: accordion.querySelector(
-            '[data-field="can_be_surprise"]'
-          ).checked,
-          is_rhythmic: accordion.querySelector('[data-field="is_rhythmic"]')
-            .checked,
-        };
-
-        const { error } = await supabase
-          .from("stem_groups")
-          .update(updates)
-          .eq("id", groupId);
-
-        if (error) {
-          showToast("Error saving stem group: " + error.message, "error");
-          return;
-        }
-
-        const group = currentStemGroups.find((g) => g.id === groupId);
-        if (group) Object.assign(group, updates);
-
-        // Update just the header display without re-rendering
-        const nameEl = accordion.querySelector(".accordion-name");
-        if (nameEl) nameEl.textContent = updates.display_name || updates.role;
-
-        const badgeEl = accordion.querySelector(".badge");
-        if (badgeEl) {
-          const catClass =
-            updates.category === "core"
-              ? "badge-core"
-              : updates.category === "vox"
-              ? "badge-vox"
-              : updates.category === "snack"
-              ? "badge-snack"
-              : "badge-secondary";
-          badgeEl.className = "badge " + catClass;
-          badgeEl.textContent = updates.category || "secondary";
-        }
-
-        showToast("Stem group saved", "success");
-      }
-
-      async function deleteStemGroup(groupId) {
-        if (!confirm("Delete this stem group and all its takes?")) return;
-
-        const { error } = await supabase
-          .from("stem_groups")
-          .delete()
-          .eq("id", groupId);
-
-        if (error) {
-          showToast("Error deleting stem group: " + error.message, "error");
-          return;
-        }
-
-        currentStemGroups = currentStemGroups.filter((g) => g.id !== groupId);
-        currentTakes = currentTakes.filter((t) => t.stem_group_id !== groupId);
-        renderStemGroupsAccordion();
-        showToast("Stem group deleted", "success");
-      }
-
-      function renderStemGroupsAccordion() {
-        const container = document.getElementById("stem-groups-accordion");
-        if (!container) return;
-
-        if (currentStemGroups.length === 0) {
-          container.innerHTML =
-            '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">No stem groups yet. Add one to organize your audio stems.</div>';
-          openAccordions.clear();
-          return;
-        }
-
-        // If no accordions are tracked as open yet, open the first one by default
-        const hasOpenState = currentStemGroups.some((g) =>
-          openAccordions.has(g.id)
-        );
-        if (!hasOpenState && currentStemGroups.length > 0) {
-          openAccordions.add(currentStemGroups[0].id);
-        }
-
-        const getCategoryClass = (cat) => {
-          if (cat === "core") return "badge-core";
-          if (cat === "vox") return "badge-vox";
-          if (cat === "snack") return "badge-snack";
-          return "badge-secondary";
-        };
-
-        container.innerHTML = currentStemGroups
-          .map((group) => {
-            const groupTakes = currentTakes.filter(
-              (t) => t.stem_group_id === group.id
-            );
-            const categoryClass = getCategoryClass(group.category);
-            const isOpen = openAccordions.has(group.id);
-
-            return `
-      <div class="accordion-item ${isOpen ? "open" : ""}" data-group-id="${
-              group.id
-            }">
-        <div class="accordion-header" onclick="toggleAccordion('${group.id}')">
-          <div class="accordion-title">
-            <span class="accordion-name">${escapeHtml(
-              group.display_name || group.role
-            )}</span>
-            <div class="accordion-meta">
-              <span class="badge ${categoryClass}">${
-              group.category || "secondary"
-            }</span>
-              <span class="takes-count">${groupTakes.length} take${
-              groupTakes.length !== 1 ? "s" : ""
-            }</span>
-            </div>
-          </div>
-          <svg class="accordion-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="6,9 12,15 18,9"/>
-          </svg>
+    }
+    
+    return `
+      <div class="stem-row ${isVariant ? 'variant' : ''}" data-group-id="${group.id}" onclick="openStemPanel('${group.id}')">
+        <span class="stem-name">${escapeHtml(group.display_name || group.role)}</span>
+        <div class="stem-badges">
+          ${getCategoryBadge(group)}
+          ${variantInfo}
+          ${rhythmicIcon}
         </div>
-        <div class="accordion-body">
-          <div class="accordion-section">
-            <div class="accordion-section-title">Group Settings</div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label">Role</label>
-                <input type="text" class="form-input" data-field="role" value="${escapeHtml(
-                  group.role || ""
-                )}" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Display Name</label>
-                <input type="text" class="form-input" data-field="display_name" value="${escapeHtml(
-                  group.display_name || ""
-                )}" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Category</label>
-                <select class="form-select" data-field="category">
-                  <option value="core" ${
-                    group.category === "core" ? "selected" : ""
-                  }>Core</option>
-                  <option value="vox" ${
-                    group.category === "vox" ? "selected" : ""
-                  }>Vox (Vocals)</option>
-                  <option value="secondary" ${
-                    group.category === "secondary" ? "selected" : ""
-                  }>Secondary</option>
-                  <option value="snack" ${
-                    group.category === "snack" ? "selected" : ""
-                  }>Snack</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Volume</label>
-                <input type="number" class="form-input" data-field="volume_default" value="${
-                  group.volume_default || 1
-                }" step="0.1" min="0" max="2" />
-              </div>
-            </div>
-            <div style="display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap;">
-              <label class="form-checkbox-row">
-                <input type="checkbox" class="form-checkbox" data-field="is_required" ${
-                  group.is_required ? "checked" : ""
-                } />
-                <span class="form-checkbox-label">Required</span>
-              </label>
-              <label class="form-checkbox-row">
-                <input type="checkbox" class="form-checkbox" data-field="can_be_surprise" ${
-                  group.can_be_surprise ? "checked" : ""
-                } />
-                <span class="form-checkbox-label">Can be surprise</span>
-              </label>
-              <label class="form-checkbox-row">
-                <input type="checkbox" class="form-checkbox" data-field="is_rhythmic" ${
-                  group.is_rhythmic ? "checked" : ""
-                } />
-                <span class="form-checkbox-label">Is rhythmic</span>
-              </label>
-            </div>
-            <div style="margin-top: 16px; display: flex; gap: 8px;">
-              <button class="btn btn-primary btn-sm" onclick="saveStemGroup('${
-                group.id
-              }')">Save Group</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteStemGroup('${
-                group.id
-              }')">Delete Group</button>
-            </div>
-          </div>
-          
-          <div class="accordion-section" style="margin-top: 20px;">
-            <div class="accordion-section-title">Takes</div>
-            <div class="accordion-section-helper">Each take is one audio file. Weight controls how often it's chosen. Default is used in fixed playback.</div>
-            <div class="table-wrapper" style="margin: 0;">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>File</th>
-                    <th>Mode</th>
-                    <th>Weight</th>
-                    <th>Default</th>
-                    <th>Enabled</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody id="takes-body-${group.id}">
-                  ${renderTakesRows(groupTakes, group.id)}
-                </tbody>
-              </table>
-            </div>
-            <button class="btn btn-secondary btn-sm" style="margin-top: 12px;" onclick="addTake('${
-              group.id
-            }')">+ Add Take</button>
-          </div>
+        <div class="stem-meta">
+          ${snackInfo}
+          <span class="stem-takes">${groupTakes.length} take${groupTakes.length !== 1 ? 's' : ''}</span>
+          <span class="stem-volume">${getVolumePercent(group.volume_default)}%</span>
         </div>
       </div>
     `;
-          })
-          .join("");
-      }
+  };
+  
+  // Build HTML: core groups with their variants nested below
+  let html = '<div class="stem-list">';
+  
+  for (const group of coreGroups) {
+    html += renderRow(group, false);
+    
+    // Add variants of this group
+    const groupVariants = variantGroups.filter(v => v.variant_of_group_id === group.id);
+    for (const variant of groupVariants) {
+      html += renderRow(variant, true);
+    }
+  }
+  
+  // Add orphan variants (variants without a parent in current list)
+  const orphanVariants = variantGroups.filter(v => !coreGroups.some(g => g.id === v.variant_of_group_id));
+  for (const variant of orphanVariants) {
+    html += renderRow(variant, true);
+  }
+  
+  html += '</div>';
+  container.innerHTML = html;
+}
 
-      function renderTakesRows(takes, groupId) {
-        if (takes.length === 0) {
-          return '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 16px;">No takes yet. Add one or upload files from Stems Library.</td></tr>';
-        }
+// Currently editing group
+let editingGroupId = null;
 
-        return takes
-          .map((take) => {
-            const fileName = take.audio_url
-              ? take.audio_url.split("/").pop().split("?")[0]
-              : "";
+function openStemPanel(groupId) {
+  const group = currentStemGroups.find(g => g.id === groupId);
+  if (!group) return;
+  
+  editingGroupId = groupId;
+  
+  // Mark row as active
+  document.querySelectorAll('.stem-row').forEach(r => r.classList.remove('active'));
+  document.querySelector(`.stem-row[data-group-id="${groupId}"]`)?.classList.add('active');
+  
+  const groupTakes = currentTakes.filter(t => t.stem_group_id === groupId);
+  const volumePercent = Math.round((group.volume_default || 1) * 100);
+  
+  // Get other groups for variant/snack dropdowns (exclude self)
+  const otherGroups = currentStemGroups.filter(g => g.id !== groupId && g.group_type !== 'variant');
+  
+  document.getElementById('stem-panel-title').textContent = group.display_name || group.role || 'Edit Stem Group';
+  
+  document.getElementById('stem-panel-body').innerHTML = `
+    <!-- Basic Settings -->
+    <div class="panel-section">
+      <div class="panel-section-title">Basic Settings</div>
+      <div class="panel-row">
+        <div class="panel-field">
+          <div class="panel-field-label">Role (internal)</div>
+          <input type="text" class="form-input" id="panel-role" value="${escapeHtml(group.role || '')}" />
+        </div>
+        <div class="panel-field">
+          <div class="panel-field-label">Display Name</div>
+          <input type="text" class="form-input" id="panel-display-name" value="${escapeHtml(group.display_name || '')}" />
+        </div>
+      </div>
+      <div class="panel-row">
+        <div class="panel-field">
+          <div class="panel-field-label">Category</div>
+          <select class="form-select" id="panel-category">
+            <option value="core" ${group.category === 'core' ? 'selected' : ''}>Core</option>
+            <option value="vox" ${group.category === 'vox' ? 'selected' : ''}>Vox (Vocals)</option>
+            <option value="secondary" ${group.category === 'secondary' ? 'selected' : ''}>Secondary</option>
+          </select>
+        </div>
+        <div class="panel-field">
+          <div class="panel-field-label">Volume</div>
+          <div class="volume-slider-container">
+            <input type="range" class="volume-slider" id="panel-volume" min="0" max="100" value="${volumePercent}" oninput="document.getElementById('panel-volume-value').textContent = this.value + '%'" />
+            <span class="volume-value" id="panel-volume-value">${volumePercent}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="tags-row" style="margin-top: 12px;">
+        <label class="form-checkbox-row">
+          <input type="checkbox" class="form-checkbox" id="panel-is-required" ${group.is_required ? 'checked' : ''} />
+          <span class="form-checkbox-label">Required</span>
+        </label>
+        <label class="form-checkbox-row">
+          <input type="checkbox" class="form-checkbox" id="panel-is-rhythmic" ${group.is_rhythmic ? 'checked' : ''} />
+          <span class="form-checkbox-label">Rhythmic / Intense</span>
+        </label>
+      </div>
+    </div>
+    
+    <!-- Takes -->
+    <div class="panel-section">
+      <div class="panel-section-title">Takes (${groupTakes.length})</div>
+      <table class="takes-mini-table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Mode</th>
+            <th style="width: 50px;">Wt</th>
+            <th style="width: 40px;">Def</th>
+            <th style="width: 40px;">On</th>
+            <th style="width: 30px;"></th>
+          </tr>
+        </thead>
+        <tbody id="panel-takes-body">
+          ${renderPanelTakesRows(groupTakes, groupId)}
+        </tbody>
+      </table>
+      <button class="btn btn-secondary btn-sm" style="margin-top: 10px;" onclick="addTake('${groupId}'); openStemPanel('${groupId}');">+ Add Take</button>
+    </div>
+    
+    <!-- Advanced Settings -->
+    <div class="panel-section">
+      <button class="advanced-toggle" onclick="toggleAdvancedPanel(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+        Advanced Settings
+      </button>
+      <div class="advanced-content" id="panel-advanced">
+        <div class="panel-field" style="margin-bottom: 12px;">
+          <div class="panel-field-label">Group Type</div>
+          <select class="form-select" id="panel-group-type" onchange="updateGroupTypeFields()">
+            <option value="core" ${(group.group_type || 'core') === 'core' ? 'selected' : ''}>Core (normal layer)</option>
+            <option value="variant" ${group.group_type === 'variant' ? 'selected' : ''}>Variant (alternative to another group)</option>
+            <option value="snack" ${group.group_type === 'snack' ? 'selected' : ''}>Snack (occasional extra layer)</option>
+          </select>
+        </div>
+        
+        <!-- Variant Options -->
+        <div class="conditional-field ${group.group_type === 'variant' ? 'visible' : ''}" id="variant-options">
+          <div class="conditional-field-title">Variant Settings</div>
+          <div class="panel-field">
+            <div class="panel-field-label">This is a variant of:</div>
+            <select class="form-select" id="panel-variant-of">
+              <option value="">Select parent group...</option>
+              ${otherGroups.map(g => `<option value="${g.id}" ${group.variant_of_group_id === g.id ? 'selected' : ''}>${escapeHtml(g.display_name || g.role)}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        
+        <!-- Snack Options -->
+        <div class="conditional-field ${group.group_type === 'snack' ? 'visible' : ''}" id="snack-options">
+          <div class="conditional-field-title">Snack Settings</div>
+          <div class="panel-field" style="margin-bottom: 12px;">
+            <div class="panel-field-label">Chance to appear</div>
+            <div class="volume-slider-container">
+              <input type="range" class="volume-slider" id="panel-snack-probability" min="0" max="100" value="${group.snack_probability || 50}" oninput="document.getElementById('panel-snack-prob-value').textContent = this.value + '%'" />
+              <span class="volume-value" id="panel-snack-prob-value">${group.snack_probability || 50}%</span>
+            </div>
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">When active, mute this group:</div>
+            <select class="form-select" id="panel-snack-mute">
+              <option value="">None (no muting)</option>
+              ${otherGroups.map(g => `<option value="${g.id}" ${group.snack_mute_group_id === g.id ? 'selected' : ''}>${escapeHtml(g.display_name || g.role)}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        
+        <div class="tags-row" style="margin-top: 12px;">
+          <label class="form-checkbox-row">
+            <input type="checkbox" class="form-checkbox" id="panel-can-surprise" ${group.can_be_surprise ? 'checked' : ''} />
+            <span class="form-checkbox-label">Can be surprise (legacy)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Open panel
+  document.getElementById('stem-panel-overlay').classList.add('open');
+  document.getElementById('stem-panel').classList.add('open');
+}
 
-            return `
+function renderPanelTakesRows(takes, groupId) {
+  if (takes.length === 0) {
+    return '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 12px; font-size: 11px;">No takes yet</td></tr>';
+  }
+  
+  return takes.map(take => {
+    const fileName = take.audio_url ? decodeURIComponent(take.audio_url.split('/').pop().split('?')[0]) : '';
+    
+    return `
       <tr data-take-id="${take.id}">
         <td>
-          <select class="form-select" data-field="audio_url" style="max-width: 140px;">
-            <option value="">Select file...</option>
-            ${stemLibrary
-              .map(
-                (f) =>
-                  `<option value="${f.url}" ${
-                    take.audio_url === f.url ? "selected" : ""
-                  }>${escapeHtml(f.name)}</option>`
-              )
-              .join("")}
+          <select class="form-select" data-field="audio_url" style="max-width: 120px; font-size: 11px;">
+            <option value="">Select...</option>
+            ${stemLibrary.map(f => `<option value="${f.url}" ${take.audio_url === f.url ? 'selected' : ''}>${escapeHtml(f.name)}</option>`).join('')}
           </select>
         </td>
         <td>
-          <select class="form-select" data-field="mode_id" style="max-width: 100px;">
+          <select class="form-select" data-field="mode_id" style="max-width: 70px; font-size: 11px;">
             <option value="">Any</option>
-            ${currentModes
-              .map(
-                (m) =>
-                  `<option value="${m.id}" ${
-                    take.mode_id === m.id ? "selected" : ""
-                  }>${escapeHtml(m.label)}</option>`
-              )
-              .join("")}
+            ${currentModes.map(m => `<option value="${m.id}" ${take.mode_id === m.id ? 'selected' : ''}>${escapeHtml(m.label)}</option>`).join('')}
           </select>
         </td>
-        <td><input type="number" class="form-input" data-field="weight" value="${
-          take.weight || 1
-        }" style="width: 50px;" /></td>
-        <td style="text-align: center;"><input type="checkbox" class="form-checkbox" data-field="is_default" ${
-          take.is_default ? "checked" : ""
-        } /></td>
-        <td style="text-align: center;"><input type="checkbox" class="form-checkbox" data-field="is_enabled" ${
-          take.is_enabled !== false ? "checked" : ""
-        } /></td>
+        <td><input type="number" class="form-input" data-field="weight" value="${take.weight || 1}" style="width: 40px; font-size: 11px;" /></td>
+        <td style="text-align: center;"><input type="checkbox" class="form-checkbox" data-field="is_default" ${take.is_default ? 'checked' : ''} /></td>
+        <td style="text-align: center;"><input type="checkbox" class="form-checkbox" data-field="is_enabled" ${take.is_enabled !== false ? 'checked' : ''} /></td>
         <td>
-          <div class="table-actions">
-            <button class="btn btn-sm btn-secondary" onclick="saveTake('${
-              take.id
-            }')">Save</button>
-            <button class="btn btn-sm btn-icon btn-danger" onclick="deleteTake('${
-              take.id
-            }', '${groupId}')" title="Delete">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
-            </button>
-          </div>
+          <button class="btn btn-sm btn-icon btn-danger" onclick="deleteTakeAndRefresh('${take.id}', '${groupId}')" title="Delete" style="padding: 2px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
         </td>
       </tr>
     `;
-          })
-          .join("");
-      }
+  }).join('');
+}
 
-      function toggleAccordion(groupId) {
-        const item = document.querySelector(
-          `.accordion-item[data-group-id="${groupId}"]`
-        );
-        if (item) {
-          const isOpen = item.classList.toggle("open");
-          // Track state
-          if (isOpen) {
-            openAccordions.add(groupId);
-          } else {
-            openAccordions.delete(groupId);
-          }
-        }
-      }
+function toggleAdvancedPanel(btn) {
+  btn.classList.toggle('open');
+  document.getElementById('panel-advanced').classList.toggle('open');
+}
 
-      // ============================================
-      // TAKES CRUD
-      // ============================================
-      async function addTake(groupId) {
-        const { data, error } = await supabase
-          .from("stem_takes")
-          .insert({
-            stem_group_id: groupId,
-            audio_url: "",
-            mode_id: null,
-            weight: 1,
-            is_default: false,
-            is_enabled: true,
-          })
-          .select()
-          .single();
+function updateGroupTypeFields() {
+  const groupType = document.getElementById('panel-group-type').value;
+  document.getElementById('variant-options').classList.toggle('visible', groupType === 'variant');
+  document.getElementById('snack-options').classList.toggle('visible', groupType === 'snack');
+}
 
-        if (error) {
-          showToast("Error adding take: " + error.message, "error");
-          return;
-        }
+function closeStemPanel() {
+  document.getElementById('stem-panel-overlay').classList.remove('open');
+  document.getElementById('stem-panel').classList.remove('open');
+  document.querySelectorAll('.stem-row').forEach(r => r.classList.remove('active'));
+  editingGroupId = null;
+}
 
-        currentTakes.push(data);
-        renderStemGroupsAccordion();
-        showToast("Take added", "success");
-      }
+async function saveStemGroupFromPanel() {
+  if (!editingGroupId) return;
+  
+  // Collect all takes data and save them first
+  const takeRows = document.querySelectorAll('#panel-takes-body tr[data-take-id]');
+  for (const row of takeRows) {
+    const takeId = row.dataset.takeId;
+    const updates = {
+      audio_url: row.querySelector('[data-field="audio_url"]')?.value || null,
+      mode_id: row.querySelector('[data-field="mode_id"]')?.value || null,
+      weight: parseInt(row.querySelector('[data-field="weight"]')?.value) || 1,
+      is_default: row.querySelector('[data-field="is_default"]')?.checked || false,
+      is_enabled: row.querySelector('[data-field="is_enabled"]')?.checked !== false
+    };
+    
+    await supabase.from('stem_takes').update(updates).eq('id', takeId);
+    
+    const take = currentTakes.find(t => t.id === takeId);
+    if (take) Object.assign(take, updates);
+  }
+  
+  // Collect group data
+  const groupType = document.getElementById('panel-group-type').value;
+  const updates = {
+    role: document.getElementById('panel-role').value,
+    display_name: document.getElementById('panel-display-name').value,
+    category: document.getElementById('panel-category').value,
+    volume_default: parseInt(document.getElementById('panel-volume').value) / 100,
+    is_required: document.getElementById('panel-is-required').checked,
+    is_rhythmic: document.getElementById('panel-is-rhythmic').checked,
+    can_be_surprise: document.getElementById('panel-can-surprise').checked,
+    group_type: groupType,
+    variant_of_group_id: groupType === 'variant' ? (document.getElementById('panel-variant-of').value || null) : null,
+    snack_probability: groupType === 'snack' ? parseInt(document.getElementById('panel-snack-probability').value) : 50,
+    snack_mute_group_id: groupType === 'snack' ? (document.getElementById('panel-snack-mute').value || null) : null
+  };
+  
+  const { error } = await supabase
+    .from('stem_groups')
+    .update(updates)
+    .eq('id', editingGroupId);
+  
+  if (error) {
+    showToast('Error saving: ' + error.message, 'error');
+    return;
+  }
+  
+  const group = currentStemGroups.find(g => g.id === editingGroupId);
+  if (group) Object.assign(group, updates);
+  
+  renderStemGroupsAccordion();
+  showToast('Stem group saved', 'success');
+  
+  // Re-open panel to refresh
+  openStemPanel(editingGroupId);
+}
 
-      async function saveTake(takeId) {
-        const row = document.querySelector(`tr[data-take-id="${takeId}"]`);
-        if (!row) return;
+async function deleteStemGroupFromPanel() {
+  if (!editingGroupId) return;
+  if (!confirm('Delete this stem group and all its takes?')) return;
+  
+  const { error } = await supabase
+    .from('stem_groups')
+    .delete()
+    .eq('id', editingGroupId);
+  
+  if (error) {
+    showToast('Error deleting: ' + error.message, 'error');
+    return;
+  }
+  
+  currentStemGroups = currentStemGroups.filter(g => g.id !== editingGroupId);
+  currentTakes = currentTakes.filter(t => t.stem_group_id !== editingGroupId);
+  closeStemPanel();
+  renderStemGroupsAccordion();
+  showToast('Stem group deleted', 'success');
+}
 
-        const updates = {
-          audio_url:
-            row.querySelector('[data-field="audio_url"]').value || null,
-          mode_id: row.querySelector('[data-field="mode_id"]').value || null,
-          weight:
-            parseInt(row.querySelector('[data-field="weight"]').value) || 1,
-          is_default: row.querySelector('[data-field="is_default"]').checked,
-          is_enabled: row.querySelector('[data-field="is_enabled"]').checked,
-        };
+async function deleteTakeAndRefresh(takeId, groupId) {
+  if (!confirm('Delete this take?')) return;
+  
+  const { error } = await supabase.from('stem_takes').delete().eq('id', takeId);
+  
+  if (error) {
+    showToast('Error deleting take: ' + error.message, 'error');
+    return;
+  }
+  
+  currentTakes = currentTakes.filter(t => t.id !== takeId);
+  openStemPanel(groupId); // Refresh panel
+  renderStemGroupsAccordion();
+  showToast('Take deleted', 'success');
+}
 
-        const { error } = await supabase
-          .from("stem_takes")
-          .update(updates)
-          .eq("id", takeId);
+// Keep old functions for backwards compatibility
+function renderTakesRows(takes, groupId) {
+  return renderPanelTakesRows(takes, groupId);
+}
 
-        if (error) {
-          showToast("Error saving take: " + error.message, "error");
-          return;
-        }
+function toggleAccordion(groupId) {
+  openStemPanel(groupId);
+}
 
-        const take = currentTakes.find((t) => t.id === takeId);
-        if (take) Object.assign(take, updates);
+// ============================================
+// TAKES CRUD
+// ============================================
+async function addTake(groupId) {
+  const { data, error } = await supabase
+    .from('stem_takes')
+    .insert({
+      stem_group_id: groupId,
+      audio_url: '',
+      mode_id: null,
+      weight: 1,
+      is_default: false,
+      is_enabled: true
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    showToast('Error adding take: ' + error.message, 'error');
+    return;
+  }
+  
+  currentTakes.push(data);
+  renderStemGroupsAccordion();
+  showToast('Take added', 'success');
+}
 
-        showToast("Take saved", "success");
-      }
+async function saveTake(takeId) {
+  const row = document.querySelector(`tr[data-take-id="${takeId}"]`);
+  if (!row) return;
+  
+  const updates = {
+    audio_url: row.querySelector('[data-field="audio_url"]').value || null,
+    mode_id: row.querySelector('[data-field="mode_id"]').value || null,
+    weight: parseInt(row.querySelector('[data-field="weight"]').value) || 1,
+    is_default: row.querySelector('[data-field="is_default"]').checked,
+    is_enabled: row.querySelector('[data-field="is_enabled"]').checked
+  };
+  
+  const { error } = await supabase
+    .from('stem_takes')
+    .update(updates)
+    .eq('id', takeId);
+  
+  if (error) {
+    showToast('Error saving take: ' + error.message, 'error');
+    return;
+  }
+  
+  const take = currentTakes.find(t => t.id === takeId);
+  if (take) Object.assign(take, updates);
+  
+  showToast('Take saved', 'success');
+}
 
-      async function deleteTake(takeId, groupId) {
-        if (!confirm("Delete this take?")) return;
+async function deleteTake(takeId, groupId) {
+  if (!confirm('Delete this take?')) return;
+  
+  const { error } = await supabase
+    .from('stem_takes')
+    .delete()
+    .eq('id', takeId);
+  
+  if (error) {
+    showToast('Error deleting take: ' + error.message, 'error');
+    return;
+  }
+  
+  currentTakes = currentTakes.filter(t => t.id !== takeId);
+  
+  const tbody = document.getElementById(`takes-body-${groupId}`);
+  if (tbody) {
+    const groupTakes = currentTakes.filter(t => t.stem_group_id === groupId);
+    tbody.innerHTML = renderTakesRows(groupTakes, groupId);
+  }
+  
+  showToast('Take deleted', 'success');
+}
 
-        const { error } = await supabase
-          .from("stem_takes")
-          .delete()
-          .eq("id", takeId);
+// ============================================
+// STEMS LIBRARY
+// ============================================
+async function loadStemLibrary(trackSlug) {
+  if (!trackSlug) {
+    stemLibrary = [];
+    renderStemLibrary();
+    return;
+  }
+  
+  const folderPath = `tracks/${trackSlug}`;
+  
+  const { data, error } = await supabase.storage
+    .from('audio')
+    .list(folderPath);
+  
+  if (error) {
+    console.error('Error loading stems:', error);
+    stemLibrary = [];
+  } else {
+    stemLibrary = (data || [])
+      .filter(f => f.name && !f.name.startsWith('.'))
+      .map(f => ({
+        name: f.name,
+        path: `${folderPath}/${f.name}`,
+        // Encode spaces as %20 for the URL (this is what Supabase expects)
+        url: `${supabaseUrl}/storage/v1/object/public/audio/${folderPath}/${f.name.replace(/ /g, '%20')}`
+      }));
+  }
+  
+  renderStemLibrary();
+}
 
-        if (error) {
-          showToast("Error deleting take: " + error.message, "error");
-          return;
-        }
-
-        currentTakes = currentTakes.filter((t) => t.id !== takeId);
-
-        const tbody = document.getElementById(`takes-body-${groupId}`);
-        if (tbody) {
-          const groupTakes = currentTakes.filter(
-            (t) => t.stem_group_id === groupId
-          );
-          tbody.innerHTML = renderTakesRows(groupTakes, groupId);
-        }
-
-        showToast("Take deleted", "success");
-      }
-
-      // ============================================
-      // STEMS LIBRARY
-      // ============================================
-      async function loadStemLibrary(trackSlug) {
-        if (!trackSlug) {
-          stemLibrary = [];
-          renderStemLibrary();
-          return;
-        }
-
-        const folderPath = `tracks/${trackSlug}`;
-
-        const { data, error } = await supabase.storage
-          .from("audio")
-          .list(folderPath);
-
-        if (error) {
-          console.error("Error loading stems:", error);
-          stemLibrary = [];
-        } else {
-          stemLibrary = (data || [])
-            .filter((f) => f.name && !f.name.startsWith("."))
-            .map((f) => ({
-              name: f.name,
-              path: `${folderPath}/${f.name}`,
-              // Encode spaces as %20 for the URL (this is what Supabase expects)
-              url: `${supabaseUrl}/storage/v1/object/public/audio/${folderPath}/${f.name.replace(
-                / /g,
-                "%20"
-              )}`,
-            }));
-        }
-
-        renderStemLibrary();
-      }
-
-      function renderStemLibrary() {
-        const container = document.getElementById("stems-list");
-
-        if (!currentTrack) {
-          container.innerHTML =
-            '<div class="stems-empty">Select a track to see its stems</div>';
-          return;
-        }
-
-        if (stemLibrary.length === 0) {
-          container.innerHTML =
-            '<div class="stems-empty">No stems uploaded yet for this track</div>';
-          return;
-        }
-
-        container.innerHTML = stemLibrary
-          .map(
-            (stem) => `
+function renderStemLibrary() {
+  const container = document.getElementById('stems-list');
+  
+  if (!currentTrack) {
+    container.innerHTML = '<div class="stems-empty">Select a track to see its stems</div>';
+    return;
+  }
+  
+  if (stemLibrary.length === 0) {
+    container.innerHTML = '<div class="stems-empty">No stems uploaded yet for this track</div>';
+    return;
+  }
+  
+  container.innerHTML = stemLibrary.map(stem => `
     <div class="stem-file">
-      <span class="stem-file-name" title="${escapeHtml(
-        stem.name
-      )}">${escapeHtml(stem.name)}</span>
+      <span class="stem-file-name" title="${escapeHtml(stem.name)}">${escapeHtml(stem.name)}</span>
       <div class="stem-file-actions">
-        <button class="btn btn-sm btn-icon btn-secondary" onclick="copyStemUrl('${escapeHtml(
-          stem.url
-        )}')" title="Copy URL">
+        <button class="btn btn-sm btn-icon btn-secondary" onclick="copyStemUrl('${escapeHtml(stem.url)}')" title="Copy URL">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         </button>
       </div>
     </div>
-  `
-          )
-          .join("");
-      }
+  `).join('');
+}
 
-      function copyStemUrl(url) {
-        navigator.clipboard
-          .writeText(url)
-          .then(() => {
-            showToast("URL copied to clipboard", "success");
-          })
-          .catch(() => {
-            showToast("Failed to copy", "error");
-          });
-      }
+function copyStemUrl(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('URL copied to clipboard', 'success');
+  }).catch(() => {
+    showToast('Failed to copy', 'error');
+  });
+}
 
-      // ============================================
-      // FILE UPLOAD
-      // ============================================
-      function setupUploadZone() {
-        const zone = document.getElementById("upload-zone");
-        const input = document.getElementById("upload-input");
+// ============================================
+// FILE UPLOAD
+// ============================================
+function setupUploadZone() {
+  const zone = document.getElementById('upload-zone');
+  const input = document.getElementById('upload-input');
+  
+  zone.addEventListener('click', () => input.click());
+  
+  zone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    zone.classList.add('drag-over');
+  });
+  
+  zone.addEventListener('dragleave', () => {
+    zone.classList.remove('drag-over');
+  });
+  
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    handleUpload(e.dataTransfer.files);
+  });
+  
+  input.addEventListener('change', (e) => {
+    handleUpload(e.target.files);
+    e.target.value = '';
+  });
+}
 
-        zone.addEventListener("click", () => input.click());
+async function handleUpload(files) {
+  if (!currentTrack) {
+    showToast('Select a track first', 'error');
+    return;
+  }
+  
+  // Supported audio formats and their MIME types
+  const supportedFormats = {
+    'wav': 'audio/wav',
+    'mp3': 'audio/mpeg',
+    'ogg': 'audio/ogg',
+    'flac': 'audio/flac',
+    'aac': 'audio/aac',
+    'm4a': 'audio/mp4',
+    'aiff': 'audio/aiff',
+    'aif': 'audio/aiff',
+    'webm': 'audio/webm',
+    'opus': 'audio/opus'
+  };
+  
+  const progressContainer = document.getElementById('upload-progress');
+  progressContainer.innerHTML = '';
+  
+  for (const file of files) {
+    const fileName = file.name;
+    const fileExt = fileName.split('.').pop().toLowerCase();
+    
+    // Validate file format
+    if (!supportedFormats[fileExt] && !file.type.startsWith('audio/')) {
+      const progressItem = document.createElement('div');
+      progressItem.className = 'upload-progress-item error';
+      progressItem.textContent = `✗ ${fileName}: Unsupported format. Use WAV, MP3, OGG, FLAC, AAC, M4A, AIFF, WebM, or Opus`;
+      progressContainer.appendChild(progressItem);
+      continue;
+    }
+    
+    const storagePath = `tracks/${currentTrack.slug}/${fileName}`;
+    
+    const progressItem = document.createElement('div');
+    progressItem.className = 'upload-progress-item';
+    progressItem.textContent = `Uploading ${fileName}...`;
+    progressContainer.appendChild(progressItem);
+    
+    // Get content type - prefer known type, fall back to file.type
+    const contentType = supportedFormats[fileExt] || file.type || 'audio/mpeg';
+    
+    const { error } = await supabase.storage
+      .from('audio')
+      .upload(storagePath, file, { 
+        cacheControl: '3600',
+        upsert: true,
+        contentType: contentType
+      });
+    
+    if (error) {
+      progressItem.className = 'upload-progress-item error';
+      progressItem.textContent = `✗ ${fileName}: ${error.message}`;
+    } else {
+      progressItem.className = 'upload-progress-item success';
+      progressItem.textContent = `✓ ${fileName}`;
+    }
+  }
+  
+  await loadStemLibrary(currentTrack.slug);
+  renderStemGroupsAccordion();
+  
+  setTimeout(() => {
+    progressContainer.innerHTML = '';
+  }, 5000);
+}
 
-        zone.addEventListener("dragover", (e) => {
-          e.preventDefault();
-          zone.classList.add("drag-over");
-        });
+// ============================================
+// RENDER EDITOR
+// ============================================
 
-        zone.addEventListener("dragleave", () => {
-          zone.classList.remove("drag-over");
-        });
+// Share/Publish functions
+function getShareUrl() {
+  if (!currentTrack) return '';
+  // Generate a share URL with only the track ID (player-only, no admin access)
+  const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'living-piece-player.html');
+  return `${baseUrl}?track=${currentTrack.id}`;
+}
 
-        zone.addEventListener("drop", (e) => {
-          e.preventDefault();
-          zone.classList.remove("drag-over");
-          handleUpload(e.dataTransfer.files);
-        });
+function copyShareLink() {
+  if (!currentTrack) {
+    showToast('No track selected', 'error');
+    return;
+  }
+  
+  const shareUrl = getShareUrl();
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    showToast('Share link copied! This link opens the player only.', 'success');
+  }).catch(() => {
+    // Fallback for older browsers
+    prompt('Copy this link:', shareUrl);
+  });
+}
 
-        input.addEventListener("change", (e) => {
-          handleUpload(e.target.files);
-          e.target.value = "";
-        });
-      }
+function openPlayerPreview() {
+  if (!currentTrack) {
+    showToast('No track selected', 'error');
+    return;
+  }
+  
+  const shareUrl = getShareUrl();
+  window.open(shareUrl, '_blank');
+}
 
-      async function handleUpload(files) {
-        if (!currentTrack) {
-          showToast("Select a track first", "error");
-          return;
-        }
-
-        // Supported audio formats and their MIME types
-        const supportedFormats = {
-          wav: "audio/wav",
-          mp3: "audio/mpeg",
-          ogg: "audio/ogg",
-          flac: "audio/flac",
-          aac: "audio/aac",
-          m4a: "audio/mp4",
-          aiff: "audio/aiff",
-          aif: "audio/aiff",
-          webm: "audio/webm",
-          opus: "audio/opus",
-        };
-
-        const progressContainer = document.getElementById("upload-progress");
-        progressContainer.innerHTML = "";
-
-        for (const file of files) {
-          const fileName = file.name;
-          const fileExt = fileName.split(".").pop().toLowerCase();
-
-          // Validate file format
-          if (!supportedFormats[fileExt] && !file.type.startsWith("audio/")) {
-            const progressItem = document.createElement("div");
-            progressItem.className = "upload-progress-item error";
-            progressItem.textContent = `✗ ${fileName}: Unsupported format. Use WAV, MP3, OGG, FLAC, AAC, M4A, AIFF, WebM, or Opus`;
-            progressContainer.appendChild(progressItem);
-            continue;
-          }
-
-          const storagePath = `tracks/${currentTrack.slug}/${fileName}`;
-
-          const progressItem = document.createElement("div");
-          progressItem.className = "upload-progress-item";
-          progressItem.textContent = `Uploading ${fileName}...`;
-          progressContainer.appendChild(progressItem);
-
-          // Get content type - prefer known type, fall back to file.type
-          const contentType =
-            supportedFormats[fileExt] || file.type || "audio/mpeg";
-
-          const { error } = await supabase.storage
-            .from("audio")
-            .upload(storagePath, file, {
-              cacheControl: "3600",
-              upsert: true,
-              contentType: contentType,
-            });
-
-          if (error) {
-            progressItem.className = "upload-progress-item error";
-            progressItem.textContent = `✗ ${fileName}: ${error.message}`;
-          } else {
-            progressItem.className = "upload-progress-item success";
-            progressItem.textContent = `✓ ${fileName}`;
-          }
-        }
-
-        await loadStemLibrary(currentTrack.slug);
-        renderStemGroupsAccordion();
-
-        setTimeout(() => {
-          progressContainer.innerHTML = "";
-        }, 5000);
-      }
-
-      // ============================================
-      // RENDER EDITOR
-      // ============================================
-
-      // Share/Publish functions
-      function getShareUrl() {
-        if (!currentTrack) return "";
-        // Generate a share URL with only the track ID (player-only, no admin access)
-        const baseUrl =
-          window.location.origin +
-          window.location.pathname.replace(
-            "admin.html",
-            "living-piece-player.html"
-          );
-        return `${baseUrl}?track=${currentTrack.id}`;
-      }
-
-      function copyShareLink() {
-        if (!currentTrack) {
-          showToast("No track selected", "error");
-          return;
-        }
-
-        const shareUrl = getShareUrl();
-        navigator.clipboard
-          .writeText(shareUrl)
-          .then(() => {
-            showToast(
-              "Share link copied! This link opens the player only.",
-              "success"
-            );
-          })
-          .catch(() => {
-            // Fallback for older browsers
-            prompt("Copy this link:", shareUrl);
-          });
-      }
-
-      function openPlayerPreview() {
-        if (!currentTrack) {
-          showToast("No track selected", "error");
-          return;
-        }
-
-        const shareUrl = getShareUrl();
-        window.open(shareUrl, "_blank");
-      }
-
-      function renderEditor() {
-        if (!currentTrack) return;
-
-        const panel = document.getElementById("editor-panel");
-        const coverUrl = currentTrack.cover_image_url || "";
-
-        panel.innerHTML = `
+function renderEditor() {
+  if (!currentTrack) return;
+  
+  const panel = document.getElementById('editor-panel');
+  const coverUrl = currentTrack.cover_image_url || '';
+  
+  panel.innerHTML = `
     <!-- Track Settings Card -->
     <div class="card">
       <div class="card-header">
@@ -2622,9 +2818,7 @@
       <div class="card-body">
         <div class="cover-upload" style="margin-bottom: 20px;">
           <div class="cover-preview" onclick="document.getElementById('track-cover-input').click()">
-            ${
-              coverUrl
-                ? `
+            ${coverUrl ? `
               <img src="${escapeHtml(coverUrl)}" alt="Cover" />
               <div class="cover-overlay">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
@@ -2633,15 +2827,13 @@
                   <line x1="12" y1="3" x2="12" y2="15"/>
                 </svg>
               </div>
-            `
-                : `
+            ` : `
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                 <circle cx="8.5" cy="8.5" r="1.5"/>
                 <polyline points="21,15 16,10 5,21"/>
               </svg>
-            `
-            }
+            `}
           </div>
           <input type="file" id="track-cover-input" class="cover-input" accept="image/*" onchange="uploadTrackCover(this.files[0])" />
           <div class="cover-actions">
@@ -2655,77 +2847,50 @@
               </svg>
               Upload Image
             </button>
-            ${
-              coverUrl
-                ? `<button class="btn btn-danger btn-sm" onclick="removeTrackCover()">Remove</button>`
-                : ""
-            }
+            ${coverUrl ? `<button class="btn btn-danger btn-sm" onclick="removeTrackCover()">Remove</button>` : ''}
           </div>
         </div>
         <div class="form-grid">
           <div class="form-group">
             <label class="form-label">Title</label>
-            <input type="text" class="form-input" id="track-title" value="${escapeHtml(
-              currentTrack.title || ""
-            )}" />
+            <input type="text" class="form-input" id="track-title" value="${escapeHtml(currentTrack.title || '')}" />
           </div>
           <div class="form-group">
             <label class="form-label">Slug</label>
-            <input type="text" class="form-input" id="track-slug" value="${escapeHtml(
-              currentTrack.slug || ""
-            )}" />
+            <input type="text" class="form-input" id="track-slug" value="${escapeHtml(currentTrack.slug || '')}" />
             <div class="form-helper">Used in URLs and folder naming. Lowercase, no spaces.</div>
           </div>
           <div class="form-group">
             <label class="form-label">Release</label>
             <select class="form-select" id="track-release">
               <option value="">— No Release —</option>
-              ${allReleases
-                .map(
-                  (r) =>
-                    `<option value="${r.id}" ${
-                      currentTrack.release_id === r.id ? "selected" : ""
-                    }>${escapeHtml(r.title)}</option>`
-                )
-                .join("")}
+              ${allReleases.map(r => `<option value="${r.id}" ${currentTrack.release_id === r.id ? 'selected' : ''}>${escapeHtml(r.title)}</option>`).join('')}
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Track #</label>
-            <input type="number" class="form-input" id="track-number" value="${
-              currentTrack.track_number || 1
-            }" min="1" />
+            <input type="number" class="form-input" id="track-number" value="${currentTrack.track_number || 1}" min="1" />
             <div class="form-helper">Position in release</div>
           </div>
           <div class="form-group full-width">
             <label class="form-label">Description</label>
-            <textarea class="form-textarea" id="track-description">${escapeHtml(
-              currentTrack.description || ""
-            )}</textarea>
+            <textarea class="form-textarea" id="track-description">${escapeHtml(currentTrack.description || '')}</textarea>
           </div>
           <div class="form-group">
             <label class="form-label">BPM</label>
-            <input type="number" class="form-input" id="track-bpm" value="${
-              currentTrack.bpm || ""
-            }" />
+            <input type="number" class="form-input" id="track-bpm" value="${currentTrack.bpm || ''}" />
           </div>
           <div class="form-group">
             <label class="form-label">Base Key</label>
-            <input type="text" class="form-input" id="track-key" value="${escapeHtml(
-              currentTrack.base_key || ""
-            )}" placeholder="e.g. C major" />
+            <input type="text" class="form-input" id="track-key" value="${escapeHtml(currentTrack.base_key || '')}" placeholder="e.g. C major" />
           </div>
           <div class="form-group">
             <label class="form-label">Length (seconds)</label>
-            <input type="number" class="form-input" id="track-length" value="${
-              currentTrack.length_seconds || ""
-            }" />
+            <input type="number" class="form-input" id="track-length" value="${currentTrack.length_seconds || ''}" />
           </div>
           <div class="form-group">
             <label class="form-checkbox-row">
-              <input type="checkbox" class="form-checkbox" id="track-active" ${
-                currentTrack.is_active ? "checked" : ""
-              } />
+              <input type="checkbox" class="form-checkbox" id="track-active" ${currentTrack.is_active ? 'checked' : ''} />
               <span class="form-checkbox-label">Active track (visible in player)</span>
             </label>
           </div>
@@ -2799,27 +2964,24 @@
       </div>
     </div>
   `;
+  
+  renderModesTable();
+  renderStemGroupsAccordion();
+}
 
-        renderModesTable();
-        renderStemGroupsAccordion();
-      }
+// ============================================
+// INITIALIZATION
+// ============================================
+async function init() {
+  setupUploadZone();
+  await Promise.all([loadReleases(), loadTracks()]);
+}
 
-      // ============================================
-      // INITIALIZATION
-      // ============================================
-      async function init() {
-        setupUploadZone();
-        await Promise.all([loadReleases(), loadTracks()]);
-      }
+document.getElementById('btn-new-track').addEventListener('click', createNewTrack);
+document.getElementById('btn-new-release').addEventListener('click', createNewRelease);
 
-      document
-        .getElementById("btn-new-track")
-        .addEventListener("click", createNewTrack);
-      document
-        .getElementById("btn-new-release")
-        .addEventListener("click", createNewRelease);
+init();
+</script>
 
-      init();
-    </script>
-  </body>
+</body>
 </html>
