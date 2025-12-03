@@ -1,0 +1,3153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ideas — Musical Idea Vault</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #0a0a0a;
+        --bg-card: #111111;
+        --bg-hover: #1a1a1a;
+        --bg-input: #161616;
+        --border: rgba(255, 255, 255, 0.08);
+        --text: #f0f0f0;
+        --text-soft: #a0a0a0;
+        --text-muted: #606060;
+        --accent: #0ea5e9;
+        --accent-hover: #38bdf8;
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Navigation Header */
+      .nav-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: center;
+        padding: 12px 16px;
+        background: rgba(10, 10, 10, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .nav-tabs {
+        display: flex;
+        gap: 4px;
+        padding: 4px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .nav-tab {
+        padding: 8px 20px;
+        border: none;
+        background: transparent;
+        color: #606060;
+        font-size: 13px;
+        font-weight: 500;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .nav-tab:hover {
+        color: #a0a0a0;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .nav-tab.active {
+        background: #0ea5e9;
+        color: white;
+        box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+      }
+
+      .nav-tab svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Main Layout - Three Panels */
+      .main-layout {
+        display: grid;
+        grid-template-columns: 220px 1fr 320px;
+        height: 100vh;
+        padding-top: 56px;
+      }
+
+      /* Left Panel - Projects Sidebar */
+      .sidebar {
+        background: var(--bg-card);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .sidebar-header {
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .sidebar-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 8px 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .search-input:focus {
+        border-color: var(--accent);
+      }
+
+      .search-input::placeholder {
+        color: var(--text-muted);
+      }
+
+      .project-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px;
+      }
+
+      .project-item {
+        padding: 10px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: var(--text-soft);
+        transition: all 0.15s ease;
+        margin-bottom: 2px;
+      }
+
+      .project-item:hover {
+        background: var(--bg-hover);
+        color: var(--text);
+      }
+
+      .project-item.active {
+        background: rgba(14, 165, 233, 0.15);
+        color: var(--accent);
+      }
+
+      .project-count {
+        font-size: 11px;
+        color: var(--text-muted);
+        background: var(--bg-input);
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+
+      /* Center Panel - Ideas Table */
+      .ideas-panel {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .ideas-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .ideas-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .ideas-count {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-left: 12px;
+      }
+
+      .ideas-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn {
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        border: none;
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .btn-secondary {
+        background: var(--bg-input);
+        color: var(--text-soft);
+        border: 1px solid var(--border);
+      }
+
+      .btn-secondary:hover {
+        background: var(--bg-hover);
+        color: var(--text);
+      }
+
+      .btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      /* Ideas Table */
+      .ideas-table-container {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .ideas-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .ideas-table th {
+        position: sticky;
+        top: 0;
+        background: var(--bg-card);
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border);
+        z-index: 10;
+      }
+
+      .ideas-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+      }
+
+      .ideas-table tr {
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+
+      .ideas-table tbody tr:hover {
+        background: var(--bg-hover);
+      }
+
+      .ideas-table tbody tr.playing {
+        background: rgba(14, 165, 233, 0.1);
+      }
+
+      .ideas-table tbody tr.playing td:first-child {
+        position: relative;
+      }
+
+      .ideas-table tbody tr.playing td:first-child::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--accent);
+      }
+
+      .idea-title {
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      .idea-project {
+        color: var(--text-soft);
+      }
+
+      .idea-tags {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+
+      .tag {
+        padding: 2px 8px;
+        background: var(--bg-input);
+        border-radius: 4px;
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
+      .priority-badge {
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .priority-high {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+      }
+
+      .priority-low {
+        background: rgba(34, 197, 94, 0.15);
+        color: var(--success);
+      }
+
+      .favorite-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 16px;
+        padding: 4px;
+        transition: all 0.15s ease;
+      }
+
+      .favorite-btn:hover {
+        color: var(--warning);
+      }
+
+      .favorite-btn.active {
+        color: var(--warning);
+      }
+
+      /* Right Panel - Now Playing */
+      .player-panel {
+        background: var(--bg-card);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .player-header {
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .player-header-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+      }
+
+      .player-content {
+        flex: 1;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+
+      .player-empty {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-size: 13px;
+        text-align: center;
+        padding: 20px;
+      }
+
+      /* Album Art */
+      .album-art {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        overflow: hidden;
+        background: var(--bg-input);
+        position: relative;
+      }
+
+      .album-art svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .album-art img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .album-art-toggle {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background: rgba(0, 0, 0, 0.6);
+        border: none;
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 10px;
+        color: white;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .album-art:hover .album-art-toggle {
+        opacity: 1;
+      }
+
+      /* Thumbnail in list */
+      .idea-thumbnail {
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .idea-thumbnail svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .idea-title-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .now-playing-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: var(--text);
+      }
+
+      .now-playing-project {
+        font-size: 13px;
+        color: var(--text-soft);
+        margin-bottom: 16px;
+      }
+
+      /* Audio Controls */
+      .audio-controls {
+        margin-bottom: 20px;
+      }
+
+      .progress-bar-container {
+        height: 4px;
+        background: var(--bg-input);
+        border-radius: 2px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+
+      .time-display {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+      }
+
+      .playback-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .play-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--accent);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: all 0.15s ease;
+      }
+
+      .play-btn:hover {
+        background: var(--accent-hover);
+        transform: scale(1.05);
+      }
+
+      .play-btn svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .skip-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-soft);
+        transition: all 0.15s ease;
+      }
+
+      .skip-btn:hover {
+        background: var(--bg-hover);
+        color: var(--text);
+      }
+
+      .skip-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Notes Section */
+      .notes-section {
+        margin-top: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .notes-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+
+      .notes-textarea {
+        flex: 1;
+        min-height: 120px;
+        padding: 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 13px;
+        font-family: inherit;
+        resize: none;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .notes-textarea:focus {
+        border-color: var(--accent);
+      }
+
+      .notes-textarea::placeholder {
+        color: var(--text-muted);
+      }
+
+      .notes-actions {
+        margin-top: 8px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      /* Favorite Toggle in Player */
+      .player-favorite {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+      }
+
+      .player-favorite-btn {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px 12px;
+        cursor: pointer;
+        color: var(--text-soft);
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.15s ease;
+      }
+
+      .player-favorite-btn:hover {
+        background: var(--bg-hover);
+      }
+
+      .player-favorite-btn.active {
+        background: rgba(245, 158, 11, 0.15);
+        border-color: var(--warning);
+        color: var(--warning);
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      /* Loading State */
+      .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        color: var(--text-muted);
+      }
+
+      /* Empty State */
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: var(--text-muted);
+        text-align: center;
+      }
+
+      .empty-state svg {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      /* Filter buttons */
+      .filter-row {
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        flex-wrap: wrap;
+      }
+
+      .filter-btn {
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .filter-btn:hover {
+        background: var(--bg-hover);
+        color: var(--text);
+      }
+
+      .filter-btn.active {
+        background: rgba(14, 165, 233, 0.15);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* View Toggle */
+      .view-toggle {
+        display: flex;
+        gap: 4px;
+        margin-right: 12px;
+        background: var(--bg-input);
+        border-radius: 6px;
+        padding: 3px;
+      }
+
+      .view-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 28px;
+        border: none;
+        background: transparent;
+        border-radius: 4px;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all 0.15s;
+      }
+
+      .view-btn:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .view-btn.active {
+        color: var(--accent);
+        background: rgba(14, 165, 233, 0.15);
+      }
+
+      .view-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Grid View */
+      .ideas-grid-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0 16px 16px;
+      }
+
+      .ideas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+      }
+
+      .grid-card {
+        background: var(--bg-card);
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+      }
+
+      .grid-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+
+      .grid-card.playing {
+        border-color: var(--accent);
+        box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+      }
+
+      .grid-card-art {
+        aspect-ratio: 1;
+        position: relative;
+      }
+
+      .grid-card-art svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .grid-card-badges {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        gap: 4px;
+      }
+
+      .grid-badge {
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+      }
+
+      .grid-badge.priority {
+        background: rgba(239, 68, 68, 0.8);
+        color: white;
+      }
+
+      .grid-badge.favorite {
+        background: rgba(251, 191, 36, 0.9);
+        color: #000;
+      }
+
+      .grid-card-info {
+        padding: 12px;
+      }
+
+      .grid-card-title {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 4px;
+      }
+
+      .grid-card-project {
+        font-size: 11px;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .grid-card-playing {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        background: var(--accent);
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        color: white;
+      }
+
+      .grid-card-playing svg {
+        width: 10px;
+        height: 10px;
+      }
+
+      /* Collapsible Sidebar */
+      .sidebar-toggle {
+        position: absolute;
+        top: 12px;
+        left: 220px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        transition: all 0.2s;
+        z-index: 10;
+      }
+
+      .sidebar-toggle:hover {
+        color: var(--text);
+        background: var(--bg-input);
+      }
+
+      .sidebar-toggle svg {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.2s;
+      }
+
+      .sidebar.collapsed {
+        width: 0;
+        padding: 0;
+        overflow: hidden;
+        border-right: none;
+      }
+
+      .sidebar.collapsed + .sidebar-toggle {
+        left: 0;
+      }
+
+      .sidebar.collapsed + .sidebar-toggle svg {
+        transform: rotate(180deg);
+      }
+
+      .main-layout.sidebar-collapsed .sidebar {
+        width: 0;
+        padding: 0;
+        overflow: hidden;
+        border-right: none;
+      }
+
+      .main-layout.sidebar-collapsed .sidebar-toggle {
+        left: 8px;
+      }
+
+      .main-layout.sidebar-collapsed .sidebar-toggle svg {
+        transform: rotate(180deg);
+      }
+
+      /* Archive button */
+      .btn-archive {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+      }
+
+      .btn-archive:hover {
+        border-color: var(--warning);
+        color: var(--warning);
+      }
+
+      .btn-archive.archived {
+        background: rgba(251, 191, 36, 0.15);
+        border-color: var(--warning);
+        color: var(--warning);
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .action-buttons .btn {
+        flex: 1;
+        font-size: 12px;
+        padding: 8px 12px;
+      }
+
+      /* Quick Actions - Icon buttons row */
+      .quick-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin: 12px 0;
+      }
+
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+      }
+
+      .icon-btn:hover {
+        border-color: var(--text-soft);
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .icon-btn.active {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(14, 165, 233, 0.1);
+      }
+
+      .icon-btn.active.warning {
+        border-color: var(--warning);
+        color: var(--warning);
+        background: rgba(251, 191, 36, 0.1);
+      }
+
+      .icon-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Compact notes section */
+      .notes-section {
+        margin-top: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .notes-textarea {
+        width: 100%;
+        min-height: 60px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-input);
+        color: var(--text);
+        font-size: 12px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .notes-textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+
+      /* Excitement Rating */
+      .excitement-rating {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        margin: 8px 0;
+      }
+
+      .excitement-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-right: 8px;
+      }
+
+      .excitement-star {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        color: var(--text-muted);
+        padding: 2px;
+        transition: all 0.15s;
+        line-height: 1;
+      }
+
+      .excitement-star:hover {
+        transform: scale(1.2);
+      }
+
+      .excitement-star.active {
+        color: #fbbf24;
+      }
+
+      .excitement-star.hovered {
+        color: #fcd34d;
+      }
+
+      /* Mini stars for list/grid */
+      .mini-stars {
+        display: inline-flex;
+        gap: 1px;
+        font-size: 10px;
+        color: #fbbf24;
+        margin-left: 6px;
+      }
+
+      .mini-stars.empty {
+        color: var(--text-muted);
+        opacity: 0.3;
+      }
+
+      /* Upload drop zone */
+      .upload-zone {
+        border: 2px dashed var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: auto;
+      }
+
+      .upload-zone:hover {
+        border-color: var(--accent);
+        color: var(--text-soft);
+      }
+
+      .upload-zone.dragover {
+        border-color: var(--accent);
+        background: rgba(14, 165, 233, 0.1);
+        color: var(--accent);
+      }
+
+      .upload-zone svg {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 4px;
+        opacity: 0.5;
+      }
+
+      .upload-zone.dragover svg {
+        opacity: 1;
+      }
+
+      .upload-zone-text {
+        font-size: 11px;
+      }
+
+      .upload-progress {
+        margin-top: 8px;
+        font-size: 10px;
+        color: var(--accent);
+      }
+
+      /* Filter button for excitement */
+      .filter-btn svg {
+        width: 12px;
+        height: 12px;
+        margin-right: 4px;
+      }
+
+      /* Player panel - hide favorites button since we have icon now */
+      .player-favorite {
+        display: none;
+      }
+
+      /* ============ RESPONSIVE DESIGN ============ */
+
+      /* Tablet - Hide sidebar by default, stack player below */
+      @media (max-width: 1024px) {
+        .main-layout {
+          grid-template-columns: 1fr 320px;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .main-layout.sidebar-collapsed .sidebar {
+          display: none;
+        }
+
+        .sidebar-toggle {
+          display: none;
+        }
+      }
+
+      /* Mobile - Single column, player as bottom sheet */
+      @media (max-width: 768px) {
+        body {
+          overflow: auto;
+        }
+
+        .nav-header {
+          padding: 8px 12px;
+        }
+
+        .nav-tabs {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .nav-tab {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+
+        .nav-tab svg {
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
+
+        .main-layout {
+          display: flex;
+          flex-direction: column;
+          grid-template-columns: none;
+          height: auto;
+          min-height: 100vh;
+          padding-top: 52px;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .sidebar-toggle {
+          display: none;
+        }
+
+        /* Ideas Panel */
+        .ideas-panel {
+          flex: 1;
+          min-height: 50vh;
+        }
+
+        .ideas-header {
+          padding: 12px;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .ideas-title {
+          font-size: 18px;
+        }
+
+        .ideas-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .view-toggle {
+          margin-right: 8px;
+        }
+
+        .filter-row {
+          padding: 8px 12px;
+          gap: 6px;
+          flex-wrap: wrap;
+        }
+
+        .filter-btn {
+          padding: 6px 10px;
+          font-size: 11px;
+        }
+
+        .ideas-table-container {
+          padding: 0 8px;
+        }
+
+        .ideas-table th,
+        .ideas-table td {
+          padding: 10px 8px;
+          font-size: 12px;
+        }
+
+        /* Hide some columns on mobile */
+        .ideas-table th:nth-child(3),
+        .ideas-table td:nth-child(3),
+        .ideas-table th:nth-child(4),
+        .ideas-table td:nth-child(4) {
+          display: none;
+        }
+
+        .idea-thumbnail {
+          width: 32px;
+          height: 32px;
+        }
+
+        .idea-title-cell {
+          gap: 8px;
+        }
+
+        /* Grid view adjustments */
+        .ideas-grid {
+          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+          gap: 12px;
+        }
+
+        .grid-card-info {
+          padding: 10px;
+        }
+
+        .grid-card-title {
+          font-size: 12px;
+        }
+
+        .grid-card-project {
+          font-size: 10px;
+        }
+
+        /* Player Panel - Bottom sheet style */
+        .player-panel {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          height: auto;
+          max-height: 70vh;
+          border-radius: 20px 20px 0 0;
+          border-top: 1px solid var(--border);
+          border-right: none;
+          transform: translateY(calc(100% - 80px));
+          transition: transform 0.3s ease;
+          z-index: 200;
+        }
+
+        .player-panel.expanded {
+          transform: translateY(0);
+        }
+
+        .player-header {
+          cursor: pointer;
+          padding: 12px 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .player-header::before {
+          content: "";
+          width: 40px;
+          height: 4px;
+          background: var(--text-muted);
+          border-radius: 2px;
+          position: absolute;
+          top: 8px;
+        }
+
+        .player-content {
+          padding: 12px 16px 24px;
+          max-height: calc(70vh - 50px);
+          overflow-y: auto;
+        }
+
+        .album-art {
+          max-width: 200px;
+          margin: 0 auto 12px;
+        }
+
+        .now-playing-title {
+          font-size: 16px;
+          text-align: center;
+        }
+
+        .now-playing-project {
+          font-size: 12px;
+          text-align: center;
+        }
+
+        .audio-controls {
+          margin: 12px 0;
+        }
+
+        .playback-buttons {
+          gap: 16px;
+        }
+
+        .play-btn {
+          width: 48px;
+          height: 48px;
+        }
+
+        .excitement-rating {
+          margin: 12px 0;
+        }
+
+        .quick-actions {
+          margin: 12px 0;
+        }
+
+        .notes-section {
+          margin-top: 12px;
+        }
+
+        .notes-textarea {
+          min-height: 50px;
+        }
+
+        /* Add padding at bottom for player */
+        .ideas-table-container,
+        .ideas-grid-container {
+          padding-bottom: 100px;
+        }
+      }
+
+      /* Small phones */
+      @media (max-width: 380px) {
+        .nav-tab span {
+          display: none;
+        }
+
+        .nav-tab svg {
+          margin-right: 0;
+        }
+
+        .ideas-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .filter-btn {
+          padding: 5px 8px;
+          font-size: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav-header">
+      <div class="nav-tabs">
+        <a href="living-piece-player.html" class="nav-tab">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M9 18V5l12-2v13" />
+            <circle cx="6" cy="18" r="3" />
+            <circle cx="18" cy="16" r="3" />
+          </svg>
+          Listening
+        </a>
+        <a href="living-piece-playlist.html" class="nav-tab">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M21 15V6" />
+            <path d="M18.5 18a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+            <path d="M12 12H3" />
+            <path d="M16 6H3" />
+            <path d="M12 18H3" />
+          </svg>
+          Playlist
+        </a>
+        <a href="admin.html" class="nav-tab">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+            />
+          </svg>
+          Admin
+        </a>
+        <a href="ideas.html" class="nav-tab active">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            />
+          </svg>
+          Ideas
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="main-layout" id="main-layout">
+      <!-- Left: Projects Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title">Filter</div>
+          <input
+            type="text"
+            class="search-input"
+            id="search-input"
+            placeholder="Search ideas..."
+          />
+        </div>
+        <div class="project-list" id="project-list">
+          <div class="loading">Loading projects...</div>
+        </div>
+
+        <!-- Upload Drop Zone -->
+        <div
+          class="upload-zone"
+          id="upload-zone"
+          onclick="document.getElementById('file-input').click()"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <div class="upload-zone-text">Drop audio files or click</div>
+          <div class="upload-progress" id="upload-progress"></div>
+        </div>
+        <input
+          type="file"
+          id="file-input"
+          accept="audio/*"
+          multiple
+          style="display: none"
+          onchange="handleFileSelect(event)"
+        />
+      </aside>
+
+      <!-- Sidebar Toggle Button -->
+      <button
+        class="sidebar-toggle"
+        id="sidebar-toggle"
+        onclick="toggleSidebar()"
+        title="Toggle sidebar"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+
+      <!-- Center: Ideas Table -->
+      <main class="ideas-panel">
+        <div class="ideas-header">
+          <div style="display: flex; align-items: center">
+            <span class="ideas-title" id="ideas-title">All Ideas</span>
+            <span class="ideas-count" id="ideas-count"></span>
+          </div>
+          <div class="ideas-actions">
+            <!-- View Toggle -->
+            <div class="view-toggle">
+              <button
+                class="view-btn active"
+                data-view="list"
+                onclick="setViewMode('list')"
+                title="List View"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="8" y1="6" x2="21" y2="6" />
+                  <line x1="8" y1="12" x2="21" y2="12" />
+                  <line x1="8" y1="18" x2="21" y2="18" />
+                  <line x1="3" y1="6" x2="3.01" y2="6" />
+                  <line x1="3" y1="12" x2="3.01" y2="12" />
+                  <line x1="3" y1="18" x2="3.01" y2="18" />
+                </svg>
+              </button>
+              <button
+                class="view-btn"
+                data-view="grid"
+                onclick="setViewMode('grid')"
+                title="Grid View"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                </svg>
+              </button>
+            </div>
+            <button class="btn btn-secondary" onclick="exportCSV()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="favorites">
+            ★ Favorites
+          </button>
+          <button class="filter-btn" data-filter="high">High Priority</button>
+          <button class="filter-btn" data-filter="excited">🔥 Excited</button>
+        </div>
+
+        <!-- List View -->
+        <div class="ideas-table-container" id="list-view">
+          <table class="ideas-table">
+            <thead>
+              <tr>
+                <th style="width: 40%">Title</th>
+                <th>Project</th>
+                <th>Tags</th>
+                <th style="width: 80px">Priority</th>
+                <th style="width: 50px">★</th>
+              </tr>
+            </thead>
+            <tbody id="ideas-body">
+              <tr>
+                <td colspan="5" class="loading">Loading ideas...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Grid View -->
+        <div class="ideas-grid-container" id="grid-view" style="display: none">
+          <div class="ideas-grid" id="ideas-grid">
+            <div class="loading">Loading ideas...</div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right: Now Playing -->
+      <aside class="player-panel">
+        <div class="player-header">
+          <div class="player-header-title">Now Playing</div>
+        </div>
+        <div class="player-content" id="player-content">
+          <div class="player-empty">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="
+                width: 40px;
+                height: 40px;
+                margin-bottom: 12px;
+                opacity: 0.3;
+              "
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polygon points="10 8 16 12 10 16 10 8" />
+            </svg>
+            <div>Select an idea to play</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Hidden Audio Element -->
+    <audio id="audio-player" preload="auto"></audio>
+
+    <script>
+      // Supabase Config
+      const supabaseUrl = "https://cimngwcwvbspkcqdzqfg.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbW5nd2N3dmJzcGtjcWR6cWZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1MzA1MDIsImV4cCI6MjA4MDEwNjUwMn0.L9Tvj4mlSjAtiSVMPkaegRF4laZl_E15ALZFdRhSzUg";
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      // State
+      let allIdeas = [];
+      let filteredIdeas = [];
+      let currentIdea = null;
+      let currentFilter = "all";
+      let currentProject = null;
+      let searchQuery = "";
+      let isPlaying = false;
+      let useUnsplash = false; // Toggle between generative SVG and Unsplash
+      let unsplashCache = {}; // Cache Unsplash images
+      let viewMode = "list"; // 'list' or 'grid'
+
+      // DOM Elements
+      const audio = document.getElementById("audio-player");
+      const projectList = document.getElementById("project-list");
+      const ideasBody = document.getElementById("ideas-body");
+      const ideasGrid = document.getElementById("ideas-grid");
+      const listView = document.getElementById("list-view");
+      const gridView = document.getElementById("grid-view");
+      const ideasTitle = document.getElementById("ideas-title");
+      const ideasCount = document.getElementById("ideas-count");
+      const playerContent = document.getElementById("player-content");
+      const searchInput = document.getElementById("search-input");
+
+      // ============ GENERATIVE ALBUM ART ============
+
+      // Hash function for consistent randomness
+      function hashString(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          const char = str.charCodeAt(i);
+          hash = (hash << 5) - hash + char;
+          hash = hash & hash;
+        }
+        return Math.abs(hash);
+      }
+
+      // Seeded random number generator
+      function seededRandom(seed) {
+        const x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+      }
+
+      // Bold, vibrant color palettes
+      function generatePalette(seed) {
+        const palettes = [
+          // Bold primaries
+          ["#FF3366", "#33CCFF", "#FFCC00", "#00CC99", "#9933FF", "#FF6600"],
+          // Electric
+          ["#00D4FF", "#FF0080", "#FFE600", "#00FF88", "#8B5CF6", "#FF4D4D"],
+          // Sunset pop
+          ["#FF6B35", "#F7C59F", "#2EC4B6", "#E71D36", "#011627", "#FDFFFC"],
+          // Nordic bold
+          ["#264653", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51", "#FFFFFF"],
+          // Candy
+          ["#FF69B4", "#00CED1", "#FFD700", "#FF6347", "#9370DB", "#00FA9A"],
+          // Geometric
+          ["#1A1A2E", "#16213E", "#0F3460", "#E94560", "#FF9F1C", "#00F5D4"],
+          // Bauhaus
+          ["#000000", "#FFFFFF", "#FF0000", "#0000FF", "#FFFF00", "#00FF00"],
+          // Retro
+          ["#F72585", "#7209B7", "#3A0CA3", "#4361EE", "#4CC9F0", "#FFFFFF"],
+          // Earth pop
+          ["#2D3436", "#00B894", "#FDCB6E", "#E17055", "#6C5CE7", "#00CEC9"],
+          // Minimal bold
+          ["#000000", "#FFFFFF", "#FF5733", "#33FF57", "#3357FF", "#FF33F5"],
+        ];
+
+        return palettes[seed % palettes.length];
+      }
+
+      // Generate SVG album art - Bold geometric style
+      function generateAlbumArt(title, tags = "", project = "") {
+        const seed = hashString(title + tags + project);
+        const palette = generatePalette(seed);
+
+        // Choose pattern based on seed
+        const patternType = seed % 8;
+
+        let svgContent = "";
+        const bgColor = palette[seed % 2 === 0 ? 0 : palette.length - 1];
+
+        switch (patternType) {
+          case 0:
+            svgContent = generateDiamondComposition(seed, palette);
+            break;
+          case 1:
+            svgContent = generateCircleSquare(seed, palette);
+            break;
+          case 2:
+            svgContent = generateTriangleGrid(seed, palette);
+            break;
+          case 3:
+            svgContent = generateBoldStripes(seed, palette);
+            break;
+          case 4:
+            svgContent = generateConcentricShapes(seed, palette);
+            break;
+          case 5:
+            svgContent = generateCornerShapes(seed, palette);
+            break;
+          case 6:
+            svgContent = generateCrossComposition(seed, palette);
+            break;
+          case 7:
+            svgContent = generateMinimalCircles(seed, palette);
+            break;
+        }
+
+        return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="200" fill="${bgColor}"/>
+    ${svgContent}
+  </svg>`;
+      }
+
+      // Diamond with circles composition (like the reference)
+      function generateDiamondComposition(seed, palette) {
+        const bg1 = palette[1];
+        const bg2 = palette[2];
+        const diamond1 = palette[3];
+        const diamond2 = palette[4];
+        const circle1 = palette[2];
+        const circle2 = palette[5] || palette[0];
+
+        return `
+    <!-- Corner triangles -->
+    <polygon points="0,0 200,0 200,80" fill="${bg1}"/>
+    <polygon points="0,200 0,120 80,200" fill="${bg2}"/>
+    
+    <!-- Central diamond -->
+    <rect x="50" y="50" width="100" height="100" fill="${diamond1}" transform="rotate(45, 100, 100)"/>
+    <rect x="70" y="70" width="60" height="60" fill="${diamond2}" transform="rotate(45, 100, 100)"/>
+    <rect x="85" y="85" width="30" height="30" fill="#FFFFFF" transform="rotate(45, 100, 100)"/>
+    <circle cx="100" cy="100" r="6" fill="#000000"/>
+    
+    <!-- Horizontal bar -->
+    <rect x="0" y="85" width="200" height="30" fill="${palette[4]}" opacity="0.85"/>
+    
+    <!-- Corner circles -->
+    <circle cx="35" cy="65" r="30" fill="${circle1}"/>
+    <circle cx="165" cy="145" r="28" fill="${circle2}"/>
+  `;
+      }
+
+      // Circle inside square
+      function generateCircleSquare(seed, palette) {
+        const size = 80 + (seed % 40);
+        const offset = (200 - size) / 2;
+
+        return `
+    <rect x="${offset}" y="${offset}" width="${size}" height="${size}" fill="${
+          palette[1]
+        }"/>
+    <circle cx="100" cy="100" r="${size / 2 - 10}" fill="${palette[2]}"/>
+    <circle cx="100" cy="100" r="${size / 4}" fill="${palette[3]}"/>
+    <polygon points="40,180 100,140 160,180" fill="${palette[4]}"/>
+    <rect x="0" y="0" width="60" height="60" fill="${
+      palette[5] || palette[0]
+    }"/>
+  `;
+      }
+
+      // Bold triangle grid
+      function generateTriangleGrid(seed, palette) {
+        return `
+    <polygon points="0,0 100,0 0,100" fill="${palette[1]}"/>
+    <polygon points="200,0 200,100 100,0" fill="${palette[2]}"/>
+    <polygon points="0,200 0,100 100,200" fill="${palette[3]}"/>
+    <polygon points="200,200 100,200 200,100" fill="${palette[4]}"/>
+    <circle cx="100" cy="100" r="40" fill="${palette[5] || "#FFFFFF"}"/>
+    <circle cx="100" cy="100" r="20" fill="${palette[0]}"/>
+  `;
+      }
+
+      // Bold horizontal/vertical stripes with shape
+      function generateBoldStripes(seed, palette) {
+        const isHorizontal = seed % 2 === 0;
+        let stripes = "";
+
+        if (isHorizontal) {
+          stripes = `
+      <rect x="0" y="0" width="200" height="50" fill="${palette[1]}"/>
+      <rect x="0" y="50" width="200" height="50" fill="${palette[2]}"/>
+      <rect x="0" y="100" width="200" height="50" fill="${palette[3]}"/>
+      <rect x="0" y="150" width="200" height="50" fill="${palette[4]}"/>
+    `;
+        } else {
+          stripes = `
+      <rect x="0" y="0" width="50" height="200" fill="${palette[1]}"/>
+      <rect x="50" y="0" width="50" height="200" fill="${palette[2]}"/>
+      <rect x="100" y="0" width="50" height="200" fill="${palette[3]}"/>
+      <rect x="150" y="0" width="50" height="200" fill="${palette[4]}"/>
+    `;
+        }
+
+        // Add focal shape
+        const shapeType = (seed >> 4) % 3;
+        if (shapeType === 0) {
+          stripes += `<circle cx="100" cy="100" r="50" fill="${
+            palette[5] || "#FFFFFF"
+          }"/>`;
+        } else if (shapeType === 1) {
+          stripes += `<rect x="60" y="60" width="80" height="80" fill="${
+            palette[5] || "#FFFFFF"
+          }"/>`;
+        } else {
+          stripes += `<polygon points="100,40 150,140 50,140" fill="${
+            palette[5] || "#FFFFFF"
+          }"/>`;
+        }
+
+        return stripes;
+      }
+
+      // Concentric shapes
+      function generateConcentricShapes(seed, palette) {
+        const isCircle = seed % 2 === 0;
+
+        if (isCircle) {
+          return `
+      <circle cx="100" cy="100" r="95" fill="${palette[1]}"/>
+      <circle cx="100" cy="100" r="75" fill="${palette[2]}"/>
+      <circle cx="100" cy="100" r="55" fill="${palette[3]}"/>
+      <circle cx="100" cy="100" r="35" fill="${palette[4]}"/>
+      <circle cx="100" cy="100" r="15" fill="${palette[5] || "#FFFFFF"}"/>
+    `;
+        } else {
+          return `
+      <rect x="5" y="5" width="190" height="190" fill="${palette[1]}"/>
+      <rect x="25" y="25" width="150" height="150" fill="${palette[2]}"/>
+      <rect x="45" y="45" width="110" height="110" fill="${palette[3]}"/>
+      <rect x="65" y="65" width="70" height="70" fill="${palette[4]}"/>
+      <rect x="85" y="85" width="30" height="30" fill="${
+        palette[5] || "#FFFFFF"
+      }"/>
+    `;
+        }
+      }
+
+      // Shapes in corners with center element
+      function generateCornerShapes(seed, palette) {
+        return `
+    <!-- Corners -->
+    <circle cx="0" cy="0" r="60" fill="${palette[1]}"/>
+    <circle cx="200" cy="0" r="50" fill="${palette[2]}"/>
+    <circle cx="0" cy="200" r="45" fill="${palette[3]}"/>
+    <circle cx="200" cy="200" r="55" fill="${palette[4]}"/>
+    
+    <!-- Center -->
+    <rect x="70" y="70" width="60" height="60" fill="${
+      palette[5] || "#FFFFFF"
+    }" transform="rotate(45, 100, 100)"/>
+    <circle cx="100" cy="100" r="15" fill="${palette[0]}"/>
+  `;
+      }
+
+      // Cross/plus composition
+      function generateCrossComposition(seed, palette) {
+        return `
+    <rect x="75" y="0" width="50" height="200" fill="${palette[1]}"/>
+    <rect x="0" y="75" width="200" height="50" fill="${palette[2]}"/>
+    <circle cx="100" cy="100" r="35" fill="${palette[3]}"/>
+    
+    <!-- Corner accents -->
+    <rect x="0" y="0" width="40" height="40" fill="${palette[4]}"/>
+    <rect x="160" y="160" width="40" height="40" fill="${
+      palette[5] || palette[4]
+    }"/>
+    <polygon points="160,0 200,0 200,40" fill="${palette[3]}"/>
+    <polygon points="0,160 0,200 40,200" fill="${palette[3]}"/>
+  `;
+      }
+
+      // Minimal circles composition
+      function generateMinimalCircles(seed, palette) {
+        const c1x = 30 + (seed % 40);
+        const c1y = 30 + ((seed >> 2) % 40);
+        const c2x = 130 + (seed % 50);
+        const c2y = 120 + ((seed >> 3) % 60);
+
+        return `
+    <circle cx="${c1x}" cy="${c1y}" r="45" fill="${palette[1]}"/>
+    <circle cx="${c2x}" cy="${c2y}" r="55" fill="${palette[2]}"/>
+    <circle cx="100" cy="170" r="35" fill="${palette[3]}"/>
+    
+    <!-- Small accents -->
+    <circle cx="170" cy="30" r="12" fill="${palette[4]}"/>
+    <circle cx="30" cy="150" r="8" fill="${palette[5] || palette[4]}"/>
+    
+    <!-- Line accent -->
+    <line x1="20" y1="100" x2="180" y2="100" stroke="${
+      palette[4]
+    }" stroke-width="3"/>
+  `;
+      }
+
+      // Get search term for Unsplash based on idea metadata
+      function getUnsplashSearchTerm(idea) {
+        const tags = idea.tags?.toLowerCase() || "";
+        const project = idea.project_name?.toLowerCase() || "";
+
+        // Map tags/projects to visual search terms
+        const mappings = {
+          orchestral: "orchestra concert hall",
+          electronic: "neon lights abstract",
+          ambient: "misty forest nature",
+          piano: "piano keys music",
+          psychedelic: "colorful abstract art",
+          cinematic: "dramatic landscape",
+          rock: "electric guitar concert",
+          acoustic: "acoustic guitar wood",
+          experimental: "abstract art modern",
+          folk: "nordic landscape mountains",
+          aurora: "northern lights aurora",
+          equinox: "sunset horizon golden",
+          forest: "forest trees nature",
+          ocean: "ocean waves water",
+          mountain: "mountain peaks snow",
+        };
+
+        for (const [key, term] of Object.entries(mappings)) {
+          if (tags.includes(key) || project.includes(key)) {
+            return term;
+          }
+        }
+
+        // Default to abstract/nature
+        return "abstract colorful gradient";
+      }
+
+      // Fetch Unsplash image
+      async function getUnsplashImage(idea) {
+        const cacheKey = idea.id;
+        if (unsplashCache[cacheKey]) {
+          return unsplashCache[cacheKey];
+        }
+
+        const searchTerm = getUnsplashSearchTerm(idea);
+        // Using Unsplash Source (no API key needed, but random images)
+        // For consistent images, we use a seed based on the idea ID
+        const seed = hashString(idea.id);
+        const url = `https://source.unsplash.com/400x400/?${encodeURIComponent(
+          searchTerm
+        )}&sig=${seed}`;
+
+        unsplashCache[cacheKey] = url;
+        return url;
+      }
+
+      // Toggle between SVG and Unsplash
+      function toggleAlbumArtMode() {
+        useUnsplash = !useUnsplash;
+        renderPlayerPanel();
+      }
+
+      // Generate small thumbnail for list
+      function generateThumbnail(title, tags = "", project = "") {
+        return generateAlbumArt(title, tags, project);
+      }
+
+      // Initialize
+      async function init() {
+        loadViewMode();
+        loadSidebarState();
+        setupUploadZone();
+        await loadIdeas();
+        setupEventListeners();
+      }
+
+      // Load all ideas from Supabase
+      async function loadIdeas() {
+        try {
+          const { data, error } = await supabase
+            .from("idea_tracks")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+          if (error) throw error;
+
+          allIdeas = data || [];
+          filteredIdeas = [...allIdeas];
+
+          renderProjectList();
+          renderIdeasTable();
+        } catch (err) {
+          console.error("Error loading ideas:", err);
+          ideasBody.innerHTML = `<tr><td colspan="5" style="color: var(--danger); padding: 20px;">Error loading ideas: ${err.message}</td></tr>`;
+        }
+      }
+
+      // Get unique projects with counts (handles comma-separated multi-project entries)
+      function getProjects() {
+        const counts = {};
+
+        allIdeas.forEach((idea) => {
+          // Skip archived items for regular project counts
+          if (idea.is_archived) return;
+
+          const projectStr = idea.project_name || "Unassigned";
+          // Split by comma to handle multi-project entries
+          const projects = projectStr
+            .split(",")
+            .map((p) => p.trim())
+            .filter((p) => p);
+
+          projects.forEach((proj) => {
+            counts[proj] = (counts[proj] || 0) + 1;
+          });
+        });
+
+        return Object.entries(counts)
+          .sort((a, b) => b[1] - a[1])
+          .map(([name, count]) => ({ name, count }));
+      }
+
+      // Get archived count
+      function getArchivedCount() {
+        return allIdeas.filter((idea) => idea.is_archived).length;
+      }
+
+      // Get non-archived count
+      function getActiveCount() {
+        return allIdeas.filter((idea) => !idea.is_archived).length;
+      }
+
+      // Render project sidebar
+      function renderProjectList() {
+        const projects = getProjects();
+        const archivedCount = getArchivedCount();
+
+        let html = `
+    <div class="project-item ${
+      !currentProject ? "active" : ""
+    }" onclick="selectProject(null)">
+      <span>All Ideas</span>
+      <span class="project-count">${getActiveCount()}</span>
+    </div>
+  `;
+
+        projects.forEach((proj) => {
+          html += `
+      <div class="project-item ${
+        currentProject === proj.name ? "active" : ""
+      }" onclick="selectProject('${escapeHtml(proj.name)}')">
+        <span>${escapeHtml(proj.name)}</span>
+        <span class="project-count">${proj.count}</span>
+      </div>
+    `;
+        });
+
+        // Add Archive at the bottom with a divider
+        if (archivedCount > 0) {
+          html += `
+      <div style="border-top: 1px solid var(--border); margin: 12px 0;"></div>
+      <div class="project-item ${
+        currentProject === "Archive" ? "active" : ""
+      }" onclick="selectProject('Archive')" style="color: var(--text-muted);">
+        <span>📦 Archive</span>
+        <span class="project-count">${archivedCount}</span>
+      </div>
+    `;
+        }
+
+        projectList.innerHTML = html;
+      }
+
+      // Select a project filter
+      function selectProject(projectName) {
+        currentProject = projectName;
+        renderProjectList();
+        applyFilters();
+      }
+
+      // Apply all filters (project, search, favorites, priority, archive)
+      function applyFilters() {
+        filteredIdeas = allIdeas.filter((idea) => {
+          // Archive filter - hide archived unless viewing Archive
+          if (currentProject === "Archive") {
+            if (!idea.is_archived) return false;
+          } else {
+            if (idea.is_archived) return false;
+          }
+
+          // Project filter - check if ANY of the idea's projects match
+          if (currentProject && currentProject !== "Archive") {
+            const ideaProjects = (idea.project_name || "Unassigned")
+              .split(",")
+              .map((p) => p.trim());
+            if (!ideaProjects.includes(currentProject)) return false;
+          }
+
+          // Search filter
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            const matchTitle = idea.title?.toLowerCase().includes(q);
+            const matchTags = idea.tags?.toLowerCase().includes(q);
+            const matchProject = idea.project_name?.toLowerCase().includes(q);
+            if (!matchTitle && !matchTags && !matchProject) return false;
+          }
+
+          // Filter buttons
+          if (currentFilter === "favorites" && !idea.is_favorite) return false;
+          if (
+            currentFilter === "high" &&
+            idea.priority?.toLowerCase() !== "high"
+          )
+            return false;
+          if (currentFilter === "excited" && (idea.excitement || 0) < 4)
+            return false;
+
+          return true;
+        });
+
+        // Update title
+        if (currentProject === "Archive") {
+          ideasTitle.textContent = "📦 Archive";
+        } else if (currentFilter === "excited") {
+          ideasTitle.textContent = "🔥 High Excitement";
+        } else if (currentProject) {
+          ideasTitle.textContent = currentProject;
+        } else if (currentFilter === "favorites") {
+          ideasTitle.textContent = "Favorites";
+        } else if (currentFilter === "high") {
+          ideasTitle.textContent = "High Priority";
+        } else {
+          ideasTitle.textContent = "All Ideas";
+        }
+
+        renderIdeasTable();
+      }
+
+      // Render ideas table
+      function renderIdeasTable() {
+        ideasCount.textContent = `${filteredIdeas.length} ideas`;
+
+        if (filteredIdeas.length === 0) {
+          ideasBody.innerHTML = `
+      <tr>
+        <td colspan="5">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <div>No ideas found</div>
+          </div>
+        </td>
+      </tr>
+    `;
+          ideasGrid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">
+        No ideas found
+      </div>
+    `;
+          return;
+        }
+
+        // Render list view
+        ideasBody.innerHTML = filteredIdeas
+          .map((idea) => {
+            const isCurrentlyPlaying = currentIdea?.id === idea.id;
+            const tags = idea.tags
+              ? idea.tags
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter((t) => t)
+              : [];
+            const priorityClass =
+              idea.priority?.toLowerCase() === "high"
+                ? "priority-high"
+                : idea.priority?.toLowerCase() === "low"
+                ? "priority-low"
+                : "";
+
+            // Split projects for display
+            const projects = (idea.project_name || "Unassigned")
+              .split(",")
+              .map((p) => p.trim())
+              .filter((p) => p);
+            const primaryProject = projects[0];
+            const hasMore = projects.length > 1;
+
+            // Generate thumbnail
+            const thumbnail = generateThumbnail(
+              idea.title,
+              idea.tags || "",
+              idea.project_name || ""
+            );
+
+            // Mini stars for excitement
+            const excitement = idea.excitement || 0;
+            const miniStars =
+              excitement > 0
+                ? `<span class="mini-stars">${"★".repeat(excitement)}</span>`
+                : "";
+
+            return `
+      <tr class="${isCurrentlyPlaying ? "playing" : ""}" onclick="playIdea('${
+              idea.id
+            }')">
+        <td>
+          <div class="idea-title-cell">
+            <div class="idea-thumbnail">${thumbnail}</div>
+            <span class="idea-title">${escapeHtml(idea.title)}</span>
+            ${miniStars}
+          </div>
+        </td>
+        <td>
+          <span class="idea-project">${escapeHtml(primaryProject)}</span>
+          ${
+            hasMore
+              ? `<span class="tag" style="margin-left: 4px;">+${
+                  projects.length - 1
+                }</span>`
+              : ""
+          }
+        </td>
+        <td>
+          <div class="idea-tags">
+            ${tags
+              .slice(0, 3)
+              .map((t) => `<span class="tag">${escapeHtml(t)}</span>`)
+              .join("")}
+            ${
+              tags.length > 3
+                ? `<span class="tag">+${tags.length - 3}</span>`
+                : ""
+            }
+          </div>
+        </td>
+        <td>
+          ${
+            idea.priority
+              ? `<span class="priority-badge ${priorityClass}">${escapeHtml(
+                  idea.priority
+                )}</span>`
+              : ""
+          }
+        </td>
+        <td>
+          <button class="favorite-btn ${
+            idea.is_favorite ? "active" : ""
+          }" onclick="event.stopPropagation(); toggleFavorite('${idea.id}')">
+            ${idea.is_favorite ? "★" : "☆"}
+          </button>
+        </td>
+      </tr>
+    `;
+          })
+          .join("");
+
+        // Render grid view
+        ideasGrid.innerHTML = filteredIdeas
+          .map((idea) => {
+            const isCurrentlyPlaying = currentIdea?.id === idea.id;
+            const isHighPriority = idea.priority?.toLowerCase() === "high";
+            const isFavorite = idea.is_favorite;
+
+            // Split projects for display
+            const projects = (idea.project_name || "Unassigned")
+              .split(",")
+              .map((p) => p.trim())
+              .filter((p) => p);
+            const primaryProject = projects[0];
+
+            // Generate album art
+            const albumArt = generateAlbumArt(
+              idea.title,
+              idea.tags || "",
+              idea.project_name || ""
+            );
+
+            // Excitement indicator
+            const excitement = idea.excitement || 0;
+            const excitementBadge =
+              excitement >= 4
+                ? '<span class="grid-badge" style="background: rgba(251, 191, 36, 0.9); color: #000;">🔥</span>'
+                : "";
+
+            return `
+      <div class="grid-card ${
+        isCurrentlyPlaying ? "playing" : ""
+      }" onclick="playIdea('${idea.id}')">
+        <div class="grid-card-art">
+          ${albumArt}
+          <div class="grid-card-badges">
+            ${excitementBadge}
+            ${
+              isHighPriority
+                ? '<span class="grid-badge priority">HIGH</span>'
+                : ""
+            }
+            ${isFavorite ? '<span class="grid-badge favorite">★</span>' : ""}
+          </div>
+          ${
+            isCurrentlyPlaying
+              ? `
+            <div class="grid-card-playing">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16"/>
+                <rect x="14" y="4" width="4" height="16"/>
+              </svg>
+              Playing
+            </div>
+          `
+              : ""
+          }
+        </div>
+        <div class="grid-card-info">
+          <div class="grid-card-title">${escapeHtml(idea.title)}</div>
+          <div class="grid-card-project">${escapeHtml(primaryProject)}</div>
+        </div>
+      </div>
+    `;
+          })
+          .join("");
+      }
+
+      // Set view mode
+      function setViewMode(mode) {
+        viewMode = mode;
+
+        // Update buttons
+        document.querySelectorAll(".view-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.view === mode);
+        });
+
+        // Toggle views
+        if (mode === "list") {
+          listView.style.display = "block";
+          gridView.style.display = "none";
+        } else {
+          listView.style.display = "none";
+          gridView.style.display = "block";
+        }
+
+        // Save preference
+        localStorage.setItem("ideas-view-mode", mode);
+      }
+
+      // Load saved view mode
+      function loadViewMode() {
+        const savedMode = localStorage.getItem("ideas-view-mode") || "list";
+        setViewMode(savedMode);
+      }
+
+      // Toggle sidebar visibility
+      function toggleSidebar() {
+        const mainLayout = document.getElementById("main-layout");
+        mainLayout.classList.toggle("sidebar-collapsed");
+
+        // Save preference
+        localStorage.setItem(
+          "ideas-sidebar-collapsed",
+          mainLayout.classList.contains("sidebar-collapsed")
+        );
+      }
+
+      // Load sidebar state
+      function loadSidebarState() {
+        const collapsed =
+          localStorage.getItem("ideas-sidebar-collapsed") === "true";
+        if (collapsed) {
+          document
+            .getElementById("main-layout")
+            .classList.add("sidebar-collapsed");
+        }
+      }
+
+      // Toggle archive status
+      async function toggleArchive(id) {
+        const idea = allIdeas.find((i) => i.id === id);
+        if (!idea) return;
+
+        const newArchiveState = !idea.is_archived;
+
+        try {
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update({ is_archived: newArchiveState })
+            .eq("id", id);
+
+          if (error) throw error;
+
+          // Update local state
+          idea.is_archived = newArchiveState;
+
+          // If we just archived and we're not viewing Archive, remove from filtered list
+          if (newArchiveState && currentProject !== "Archive") {
+            applyFilters();
+          }
+
+          renderIdeasTable();
+          renderPlayerPanel();
+          renderProjects();
+        } catch (err) {
+          console.error("Error toggling archive:", err);
+          alert("Failed to update archive status");
+        }
+      }
+
+      // Open in Dropbox
+      function openInDropbox() {
+        if (currentIdea?.dropbox_url) {
+          const previewUrl = currentIdea.dropbox_url.replace("dl=1", "dl=0");
+          window.open(previewUrl, "_blank");
+        }
+      }
+
+      // ============ EXCITEMENT RATING ============
+
+      async function setExcitement(level) {
+        if (!currentIdea) return;
+
+        // If clicking the same level, toggle it off
+        const newLevel = currentIdea.excitement === level ? 0 : level;
+
+        try {
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update({ excitement: newLevel })
+            .eq("id", currentIdea.id);
+
+          if (error) throw error;
+
+          currentIdea.excitement = newLevel;
+          renderPlayerPanel();
+          renderIdeasTable();
+        } catch (err) {
+          console.error("Error setting excitement:", err);
+        }
+      }
+
+      function previewExcitement(level) {
+        const stars = document.querySelectorAll(".excitement-star");
+        stars.forEach((star, i) => {
+          star.classList.toggle("hovered", i < level);
+        });
+      }
+
+      function resetExcitementPreview() {
+        const stars = document.querySelectorAll(".excitement-star");
+        const currentLevel = currentIdea?.excitement || 0;
+        stars.forEach((star, i) => {
+          star.classList.remove("hovered");
+        });
+      }
+
+      // ============ FILE UPLOAD ============
+
+      // Setup drag and drop
+      function setupUploadZone() {
+        const uploadZone = document.getElementById("upload-zone");
+
+        ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+          uploadZone.addEventListener(eventName, preventDefaults, false);
+          document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+          uploadZone.addEventListener(
+            eventName,
+            () => uploadZone.classList.add("dragover"),
+            false
+          );
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          uploadZone.addEventListener(
+            eventName,
+            () => uploadZone.classList.remove("dragover"),
+            false
+          );
+        });
+
+        uploadZone.addEventListener("drop", handleDrop, false);
+      }
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      function handleDrop(e) {
+        const files = e.dataTransfer.files;
+        handleFiles(files);
+      }
+
+      function handleFileSelect(e) {
+        const files = e.target.files;
+        handleFiles(files);
+      }
+
+      async function handleFiles(files) {
+        const audioFiles = Array.from(files).filter((f) =>
+          f.type.startsWith("audio/")
+        );
+
+        if (audioFiles.length === 0) {
+          alert("Please drop audio files (WAV, MP3, M4A, etc.)");
+          return;
+        }
+
+        const progressEl = document.getElementById("upload-progress");
+
+        for (let i = 0; i < audioFiles.length; i++) {
+          const file = audioFiles[i];
+          progressEl.textContent = `Uploading ${i + 1}/${audioFiles.length}: ${
+            file.name
+          }`;
+
+          try {
+            await uploadAudioFile(file);
+          } catch (err) {
+            console.error("Upload failed:", err);
+            progressEl.textContent = `Failed: ${file.name}`;
+            await new Promise((r) => setTimeout(r, 2000));
+          }
+        }
+
+        progressEl.textContent = `✓ Uploaded ${audioFiles.length} file(s)`;
+        setTimeout(() => {
+          progressEl.textContent = "";
+        }, 3000);
+
+        // Reload ideas
+        await loadIdeas();
+      }
+
+      async function uploadAudioFile(file) {
+        // Generate a unique ID for this idea
+        const ideaId = crypto.randomUUID();
+
+        // Clean filename for storage
+        const cleanName = file.name.replace(/[^a-zA-Z0-9.-]/g, "-");
+        const storagePath = `${ideaId}/${cleanName}`;
+
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("idea-bounces")
+          .upload(storagePath, file, {
+            contentType: file.type,
+            upsert: true,
+          });
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: urlData } = supabase.storage
+          .from("idea-bounces")
+          .getPublicUrl(storagePath);
+
+        // Create database entry
+        const title = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+
+        const { error: dbError } = await supabase.from("idea_tracks").insert({
+          id: ideaId,
+          title: title,
+          supabase_url: urlData.publicUrl,
+          project_name: "Unassigned",
+          is_favorite: false,
+          is_archived: false,
+          excitement: 0,
+        });
+
+        if (dbError) throw dbError;
+      }
+
+      // Play an idea
+      // Loading state
+      let isLoading = false;
+
+      function playIdea(id) {
+        const idea = allIdeas.find((i) => i.id === id);
+        if (!idea) return;
+
+        currentIdea = idea;
+        isLoading = true;
+        isPlaying = false;
+
+        // Update table to show playing state
+        renderIdeasTable();
+        renderPlayerPanel();
+
+        // Prefer supabase_url (direct playback), fallback to dropbox_url
+        const audioUrl = idea.supabase_url || idea.dropbox_url;
+
+        if (audioUrl) {
+          // Reset audio
+          audio.pause();
+          audio.currentTime = 0;
+
+          // Set source and try to play
+          audio.src = audioUrl;
+          audio.load();
+
+          audio
+            .play()
+            .then(() => {
+              isLoading = false;
+              isPlaying = true;
+              renderPlayerPanel();
+            })
+            .catch((err) => {
+              console.error("Playback error:", err);
+              isLoading = false;
+              isPlaying = false;
+              renderPlayerPanel();
+            });
+        } else {
+          isLoading = false;
+          renderPlayerPanel();
+        }
+      }
+
+      // Open in new tab (fallback for playback issues)
+      function openInNewTab() {
+        if (currentIdea?.dropbox_url) {
+          // Convert dl=1 to dl=0 for browser preview
+          const previewUrl = currentIdea.dropbox_url.replace("dl=1", "dl=0");
+          window.open(previewUrl, "_blank");
+        }
+      }
+
+      // Render player panel
+      function renderPlayerPanel() {
+        if (!currentIdea) {
+          playerContent.innerHTML = `
+      <div class="player-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 40px; height: 40px; margin-bottom: 12px; opacity: 0.3;">
+          <circle cx="12" cy="12" r="10"/>
+          <polygon points="10 8 16 12 10 16 10 8"/>
+        </svg>
+        <div>Select an idea to play</div>
+      </div>
+    `;
+          return;
+        }
+
+        const tags = currentIdea.tags
+          ? currentIdea.tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter((t) => t)
+          : [];
+
+        // Loading indicator
+        const loadingIndicator = isLoading
+          ? `
+    <div style="text-align: center; padding: 12px; color: var(--text-muted); font-size: 12px;">
+      Loading audio...
+    </div>
+  `
+          : "";
+
+        // Play button content based on state
+        let playBtnContent;
+        if (isLoading) {
+          playBtnContent = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;">
+      <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="8"/>
+    </svg>`;
+        } else if (isPlaying) {
+          playBtnContent = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="6" y="4" width="4" height="16"/>
+      <rect x="14" y="4" width="4" height="16"/>
+    </svg>`;
+        } else {
+          playBtnContent = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </svg>`;
+        }
+
+        // Determine audio source
+        const hasSupabaseUrl = !!currentIdea.supabase_url;
+        const sourceIndicator = hasSupabaseUrl
+          ? `<span style="display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--success); margin-left: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Supabase
+       </span>`
+          : `<span style="display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--warning); margin-left: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;">
+          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        Dropbox
+       </span>`;
+
+        // Generate album art
+        const albumArtSvg = generateAlbumArt(
+          currentIdea.title,
+          currentIdea.tags || "",
+          currentIdea.project_name || ""
+        );
+        const unsplashUrl = `https://source.unsplash.com/400x400/?${encodeURIComponent(
+          getUnsplashSearchTerm(currentIdea)
+        )}&sig=${hashString(currentIdea.id)}`;
+
+        const albumArtHtml = useUnsplash
+          ? `<img src="${unsplashUrl}" alt="Album art" loading="lazy" onerror="this.style.display='none'">`
+          : albumArtSvg;
+
+        playerContent.innerHTML = `
+    <style>
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    </style>
+    
+    <!-- Album Art - Full Width -->
+    <div class="album-art">
+      ${albumArtHtml}
+      <button class="album-art-toggle" onclick="toggleAlbumArtMode()">
+        ${useUnsplash ? "✨ Generative" : "📷 Photo"}
+      </button>
+    </div>
+    
+    <!-- Title & Project -->
+    <div class="now-playing-title">${escapeHtml(currentIdea.title)}</div>
+    <div class="now-playing-project">${escapeHtml(
+      currentIdea.project_name || "Unassigned"
+    )}</div>
+    
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+      <div class="progress-bar-container" onclick="seekAudio(event)">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="time-display">
+        <span id="current-time">0:00</span>
+        <span id="duration">0:00</span>
+      </div>
+      <div class="playback-buttons">
+        <button class="skip-btn" onclick="skipBack()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="19 20 9 12 19 4 19 20"/>
+            <line x1="5" y1="19" x2="5" y2="5"/>
+          </svg>
+        </button>
+        <button class="play-btn" onclick="togglePlay()" ${
+          isLoading ? "disabled" : ""
+        }>
+          ${playBtnContent}
+        </button>
+        <button class="skip-btn" onclick="skipForward()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 4 15 12 5 20 5 4"/>
+            <line x1="19" y1="5" x2="19" y2="19"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Excitement Rating -->
+    <div class="excitement-rating" id="excitement-rating">
+      <span class="excitement-label">Excitement:</span>
+      ${[1, 2, 3, 4, 5]
+        .map(
+          (n) => `
+        <button class="excitement-star ${
+          (currentIdea.excitement || 0) >= n ? "active" : ""
+        }" 
+                onclick="setExcitement(${n})"
+                onmouseenter="previewExcitement(${n})"
+                onmouseleave="resetExcitementPreview()">
+          ★
+        </button>
+      `
+        )
+        .join("")}
+    </div>
+    
+    <!-- Quick Actions Row - Icon buttons only -->
+    <div class="quick-actions">
+      <button class="icon-btn ${
+        currentIdea.is_favorite ? "active" : ""
+      }" onclick="toggleFavorite('${currentIdea.id}')" title="${
+          currentIdea.is_favorite ? "Remove from favorites" : "Add to favorites"
+        }">
+        <svg viewBox="0 0 24 24" fill="${
+          currentIdea.is_favorite ? "currentColor" : "none"
+        }" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </button>
+      ${
+        currentIdea.dropbox_url
+          ? `
+        <button class="icon-btn" onclick="openInDropbox()" title="Open in Dropbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </button>
+      `
+          : ""
+      }
+      <button class="icon-btn ${
+        currentIdea.is_archived ? "active warning" : ""
+      }" onclick="toggleArchive('${currentIdea.id}')" title="${
+          currentIdea.is_archived ? "Unarchive" : "Archive"
+        }">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="21 8 21 21 3 21 3 8"/>
+          <rect x="1" y="3" width="22" height="5"/>
+          <line x1="10" y1="12" x2="14" y2="12"/>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Notes Section -->
+    <div class="notes-section">
+      <textarea class="notes-textarea" id="notes-textarea" placeholder="Add notes...">${escapeHtml(
+        currentIdea.notes || ""
+      )}</textarea>
+      <button class="btn btn-primary btn-sm" onclick="saveNotes()">Save</button>
+    </div>
+  `;
+      }
+
+      // Toggle play/pause
+      function togglePlay() {
+        if (audio.paused) {
+          audio.play();
+          isPlaying = true;
+        } else {
+          audio.pause();
+          isPlaying = false;
+        }
+        renderPlayerPanel();
+      }
+
+      // Skip controls
+      function skipBack() {
+        audio.currentTime = Math.max(0, audio.currentTime - 10);
+      }
+
+      function skipForward() {
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
+      }
+
+      // Seek audio
+      function seekAudio(event) {
+        const rect = event.currentTarget.getBoundingClientRect();
+        const percent = (event.clientX - rect.left) / rect.width;
+        audio.currentTime = percent * audio.duration;
+      }
+
+      // Update progress bar
+      audio.addEventListener("timeupdate", () => {
+        const progressBar = document.getElementById("progress-bar");
+        const currentTimeEl = document.getElementById("current-time");
+        const durationEl = document.getElementById("duration");
+
+        if (progressBar && audio.duration) {
+          const percent = (audio.currentTime / audio.duration) * 100;
+          progressBar.style.width = percent + "%";
+        }
+
+        if (currentTimeEl) {
+          currentTimeEl.textContent = formatTime(audio.currentTime);
+        }
+
+        if (durationEl && audio.duration) {
+          durationEl.textContent = formatTime(audio.duration);
+        }
+      });
+
+      audio.addEventListener("ended", () => {
+        isPlaying = false;
+        renderPlayerPanel();
+      });
+
+      audio.addEventListener("play", () => {
+        isLoading = false;
+        isPlaying = true;
+        renderPlayerPanel();
+      });
+
+      audio.addEventListener("pause", () => {
+        isPlaying = false;
+      });
+
+      audio.addEventListener("canplaythrough", () => {
+        isLoading = false;
+        renderPlayerPanel();
+      });
+
+      audio.addEventListener("error", (e) => {
+        console.error("Audio error:", e);
+        isLoading = false;
+        isPlaying = false;
+        renderPlayerPanel();
+      });
+
+      audio.addEventListener("loadstart", () => {
+        isLoading = true;
+      });
+
+      // Format time as m:ss
+      function formatTime(seconds) {
+        if (!seconds || isNaN(seconds)) return "0:00";
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, "0")}`;
+      }
+
+      // Toggle favorite
+      async function toggleFavorite(id) {
+        const idea = allIdeas.find((i) => i.id === id);
+        if (!idea) return;
+
+        const newValue = !idea.is_favorite;
+
+        try {
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update({ is_favorite: newValue })
+            .eq("id", id);
+
+          if (error) throw error;
+
+          idea.is_favorite = newValue;
+          if (currentIdea?.id === id) {
+            currentIdea.is_favorite = newValue;
+          }
+
+          renderIdeasTable();
+          renderPlayerPanel();
+        } catch (err) {
+          console.error("Error updating favorite:", err);
+        }
+      }
+
+      // Save notes
+      async function saveNotes() {
+        if (!currentIdea) return;
+
+        const textarea = document.getElementById("notes-textarea");
+        const notes = textarea.value;
+
+        try {
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update({ notes: notes })
+            .eq("id", currentIdea.id);
+
+          if (error) throw error;
+
+          currentIdea.notes = notes;
+          const idea = allIdeas.find((i) => i.id === currentIdea.id);
+          if (idea) idea.notes = notes;
+
+          // Brief visual feedback
+          const btn = document.querySelector(".notes-actions .btn");
+          btn.textContent = "Saved!";
+          setTimeout(() => {
+            btn.textContent = "Save Notes";
+          }, 1500);
+        } catch (err) {
+          console.error("Error saving notes:", err);
+          alert("Error saving notes: " + err.message);
+        }
+      }
+
+      // Export filtered ideas as CSV
+      function exportCSV() {
+        const headers = [
+          "title",
+          "project_name",
+          "tags",
+          "priority",
+          "is_favorite",
+          "notes",
+          "dropbox_url",
+        ];
+        const rows = [headers.join(",")];
+
+        filteredIdeas.forEach((idea) => {
+          const row = headers.map((h) => {
+            let val = idea[h] ?? "";
+            if (typeof val === "boolean") val = val ? "true" : "false";
+            // Escape CSV
+            val = String(val);
+            if (val.includes(",") || val.includes('"') || val.includes("\n")) {
+              val = '"' + val.replace(/"/g, '""') + '"';
+            }
+            return val;
+          });
+          rows.push(row.join(","));
+        });
+
+        const csv = rows.join("\n");
+        const blob = new Blob([csv], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `ideas-export-${new Date()
+          .toISOString()
+          .slice(0, 10)}.csv`;
+        a.click();
+
+        URL.revokeObjectURL(url);
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        // Search input
+        searchInput.addEventListener("input", (e) => {
+          searchQuery = e.target.value;
+          applyFilters();
+        });
+
+        // Filter buttons
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document
+              .querySelectorAll(".filter-btn")
+              .forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentFilter = btn.dataset.filter;
+            applyFilters();
+          });
+        });
+
+        // Mobile player panel toggle
+        const playerPanel = document.querySelector(".player-panel");
+        const playerHeader = document.querySelector(".player-header");
+
+        if (playerHeader) {
+          playerHeader.addEventListener("click", () => {
+            if (window.innerWidth <= 768) {
+              playerPanel.classList.toggle("expanded");
+            }
+          });
+        }
+
+        // Expand player when a track is selected on mobile
+        const originalPlayIdea = window.playIdea;
+        window.playIdea = function (id) {
+          originalPlayIdea(id);
+          if (window.innerWidth <= 768) {
+            playerPanel.classList.add("expanded");
+          }
+        };
+      }
+
+      // Escape HTML
+      function escapeHtml(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      // Initialize on load
+      init();
+    </script>
+  </body>
+</html>
