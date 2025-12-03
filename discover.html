@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Discover — Idea Discovery</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #0a0a0a;
+        --bg-card: #111111;
+        --bg-hover: #1a1a1a;
+        --bg-input: #161616;
+        --border: rgba(255, 255, 255, 0.08);
+        --text: #f0f0f0;
+        --text-soft: #a0a0a0;
+        --text-muted: #606060;
+        --accent: #0ea5e9;
+        --accent-hover: #38bdf8;
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --heart: #3b82f6;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Header */
+      .header {
+        text-align: center;
+        padding: 40px 20px 20px;
+      }
+
+      .header h1 {
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .header p {
+        color: var(--text-soft);
+        font-size: 16px;
+      }
+
+      .back-link {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 0.2s;
+      }
+
+      .back-link:hover {
+        color: var(--text);
+      }
+
+      .back-link svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Progress */
+      .progress-container {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .progress-text {
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+
+      .progress-bar-bg {
+        width: 200px;
+        height: 4px;
+        background: var(--bg-card);
+        border-radius: 2px;
+        margin: 10px auto 0;
+        overflow: hidden;
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+      }
+
+      /* Card Container */
+      .card-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 0 20px;
+        min-height: 480px;
+      }
+
+      /* Discovery Card */
+      .discovery-card {
+        position: relative;
+        width: 100%;
+        background: var(--bg-card);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        cursor: grab;
+        transition: transform 0.1s ease, opacity 0.1s ease;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .discovery-card:active {
+        cursor: grabbing;
+      }
+
+      .discovery-card.dragging {
+        transition: none;
+      }
+
+      .discovery-card.swiping-left {
+        animation: swipeLeft 0.4s ease forwards;
+      }
+
+      .discovery-card.swiping-right {
+        animation: swipeRight 0.4s ease forwards;
+      }
+
+      .discovery-card.swiping-down {
+        animation: swipeDown 0.4s ease forwards;
+      }
+
+      @keyframes swipeLeft {
+        to {
+          transform: translateX(-150%) rotate(-20deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes swipeRight {
+        to {
+          transform: translateX(150%) rotate(20deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes swipeDown {
+        to {
+          transform: translateY(150%);
+          opacity: 0;
+        }
+      }
+
+      /* Swipe indicators */
+      .swipe-indicator {
+        position: absolute;
+        top: 20px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 18px;
+        opacity: 0;
+        transition: opacity 0.15s;
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      .swipe-indicator.left {
+        right: 20px;
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+      }
+
+      .swipe-indicator.right {
+        left: 20px;
+        background: rgba(59, 130, 246, 0.9);
+        color: white;
+      }
+
+      .swipe-indicator.visible {
+        opacity: 1;
+      }
+
+      /* Album Art */
+      .card-art {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1;
+        background: var(--bg);
+        overflow: hidden;
+      }
+
+      .card-art img,
+      .card-art svg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 60px 20px 20px;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+      }
+
+      .card-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        line-height: 1.2;
+      }
+
+      .card-meta {
+        font-size: 14px;
+        color: var(--text-soft);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .card-meta .dot {
+        width: 4px;
+        height: 4px;
+        background: var(--text-muted);
+        border-radius: 50%;
+      }
+
+      /* Card Info Section */
+      .card-info {
+        padding: 16px 20px;
+        background: var(--bg-card);
+      }
+
+      /* Audio Player */
+      .audio-player {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .play-btn-small {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--bg);
+        border: 2px solid var(--border);
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+
+      .play-btn-small:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .play-btn-small svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .waveform-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .waveform {
+        height: 32px;
+        background: var(--bg);
+        border-radius: 6px;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .waveform-progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        background: rgba(14, 165, 233, 0.3);
+        pointer-events: none;
+      }
+
+      .waveform-bars {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        padding: 4px 8px;
+        gap: 2px;
+      }
+
+      .waveform-bar {
+        flex: 1;
+        background: var(--text-muted);
+        border-radius: 1px;
+        transition: background 0.1s;
+      }
+
+      .waveform-bar.active {
+        background: var(--accent);
+      }
+
+      .audio-time {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-align: right;
+      }
+
+      /* Meta Info */
+      .meta-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-top: 1px solid var(--border);
+        font-size: 13px;
+      }
+
+      .meta-label {
+        color: var(--text-muted);
+      }
+
+      .meta-value {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .priority-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .priority-high {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+      }
+
+      .priority-medium {
+        background: rgba(251, 191, 36, 0.2);
+        color: #f59e0b;
+      }
+
+      .priority-low {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        background: var(--bg);
+        border-radius: 4px;
+        font-size: 11px;
+        color: var(--text-soft);
+        margin-left: 4px;
+      }
+
+      /* Action Buttons */
+      .action-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        padding: 30px 20px;
+      }
+
+      .action-btn {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        background: var(--bg-card);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .action-btn svg {
+        width: 28px;
+        height: 28px;
+      }
+
+      .action-btn.archive {
+        color: var(--danger);
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+
+      .action-btn.archive:hover {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: var(--danger);
+        transform: scale(1.1);
+      }
+
+      .action-btn.skip {
+        color: var(--text-muted);
+      }
+
+      .action-btn.skip:hover {
+        color: var(--text);
+        border-color: var(--text-muted);
+        transform: scale(1.1);
+      }
+
+      .action-btn.heart {
+        color: var(--heart);
+        border-color: rgba(59, 130, 246, 0.3);
+      }
+
+      .action-btn.heart:hover {
+        background: rgba(59, 130, 246, 0.15);
+        border-color: var(--heart);
+        transform: scale(1.1);
+      }
+
+      /* Stats */
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .stat-number.promoted {
+        color: var(--heart);
+      }
+
+      .stat-number.archived {
+        color: var(--text-muted);
+      }
+
+      .stat-number.remaining {
+        color: var(--text);
+      }
+
+      .stat-label {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+
+      /* Keyboard hints */
+      .keyboard-hints {
+        text-align: center;
+        padding: 10px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      .keyboard-hints kbd {
+        display: inline-block;
+        padding: 2px 8px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-family: inherit;
+        margin: 0 2px;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+      }
+
+      .empty-state svg {
+        width: 80px;
+        height: 80px;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+        opacity: 0.5;
+      }
+
+      .empty-state h2 {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+
+      .empty-state p {
+        color: var(--text-soft);
+        margin-bottom: 24px;
+      }
+
+      /* Results Screen */
+      .results-screen {
+        display: none;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .results-screen.visible {
+        display: block;
+      }
+
+      .results-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .results-header h2 {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+
+      .results-header p {
+        color: var(--text-soft);
+      }
+
+      .results-stats {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+
+      .results-section {
+        margin-bottom: 30px;
+      }
+
+      .results-section h3 {
+        font-size: 16px;
+        color: var(--text-soft);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .results-section h3 .count {
+        background: var(--bg-card);
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 13px;
+      }
+
+      /* Results Table */
+      .results-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .results-table th {
+        text-align: left;
+        padding: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .results-table td {
+        padding: 12px;
+        font-size: 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .results-table tr:hover {
+        background: var(--bg-hover);
+      }
+
+      .result-title-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .result-thumbnail {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .result-thumbnail svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Apply Button */
+      .apply-btn {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto;
+        padding: 16px 32px;
+        background: var(--heart);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .apply-btn:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+      }
+
+      .apply-btn:disabled {
+        background: var(--text-muted);
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .back-to-ideas {
+        display: block;
+        text-align: center;
+        color: var(--text-soft);
+        margin-top: 16px;
+        text-decoration: none;
+      }
+
+      .back-to-ideas:hover {
+        color: var(--text);
+      }
+
+      /* Loading */
+      .loading {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-muted);
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading svg {
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 16px;
+      }
+
+      /* Mobile adjustments */
+      @media (max-width: 480px) {
+        .header {
+          padding: 20px 16px 12px;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+
+        .header p {
+          font-size: 14px;
+        }
+
+        .progress-container {
+          margin-bottom: 16px;
+        }
+
+        .card-container {
+          padding: 0 16px;
+          min-height: auto;
+        }
+
+        .card-art {
+          aspect-ratio: 1;
+        }
+
+        .card-title {
+          font-size: 18px;
+        }
+
+        .card-meta {
+          font-size: 13px;
+        }
+
+        .card-info {
+          padding: 12px 16px;
+        }
+
+        .audio-player {
+          gap: 10px;
+          margin-bottom: 12px;
+        }
+
+        .play-btn-small {
+          width: 40px;
+          height: 40px;
+        }
+
+        .play-btn-small svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        .waveform {
+          height: 28px;
+        }
+
+        .meta-row {
+          padding: 6px 0;
+          font-size: 12px;
+        }
+
+        .action-buttons {
+          gap: 16px;
+          padding: 16px;
+        }
+
+        .action-btn {
+          width: 54px;
+          height: 54px;
+        }
+
+        .action-btn svg {
+          width: 22px;
+          height: 22px;
+        }
+
+        .stats {
+          gap: 30px;
+          padding: 16px;
+          margin-top: 10px;
+        }
+
+        .stat-number {
+          font-size: 26px;
+        }
+
+        .stat-label {
+          font-size: 11px;
+        }
+
+        .keyboard-hints {
+          display: none;
+        }
+
+        .back-link {
+          top: 12px;
+          left: 12px;
+          font-size: 12px;
+        }
+
+        .back-link svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      /* Very small phones */
+      @media (max-width: 360px) {
+        .header h1 {
+          font-size: 22px;
+        }
+
+        .card-title {
+          font-size: 16px;
+        }
+
+        .card-overlay {
+          padding: 40px 16px 16px;
+        }
+
+        .action-buttons {
+          gap: 12px;
+          padding: 12px;
+        }
+
+        .action-btn {
+          width: 48px;
+          height: 48px;
+        }
+
+        .action-btn svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        .stats {
+          gap: 20px;
+        }
+
+        .stat-number {
+          font-size: 22px;
+        }
+      }
+
+      /* Tablet */
+      @media (min-width: 481px) and (max-width: 768px) {
+        .card-container {
+          max-width: 380px;
+        }
+      }
+
+      /* Landscape phone */
+      @media (max-height: 600px) and (orientation: landscape) {
+        .header {
+          padding: 12px 20px 8px;
+        }
+
+        .header h1 {
+          font-size: 20px;
+          margin-bottom: 4px;
+        }
+
+        .header p {
+          font-size: 12px;
+        }
+
+        .progress-container {
+          margin-bottom: 8px;
+        }
+
+        .card-container {
+          max-width: 320px;
+        }
+
+        .card-art {
+          aspect-ratio: 4/3;
+        }
+
+        .card-info {
+          padding: 10px 16px;
+        }
+
+        .meta-row {
+          padding: 4px 0;
+          font-size: 11px;
+        }
+
+        .action-buttons {
+          padding: 10px;
+        }
+
+        .action-btn {
+          width: 44px;
+          height: 44px;
+        }
+
+        .stats {
+          padding: 10px;
+          margin-top: 5px;
+        }
+
+        .stat-number {
+          font-size: 20px;
+        }
+
+        .stat-label {
+          font-size: 10px;
+        }
+      }
+
+      /* Results screen responsive */
+      @media (max-width: 600px) {
+        .results-screen {
+          padding: 16px;
+        }
+
+        .results-header h2 {
+          font-size: 22px;
+        }
+
+        .results-stats {
+          gap: 24px;
+          margin-bottom: 24px;
+        }
+
+        .results-table th,
+        .results-table td {
+          padding: 10px 8px;
+          font-size: 12px;
+        }
+
+        .results-table th:nth-child(3),
+        .results-table td:nth-child(3) {
+          display: none;
+        }
+
+        .result-thumbnail {
+          width: 32px;
+          height: 32px;
+        }
+
+        .apply-btn {
+          padding: 14px 24px;
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="ideas.html" class="back-link">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Back to Ideas
+    </a>
+
+    <!-- Discovery Screen -->
+    <div id="discovery-screen">
+      <div class="header">
+        <h1>Idea Discovery</h1>
+        <p>Swipe through your unrated seeds</p>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-text" id="progress-text">Loading...</div>
+        <div class="progress-bar-bg">
+          <div
+            class="progress-bar-fill"
+            id="progress-bar"
+            style="width: 0%"
+          ></div>
+        </div>
+      </div>
+
+      <div class="card-container" id="card-container">
+        <!-- Cards will be inserted here -->
+      </div>
+
+      <div class="action-buttons">
+        <button class="action-btn archive" id="btn-archive" title="Archive (←)">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path
+              d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+            />
+          </svg>
+        </button>
+        <button class="action-btn skip" id="btn-skip" title="Skip (↓)">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <button class="action-btn heart" id="btn-heart" title="Promote (→)">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-number promoted" id="stat-promoted">0</div>
+          <div class="stat-label">Promoted</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number archived" id="stat-archived">0</div>
+          <div class="stat-label">Archived</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number remaining" id="stat-remaining">0</div>
+          <div class="stat-label">Remaining</div>
+        </div>
+      </div>
+
+      <div class="keyboard-hints">
+        <kbd>←</kbd> Archive &nbsp;&nbsp; <kbd>↓</kbd> Skip &nbsp;&nbsp;
+        <kbd>→</kbd> Promote &nbsp;&nbsp; <kbd>Space</kbd> Play/Pause
+      </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="results-screen">
+      <div class="results-header">
+        <h2>Discovery Complete! 🎉</h2>
+        <p>Here's what you decided</p>
+      </div>
+
+      <div class="results-stats">
+        <div class="stat">
+          <div class="stat-number promoted" id="final-promoted">0</div>
+          <div class="stat-label">Promoted</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number archived" id="final-archived">0</div>
+          <div class="stat-label">Archived</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number" id="final-skipped">0</div>
+          <div class="stat-label">Skipped</div>
+        </div>
+      </div>
+
+      <div class="results-section" id="promoted-section">
+        <h3>
+          💙 Promoted Ideas <span class="count" id="promoted-count">0</span>
+        </h3>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Project</th>
+              <th>New Priority</th>
+            </tr>
+          </thead>
+          <tbody id="promoted-list"></tbody>
+        </table>
+      </div>
+
+      <button class="apply-btn" id="apply-btn">
+        Apply Changes (Set Priority to Medium + 3★)
+      </button>
+
+      <a href="ideas.html" class="back-to-ideas">Return to Ideas</a>
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="empty-state" style="display: none">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+        <line x1="9" y1="9" x2="9.01" y2="9" />
+        <line x1="15" y1="9" x2="15.01" y2="9" />
+      </svg>
+      <h2>All Caught Up!</h2>
+      <p>You've rated all your ideas. Nice work!</p>
+      <a
+        href="ideas.html"
+        class="apply-btn"
+        style="display: inline-block; width: auto"
+        >Back to Ideas</a
+      >
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="audio" preload="auto"></audio>
+
+    <script>
+      // Supabase setup
+      const SUPABASE_URL = "https://cimngwcwvbspkcqdzqfg.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbW5nd2N3dmJzcGtjcWR6cWZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1MzA1MDIsImV4cCI6MjA4MDEwNjUwMn0.L9Tvj4mlSjAtiSVMPkaegRF4laZl_E15ALZFdRhSzUg";
+      const supabase = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+      // State
+      let ideas = [];
+      let currentIndex = 0;
+      let promotedIdeas = [];
+      let archivedIdeas = [];
+      let skippedIdeas = [];
+      let isPlaying = false;
+      let audio = document.getElementById("audio");
+      let currentCard = null;
+
+      // DOM Elements
+      const cardContainer = document.getElementById("card-container");
+      const progressText = document.getElementById("progress-text");
+      const progressBar = document.getElementById("progress-bar");
+      const statPromoted = document.getElementById("stat-promoted");
+      const statArchived = document.getElementById("stat-archived");
+      const statRemaining = document.getElementById("stat-remaining");
+
+      // Load unrated ideas
+      async function loadIdeas() {
+        try {
+          const { data, error } = await supabase
+            .from("idea_tracks")
+            .select("*")
+            .eq("is_archived", false)
+            .or("excitement.is.null,excitement.eq.0")
+            .order("created_at", { ascending: false });
+
+          if (error) throw error;
+
+          // Shuffle the array for discovery
+          ideas = shuffleArray(data || []);
+
+          if (ideas.length === 0) {
+            showEmptyState();
+            return;
+          }
+
+          updateStats();
+          renderCurrentCard();
+        } catch (err) {
+          console.error("Error loading ideas:", err);
+          cardContainer.innerHTML =
+            '<div class="loading">Error loading ideas</div>';
+        }
+      }
+
+      // Shuffle array (Fisher-Yates)
+      function shuffleArray(array) {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      // Show empty state
+      function showEmptyState() {
+        document.getElementById("discovery-screen").style.display = "none";
+        document.getElementById("empty-state").style.display = "block";
+      }
+
+      // Update stats
+      function updateStats() {
+        const remaining = ideas.length - currentIndex;
+        statPromoted.textContent = promotedIdeas.length;
+        statArchived.textContent = archivedIdeas.length;
+        statRemaining.textContent = remaining;
+
+        const progress =
+          ideas.length > 0 ? (currentIndex / ideas.length) * 100 : 0;
+        progressBar.style.width = progress + "%";
+        progressText.textContent = `${currentIndex + 1} of ${ideas.length}`;
+      }
+
+      // Generate album art (same as ideas.html)
+      function hashString(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          const char = str.charCodeAt(i);
+          hash = (hash << 5) - hash + char;
+          hash = hash & hash;
+        }
+        return Math.abs(hash);
+      }
+
+      function generatePalette(seed) {
+        const palettes = [
+          ["#FF3366", "#33CCFF", "#FFCC00", "#00CC99", "#9933FF", "#FF6600"],
+          ["#00D4FF", "#FF0080", "#FFE600", "#00FF88", "#8B5CF6", "#FF4D4D"],
+          ["#FF6B35", "#F7C59F", "#2EC4B6", "#E71D36", "#011627", "#FDFFFC"],
+          ["#264653", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51", "#FFFFFF"],
+          ["#FF69B4", "#00CED1", "#FFD700", "#FF6347", "#9370DB", "#00FA9A"],
+          ["#1A1A2E", "#16213E", "#0F3460", "#E94560", "#FF9F1C", "#00F5D4"],
+          ["#000000", "#FFFFFF", "#FF0000", "#0000FF", "#FFFF00", "#00FF00"],
+          ["#F72585", "#7209B7", "#3A0CA3", "#4361EE", "#4CC9F0", "#FFFFFF"],
+          ["#2D3436", "#00B894", "#FDCB6E", "#E17055", "#6C5CE7", "#00CEC9"],
+          ["#000000", "#FFFFFF", "#FF5733", "#33FF57", "#3357FF", "#FF33F5"],
+        ];
+        return palettes[seed % palettes.length];
+      }
+
+      function generateAlbumArt(title, tags, project) {
+        const seed = hashString(title + tags + project);
+        const palette = generatePalette(seed);
+        const patternType = seed % 8;
+
+        let svg = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">`;
+        svg += `<rect width="200" height="200" fill="${palette[0]}"/>`;
+
+        // Simplified patterns
+        if (patternType === 0) {
+          svg += `<rect x="50" y="50" width="100" height="100" fill="${palette[1]}" transform="rotate(45, 100, 100)"/>`;
+          svg += `<circle cx="100" cy="100" r="30" fill="${palette[2]}"/>`;
+        } else if (patternType === 1) {
+          svg += `<circle cx="100" cy="100" r="70" fill="${palette[1]}"/>`;
+          svg += `<circle cx="100" cy="100" r="40" fill="${palette[2]}"/>`;
+        } else if (patternType === 2) {
+          svg += `<polygon points="100,20 180,180 20,180" fill="${palette[1]}"/>`;
+          svg += `<circle cx="100" cy="130" r="25" fill="${palette[2]}"/>`;
+        } else if (patternType === 3) {
+          svg += `<rect x="0" y="70" width="200" height="60" fill="${palette[1]}"/>`;
+          svg += `<circle cx="100" cy="100" r="40" fill="${palette[2]}"/>`;
+        } else if (patternType === 4) {
+          svg += `<circle cx="100" cy="100" r="80" fill="${palette[1]}"/>`;
+          svg += `<circle cx="100" cy="100" r="50" fill="${palette[2]}"/>`;
+          svg += `<circle cx="100" cy="100" r="20" fill="${palette[3]}"/>`;
+        } else if (patternType === 5) {
+          svg += `<circle cx="40" cy="40" r="35" fill="${palette[1]}"/>`;
+          svg += `<circle cx="160" cy="160" r="35" fill="${palette[2]}"/>`;
+          svg += `<rect x="70" y="70" width="60" height="60" fill="${palette[3]}" transform="rotate(45, 100, 100)"/>`;
+        } else if (patternType === 6) {
+          svg += `<rect x="80" y="0" width="40" height="200" fill="${palette[1]}"/>`;
+          svg += `<rect x="0" y="80" width="200" height="40" fill="${palette[2]}"/>`;
+          svg += `<circle cx="100" cy="100" r="25" fill="${palette[3]}"/>`;
+        } else {
+          svg += `<circle cx="60" cy="80" r="40" fill="${palette[1]}"/>`;
+          svg += `<circle cx="140" cy="120" r="50" fill="${palette[2]}"/>`;
+          svg += `<line x1="20" y1="180" x2="180" y2="180" stroke="${palette[3]}" stroke-width="4"/>`;
+        }
+
+        svg += `</svg>`;
+        return svg;
+      }
+
+      // Generate waveform bars
+      function generateWaveformBars() {
+        let bars = "";
+        for (let i = 0; i < 40; i++) {
+          const height = 20 + Math.random() * 60;
+          bars += `<div class="waveform-bar" style="height: ${height}%"></div>`;
+        }
+        return bars;
+      }
+
+      // Render current card
+      function renderCurrentCard() {
+        if (currentIndex >= ideas.length) {
+          showResults();
+          return;
+        }
+
+        const idea = ideas[currentIndex];
+        const albumArt = generateAlbumArt(
+          idea.title,
+          idea.tags || "",
+          idea.project_name || ""
+        );
+
+        const priorityHtml = idea.priority
+          ? `<span class="priority-badge priority-${idea.priority.toLowerCase()}">${
+              idea.priority
+            }</span>`
+          : '<span style="color: var(--text-muted);">None</span>';
+
+        const tags = idea.tags
+          ? idea.tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter((t) => t)
+              .slice(0, 2)
+          : [];
+        const tagsHtml = tags
+          .map((t) => `<span class="tag">${escapeHtml(t)}</span>`)
+          .join("");
+
+        const card = document.createElement("div");
+        card.className = "discovery-card";
+        card.innerHTML = `
+    <div class="swipe-indicator left">ARCHIVE</div>
+    <div class="swipe-indicator right">PROMOTE</div>
+    <div class="card-art">
+      ${albumArt}
+      <div class="card-overlay">
+        <div class="card-title">${escapeHtml(idea.title)}</div>
+        <div class="card-meta">
+          <span>${escapeHtml(idea.project_name || "Unassigned")}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-info">
+      <div class="audio-player">
+        <button class="play-btn-small" onclick="togglePlayback(event)">
+          <svg class="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <svg class="pause-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+            <rect x="6" y="4" width="4" height="16"/>
+            <rect x="14" y="4" width="4" height="16"/>
+          </svg>
+        </button>
+        <div class="waveform-container">
+          <div class="waveform" onclick="seekAudio(event)">
+            <div class="waveform-progress" id="waveform-progress"></div>
+            <div class="waveform-bars">${generateWaveformBars()}</div>
+          </div>
+          <div class="audio-time">
+            <span id="current-time">0:00</span> / <span id="duration">--:--</span>
+          </div>
+        </div>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Project</span>
+        <span class="meta-value">${escapeHtml(
+          idea.project_name || "Unassigned"
+        )}</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Priority</span>
+        <span class="meta-value">${priorityHtml}</span>
+      </div>
+      ${
+        tags.length > 0
+          ? `
+        <div class="meta-row">
+          <span class="meta-label">Tags</span>
+          <span class="meta-value">${tagsHtml}</span>
+        </div>
+      `
+          : ""
+      }
+    </div>
+  `;
+
+        // Remove old card
+        const oldCard = cardContainer.querySelector(".discovery-card");
+        if (oldCard) {
+          oldCard.remove();
+        }
+
+        cardContainer.appendChild(card);
+        currentCard = card;
+
+        // Setup audio and auto-play
+        const audioUrl = idea.supabase_url || idea.dropbox_url;
+        if (audioUrl) {
+          audio.src = audioUrl;
+          audio.load();
+
+          // Auto-play when loaded
+          audio.oncanplaythrough = () => {
+            audio
+              .play()
+              .then(() => {
+                isPlaying = true;
+                const playIcon = document.querySelector(".play-icon");
+                const pauseIcon = document.querySelector(".pause-icon");
+                if (playIcon) playIcon.style.display = "none";
+                if (pauseIcon) pauseIcon.style.display = "block";
+              })
+              .catch((err) => {
+                // Auto-play blocked by browser, user needs to interact first
+                console.log("Auto-play blocked:", err);
+              });
+            audio.oncanplaythrough = null; // Only trigger once
+          };
+        }
+
+        // Setup drag/swipe
+        setupCardInteraction(card);
+        updateStats();
+      }
+
+      // Setup card interaction (drag/swipe)
+      function setupCardInteraction(card) {
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let isDragging = false;
+
+        const threshold = 40; // Simple fixed threshold in pixels
+
+        const onStart = (e) => {
+          if (e.target.closest(".audio-player")) return;
+
+          isDragging = true;
+
+          const point = e.touches ? e.touches[0] : e;
+          startX = point.clientX;
+          startY = point.clientY;
+          currentX = 0;
+          currentY = 0;
+        };
+
+        const onMove = (e) => {
+          if (!isDragging) return;
+
+          const point = e.touches ? e.touches[0] : e;
+          currentX = point.clientX - startX;
+          currentY = point.clientY - startY;
+
+          const rotate = currentX * 0.03;
+          card.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotate}deg)`;
+
+          // Show indicators
+          const leftIndicator = card.querySelector(".swipe-indicator.left");
+          const rightIndicator = card.querySelector(".swipe-indicator.right");
+
+          if (currentX < -20) {
+            leftIndicator.classList.add("visible");
+            rightIndicator.classList.remove("visible");
+          } else if (currentX > 20) {
+            rightIndicator.classList.add("visible");
+            leftIndicator.classList.remove("visible");
+          } else {
+            leftIndicator.classList.remove("visible");
+            rightIndicator.classList.remove("visible");
+          }
+        };
+
+        const onEnd = () => {
+          if (!isDragging) return;
+          isDragging = false;
+
+          if (currentX < -threshold) {
+            triggerSwipe("left");
+          } else if (currentX > threshold) {
+            triggerSwipe("right");
+          } else if (currentY > threshold) {
+            triggerSwipe("down");
+          } else {
+            // Reset position
+            card.style.transition = "transform 0.15s ease-out";
+            card.style.transform = "";
+            card
+              .querySelector(".swipe-indicator.left")
+              .classList.remove("visible");
+            card
+              .querySelector(".swipe-indicator.right")
+              .classList.remove("visible");
+            setTimeout(() => {
+              card.style.transition = "";
+            }, 150);
+          }
+        };
+
+        // Mouse events
+        card.addEventListener("mousedown", onStart);
+        document.addEventListener("mousemove", onMove);
+        document.addEventListener("mouseup", onEnd);
+
+        // Touch events
+        card.addEventListener("touchstart", onStart, { passive: true });
+        document.addEventListener("touchmove", onMove, { passive: true });
+        document.addEventListener("touchend", onEnd);
+      }
+
+      // Trigger swipe animation then action
+      function triggerSwipe(direction) {
+        if (!currentCard) return;
+
+        // Stop audio immediately (no fade)
+        audio.pause();
+        audio.currentTime = 0;
+        isPlaying = false;
+
+        // Add animation class
+        if (direction === "left") {
+          currentCard.classList.add("swiping-left");
+        } else if (direction === "right") {
+          currentCard.classList.add("swiping-right");
+        } else {
+          currentCard.classList.add("swiping-down");
+        }
+
+        // Record the action
+        const idea = ideas[currentIndex];
+        if (direction === "left") {
+          archivedIdeas.push(idea);
+          // Archive in database (don't wait)
+          supabase
+            .from("idea_tracks")
+            .update({ is_archived: true })
+            .eq("id", idea.id);
+        } else if (direction === "right") {
+          promotedIdeas.push(idea);
+        } else {
+          skippedIdeas.push(idea);
+        }
+
+        // Move to next card after short animation
+        setTimeout(() => {
+          currentIndex++;
+          renderCurrentCard();
+        }, 250);
+      }
+
+      // Handle button clicks - just call triggerSwipe
+      function handlePromote() {
+        triggerSwipe("right");
+      }
+
+      function handleArchive() {
+        triggerSwipe("left");
+      }
+
+      function handleSkip() {
+        triggerSwipe("down");
+      }
+
+      // Toggle playback
+      function togglePlayback(e) {
+        e.stopPropagation();
+
+        const playIcon = document.querySelector(".play-icon");
+        const pauseIcon = document.querySelector(".pause-icon");
+
+        if (audio.paused) {
+          audio.play();
+          isPlaying = true;
+          playIcon.style.display = "none";
+          pauseIcon.style.display = "block";
+        } else {
+          audio.pause();
+          isPlaying = false;
+          playIcon.style.display = "block";
+          pauseIcon.style.display = "none";
+        }
+      }
+
+      // Seek audio
+      function seekAudio(e) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        if (audio.duration) {
+          audio.currentTime = percent * audio.duration;
+        }
+      }
+
+      // Update audio progress
+      audio.addEventListener("timeupdate", () => {
+        const progress = document.getElementById("waveform-progress");
+        const currentTimeEl = document.getElementById("current-time");
+
+        if (progress && audio.duration) {
+          const percent = (audio.currentTime / audio.duration) * 100;
+          progress.style.width = percent + "%";
+
+          // Update waveform bars
+          const bars = document.querySelectorAll(".waveform-bar");
+          const activeCount = Math.floor((percent / 100) * bars.length);
+          bars.forEach((bar, i) => {
+            bar.classList.toggle("active", i < activeCount);
+          });
+        }
+
+        if (currentTimeEl) {
+          currentTimeEl.textContent = formatTime(audio.currentTime);
+        }
+      });
+
+      audio.addEventListener("loadedmetadata", () => {
+        const durationEl = document.getElementById("duration");
+        if (durationEl) {
+          durationEl.textContent = formatTime(audio.duration);
+        }
+      });
+
+      audio.addEventListener("ended", () => {
+        isPlaying = false;
+        const playIcon = document.querySelector(".play-icon");
+        const pauseIcon = document.querySelector(".pause-icon");
+        if (playIcon) playIcon.style.display = "block";
+        if (pauseIcon) pauseIcon.style.display = "none";
+      });
+
+      // Format time
+      function formatTime(seconds) {
+        if (!seconds || isNaN(seconds)) return "0:00";
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, "0")}`;
+      }
+
+      // Escape HTML
+      function escapeHtml(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      // Show results
+      function showResults() {
+        document.getElementById("discovery-screen").style.display = "none";
+        document.getElementById("results-screen").classList.add("visible");
+
+        // Update final stats
+        document.getElementById("final-promoted").textContent =
+          promotedIdeas.length;
+        document.getElementById("final-archived").textContent =
+          archivedIdeas.length;
+        document.getElementById("final-skipped").textContent =
+          skippedIdeas.length;
+        document.getElementById("promoted-count").textContent =
+          promotedIdeas.length;
+
+        // Render promoted list
+        const promotedList = document.getElementById("promoted-list");
+
+        if (promotedIdeas.length === 0) {
+          document.getElementById("promoted-section").style.display = "none";
+          document.getElementById("apply-btn").style.display = "none";
+        } else {
+          promotedList.innerHTML = promotedIdeas
+            .map((idea) => {
+              const thumbnail = generateAlbumArt(
+                idea.title,
+                idea.tags || "",
+                idea.project_name || ""
+              );
+              return `
+        <tr>
+          <td>
+            <div class="result-title-cell">
+              <div class="result-thumbnail">${thumbnail}</div>
+              <span>${escapeHtml(idea.title)}</span>
+            </div>
+          </td>
+          <td>${escapeHtml(idea.project_name || "Unassigned")}</td>
+          <td><span class="priority-badge priority-medium">Medium</span></td>
+        </tr>
+      `;
+            })
+            .join("");
+        }
+      }
+
+      // Apply changes
+      document
+        .getElementById("apply-btn")
+        .addEventListener("click", async () => {
+          const btn = document.getElementById("apply-btn");
+          btn.disabled = true;
+          btn.textContent = "Applying...";
+
+          try {
+            // Update all promoted ideas
+            for (const idea of promotedIdeas) {
+              await supabase
+                .from("idea_tracks")
+                .update({
+                  priority: "Medium",
+                  excitement: 3,
+                })
+                .eq("id", idea.id);
+            }
+
+            btn.textContent = "✓ Changes Applied!";
+            btn.style.background = "var(--success)";
+
+            setTimeout(() => {
+              window.location.href = "ideas.html";
+            }, 1500);
+          } catch (err) {
+            console.error("Error applying changes:", err);
+            btn.textContent = "Error - Try Again";
+            btn.disabled = false;
+          }
+        });
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        if (currentIndex >= ideas.length) return;
+
+        switch (e.key) {
+          case "ArrowLeft":
+            e.preventDefault();
+            handleArchive();
+            break;
+          case "ArrowRight":
+            e.preventDefault();
+            handlePromote();
+            break;
+          case "ArrowDown":
+            e.preventDefault();
+            handleSkip();
+            break;
+          case " ":
+            e.preventDefault();
+            togglePlayback({ stopPropagation: () => {} });
+            break;
+        }
+      });
+
+      // Button click handlers
+      document
+        .getElementById("btn-archive")
+        .addEventListener("click", handleArchive);
+      document.getElementById("btn-skip").addEventListener("click", handleSkip);
+      document
+        .getElementById("btn-heart")
+        .addEventListener("click", handlePromote);
+
+      // Initialize
+      loadIdeas();
+    </script>
+  </body>
+</html>
