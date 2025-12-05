@@ -2986,24 +2986,11 @@
       }
 
       .album-art-toggle {
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        padding: 4px 8px;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(10px);
-        border: none;
-        border-radius: 4px;
-        font-size: 10px;
-        color: rgba(255, 255, 255, 0.8);
-        cursor: pointer;
-        transition: all 0.15s ease;
-        opacity: 0;
-        z-index: 10;
+        display: none;
       }
 
       .album-art-wrapper:hover .album-art-toggle {
-        opacity: 1;
+        opacity: 0;
       }
 
       .album-art-toggle:hover {
@@ -3377,22 +3364,11 @@
       }
 
       .album-art-toggle {
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        background: rgba(0, 0, 0, 0.6);
-        border: none;
-        border-radius: 4px;
-        padding: 4px 8px;
-        font-size: 10px;
-        color: white;
-        cursor: pointer;
-        opacity: 0;
-        transition: opacity 0.2s;
+        display: none;
       }
 
       .album-art:hover .album-art-toggle {
-        opacity: 1;
+        opacity: 0;
       }
 
       /* Thumbnail in list */
@@ -12900,7 +12876,8 @@
 
       audio.addEventListener("ended", () => {
         isPlaying = false;
-        renderPlayerPanel();
+        // Autoplay next track in the current view
+        navigateTrackList(1);
       });
 
       audio.addEventListener("play", () => {
