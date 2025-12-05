@@ -1241,8 +1241,8 @@
 
       .stage-indicator {
         position: relative;
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         cursor: pointer;
       }
 
@@ -1274,7 +1274,7 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 18px;
+        font-size: 14px;
         line-height: 1;
       }
 
@@ -2455,7 +2455,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 80px;
+        min-height: 60px;
       }
 
       .player-header-actions {
@@ -2504,10 +2504,7 @@
       }
 
       .player-header-btn-label {
-        font-size: 8px;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
+        display: none;
       }
 
       .player-content {
@@ -2546,6 +2543,300 @@
         height: 100%;
         border-radius: 12px;
         overflow: hidden;
+      }
+
+      /* Frosted Glass Track Info Overlay - Tidal Style */
+      .album-art-frosted {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 55%;
+        padding: 0 14px 10px 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.95) 0%,
+          rgba(0, 0, 0, 0.85) 35%,
+          rgba(0, 0, 0, 0.5) 60%,
+          rgba(0, 0, 0, 0.2) 80%,
+          rgba(0, 0, 0, 0) 100%
+        );
+        z-index: 3;
+        pointer-events: none;
+        border-radius: 0 0 12px 12px;
+      }
+
+      .album-art-frosted::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        mask-image: linear-gradient(
+          to top,
+          black 0%,
+          black 50%,
+          rgba(0, 0, 0, 0.4) 75%,
+          transparent 100%
+        );
+        -webkit-mask-image: linear-gradient(
+          to top,
+          black 0%,
+          black 50%,
+          rgba(0, 0, 0, 0.4) 75%,
+          transparent 100%
+        );
+        border-radius: 0 0 12px 12px;
+        z-index: -1;
+      }
+
+      /* Subtle blur on entire album art for frosty feel */
+      .album-art-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        backdrop-filter: blur(0.5px);
+        -webkit-backdrop-filter: blur(0.5px);
+        border-radius: 12px;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .album-art-frosted * {
+        pointer-events: auto;
+      }
+
+      .frosted-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+
+      .frosted-category {
+        display: none;
+      }
+
+      .frosted-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2px;
+      }
+
+      .frosted-artist {
+        font-size: 10px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .frosted-version {
+        font-size: 8px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.5);
+        padding: 2px 6px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+      }
+
+      .frosted-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .frosted-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.2;
+        text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+        letter-spacing: -0.01em;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .frosted-meta {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .frosted-project {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 8px 3px 3px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        font-size: 9px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.75);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .frosted-project:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .frosted-project-thumb {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .frosted-project-thumb svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .frosted-more {
+        font-size: 8px;
+        color: rgba(255, 255, 255, 0.6);
+        padding: 3px 6px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .frosted-more:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .frosted-rating {
+        display: flex;
+        gap: 2px;
+        flex-shrink: 0;
+      }
+
+      .frosted-star {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.25);
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+
+      .frosted-star:hover {
+        transform: scale(1.2);
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .frosted-star.filled {
+        color: #fbbf24;
+        text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+      }
+
+      /* Frosted Player Controls */
+      .frosted-player {
+        margin-top: auto;
+        padding-top: 4px;
+      }
+
+      .frosted-progress {
+        width: 100%;
+        margin-bottom: 4px;
+      }
+
+      .frosted-progress-bar {
+        height: 3px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 2px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .frosted-progress-fill {
+        height: 100%;
+        background: white;
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+
+      .frosted-time {
+        display: flex;
+        justify-content: space-between;
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 3px;
+      }
+
+      .frosted-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+      }
+
+      .frosted-play-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: all 0.2s ease;
+      }
+
+      .frosted-play-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+      }
+
+      .frosted-play-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .frosted-skip-btn {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+        transition: all 0.2s ease;
+      }
+
+      .frosted-skip-btn:hover {
+        color: rgba(255, 255, 255, 0.9);
+        transform: scale(1.1);
+      }
+
+      .frosted-skip-btn svg {
+        width: 12px;
+        height: 12px;
       }
 
       /* Progress Ring around Album Art */
@@ -2604,17 +2895,9 @@
         object-fit: cover;
       }
 
-      /* Overlay Controls */
+      /* Overlay Controls - Hidden, now using frosted player */
       .player-overlay {
-        position: absolute;
-        bottom: 12px;
-        left: 12px;
-        right: 12px;
-        padding: 14px;
-        background: transparent;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
+        display: none;
       }
 
       .overlay-progress {
@@ -2716,7 +2999,7 @@
         cursor: pointer;
         transition: all 0.15s ease;
         opacity: 0;
-        z-index: 5;
+        z-index: 10;
       }
 
       .album-art-wrapper:hover .album-art-toggle {
@@ -2767,7 +3050,7 @@
       .album-art-info {
         position: absolute;
         top: 8px;
-        right: 42px;
+        right: 8px;
         width: 28px;
         height: 28px;
         padding: 0;
@@ -2783,6 +3066,7 @@
         justify-content: center;
         opacity: 0;
         transform: translateY(-4px);
+        z-index: 10;
       }
 
       .album-art-info svg {
@@ -2857,36 +3141,178 @@
         font-size: 8px;
       }
 
-      /* Track Info Section */
+      /* Track Info Section - Hidden (now on frosted glass) */
       .track-info-section {
-        margin-bottom: 12px;
+        display: none;
+      }
+
+      .track-header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
       }
 
       .now-playing-artist {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 500;
         color: var(--text-muted);
         text-transform: uppercase;
-        letter-spacing: 0.03em;
-        margin-bottom: 2px;
+        letter-spacing: 0.05em;
       }
 
-      .track-title-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 6px;
+      .version-badge {
+        font-size: 10px;
+        color: var(--text-muted);
+        background: var(--bg-hover);
+        padding: 2px 6px;
+        border-radius: 4px;
       }
 
       .now-playing-title {
-        font-size: 16px;
+        font-size: 18px;
         font-weight: 600;
         color: var(--text);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        margin-bottom: 12px;
+        line-height: 1.3;
       }
 
+      .track-meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .track-project-compact {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .project-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px 4px 4px;
+        background: var(--bg-hover);
+        border-radius: 6px;
+        font-size: 11px;
+        color: var(--text-soft);
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+
+      .project-primary:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .project-primary-thumb {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .project-primary-thumb svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .project-more {
+        font-size: 10px;
+        color: var(--text-muted);
+        padding: 3px 6px;
+        background: var(--bg-hover);
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .project-more:hover {
+        color: var(--text-soft);
+      }
+
+      .track-rating {
+        display: flex;
+        gap: 2px;
+        flex-shrink: 0;
+      }
+
+      .track-rating-star {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 14px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.1s ease;
+        line-height: 1;
+      }
+
+      .track-rating-star:hover {
+        transform: scale(1.2);
+      }
+
+      .track-rating-star.filled {
+        color: #fbbf24;
+      }
+
+      /* Workflow Tags - Compact */
+      .workflow-tags-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 12px 0;
+        margin-bottom: 4px;
+        position: relative;
+      }
+
+      .workflow-edit-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+
+      .workflow-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+
+      .workflow-chip-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+
+      .workflow-edit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        background: transparent;
+        border: 1px dashed var(--border);
+        border-radius: 4px;
+        font-size: 10px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .workflow-edit-btn:hover {
+        border-color: var(--text-soft);
+        color: var(--text-soft);
+      }
+
+      /* Legacy support */
       .now-playing-project {
         font-size: 13px;
         color: var(--text-soft);
@@ -2983,6 +3409,12 @@
         height: 100%;
       }
 
+      .idea-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
       .idea-title-cell {
         display: flex;
         align-items: center;
@@ -2994,7 +3426,7 @@
       /* Row Selection Checkbox */
       .idea-select-checkbox {
         position: absolute;
-        left: 3px;
+        left: -3px;
         width: 18px;
         height: 18px;
         border: 2px solid var(--border);
@@ -3377,49 +3809,51 @@
         flex-shrink: 0;
       }
 
-      /* Tab System */
+      /* Tab System - Redesigned */
       .player-tabs {
         display: flex;
-        gap: 4px;
-        padding: 4px;
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: 8px;
-        margin-bottom: 12px;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 0;
+        margin-top: 8px;
       }
 
       .player-tab {
         flex: 1;
-        padding: 8px 12px;
+        padding: 8px 2px;
         background: transparent;
         border: none;
-        border-radius: 6px;
-        font-size: 11px;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        font-size: 8px;
         font-weight: 500;
         color: var(--text-muted);
         cursor: pointer;
         transition: all 0.15s ease;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 5px;
+        gap: 2px;
       }
 
       .player-tab svg {
-        opacity: 0.7;
+        opacity: 0.5;
+        width: 14px;
+        height: 14px;
       }
 
       .player-tab:hover {
         color: var(--text-soft);
-        background: rgba(255, 255, 255, 0.03);
       }
 
       .player-tab:hover svg {
-        opacity: 1;
+        opacity: 0.7;
       }
 
       .player-tab.active {
-        background: rgba(255, 255, 255, 0.08);
-        color: var(--text);
+        color: var(--primary);
+        border-bottom-color: var(--primary);
       }
 
       .player-tab.active svg {
@@ -3431,6 +3865,303 @@
         display: flex;
         flex-direction: column;
         min-height: 0;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        overflow: hidden;
+      }
+
+      /* Info Tab Styles */
+      .info-tab-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        overflow-y: auto;
+        padding-bottom: 10px;
+      }
+
+      .info-section {
+        background: var(--bg-hover);
+        padding: 10px 12px;
+      }
+
+      .info-section:first-child {
+        border-radius: 8px 8px 0 0;
+      }
+
+      .info-section:last-child {
+        border-radius: 0 0 8px 8px;
+        padding-bottom: 20px;
+      }
+
+      .info-section:only-child {
+        border-radius: 8px;
+      }
+
+      .info-section + .info-section {
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .info-section-title {
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .info-label {
+        font-size: 8px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      .info-value {
+        font-size: 11px;
+        color: var(--text);
+      }
+
+      .info-value.red {
+        color: #ef4444;
+      }
+
+      .info-value.orange {
+        color: #f97316;
+      }
+
+      .info-value.green {
+        color: #22c55e;
+      }
+
+      .info-value.priority-high {
+        color: #ef4444 !important;
+        font-weight: 600;
+        background: transparent !important;
+      }
+
+      .info-value.priority-medium {
+        color: #f97316 !important;
+        background: transparent !important;
+      }
+
+      .info-value.priority-low {
+        color: #94a3b8 !important;
+        background: transparent !important;
+      }
+
+      .info-collaborators {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .info-collab-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+      }
+
+      .info-collab-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        font-weight: 600;
+        color: white;
+        overflow: hidden;
+      }
+
+      .info-collab-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .info-collab-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .info-collab-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      .info-collab-role {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
+      .info-collab-split {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .info-empty {
+        font-size: 11px;
+        color: var(--text-muted);
+        font-style: italic;
+      }
+
+      .info-add-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px;
+        background: transparent;
+        border: 1px dashed var(--border);
+        border-radius: 6px;
+        font-size: 11px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .info-add-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .info-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 30px;
+      }
+
+      .info-tag {
+        padding: 4px 10px;
+        background: var(--bg-input);
+        border-radius: 12px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      /* Files Tab Styles */
+      .files-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .file-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: var(--bg-hover);
+        border-radius: 8px;
+        transition: background 0.15s;
+      }
+
+      .file-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .file-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .file-icon.audio {
+        background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      }
+
+      .file-icon.folder {
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+      }
+
+      .file-icon svg {
+        width: 18px;
+        height: 18px;
+        color: white;
+      }
+
+      .file-details {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .file-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .file-meta {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
+      .file-action {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        transition: all 0.15s;
+      }
+
+      .file-action:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+      }
+
+      .file-action svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .files-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        color: var(--text-muted);
+        font-size: 12px;
+        text-align: center;
       }
 
       .tab-panel {
@@ -3438,6 +4169,7 @@
         flex: 1;
         flex-direction: column;
         min-height: 0;
+        overflow-y: auto;
       }
 
       .tab-panel.active {
@@ -4061,27 +4793,27 @@
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        padding-bottom: 12px;
+        gap: 8px;
+        padding-bottom: 8px;
       }
 
       .comment-item {
         display: flex;
-        gap: 10px;
-        padding: 10px;
+        gap: 8px;
+        padding: 8px;
         background: rgba(255, 255, 255, 0.03);
-        border-radius: 10px;
+        border-radius: 8px;
       }
 
       .comment-avatar {
-        width: 32px;
-        height: 32px;
+        width: 26px;
+        height: 26px;
         border-radius: 50%;
         background: linear-gradient(135deg, var(--accent), var(--primary));
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 11px;
+        font-size: 9px;
         font-weight: 600;
         color: white;
         flex-shrink: 0;
@@ -4102,29 +4834,29 @@
       .comment-header {
         display: flex;
         align-items: center;
-        gap: 8px;
-        margin-bottom: 4px;
+        gap: 6px;
+        margin-bottom: 2px;
       }
 
       .comment-author {
-        font-size: 12px;
+        font-size: 10px;
         font-weight: 600;
         color: var(--text);
       }
 
       .comment-time {
-        font-size: 10px;
+        font-size: 9px;
         color: var(--text-muted);
       }
 
       .comment-timestamp {
         display: inline-flex;
         align-items: center;
-        gap: 3px;
-        padding: 2px 6px;
+        gap: 2px;
+        padding: 1px 5px;
         background: var(--bg-hover);
         border-radius: 4px;
-        font-size: 10px;
+        font-size: 9px;
         color: var(--accent);
         font-weight: 500;
         cursor: pointer;
@@ -4136,45 +4868,45 @@
       }
 
       .comment-timestamp svg {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
       }
 
       .comment-text {
-        font-size: 13px;
+        font-size: 11px;
         color: var(--text-soft);
-        line-height: 1.5;
+        line-height: 1.4;
         word-wrap: break-word;
       }
 
       .comment-input-wrapper {
         display: flex;
         flex-direction: column;
-        gap: 8px;
-        padding-top: 12px;
+        gap: 6px;
+        padding-top: 8px;
         border-top: 1px solid var(--border);
         margin-top: auto;
       }
 
       .comment-input-row {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         align-items: flex-end;
       }
 
       .comment-input {
         flex: 1;
-        padding: 10px 12px;
+        padding: 8px 10px;
         background: var(--bg-input);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 6px;
         color: var(--text);
-        font-size: 13px;
+        font-size: 11px;
         font-family: inherit;
         resize: none;
         outline: none;
-        min-height: 38px;
-        max-height: 100px;
+        min-height: 32px;
+        max-height: 80px;
         transition: border-color 0.2s ease;
       }
 
@@ -4183,9 +4915,9 @@
       }
 
       .comment-send-btn {
-        width: 38px;
-        height: 38px;
-        border-radius: 8px;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
         background: var(--accent);
         border: none;
         color: white;
@@ -4207,6 +4939,11 @@
       }
 
       .comment-send-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .comment-send-btn svg {
         width: 16px;
         height: 16px;
       }
@@ -4214,14 +4951,14 @@
       .comment-options {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
       }
 
       .timestamp-toggle {
         display: flex;
         align-items: center;
-        gap: 6px;
-        font-size: 11px;
+        gap: 5px;
+        font-size: 9px;
         color: var(--text-muted);
         cursor: pointer;
         user-select: none;
@@ -4232,10 +4969,10 @@
       }
 
       .timestamp-toggle-switch {
-        width: 32px;
-        height: 18px;
+        width: 26px;
+        height: 14px;
         background: var(--bg-hover);
-        border-radius: 9px;
+        border-radius: 7px;
         position: relative;
         transition: background 0.2s ease;
       }
@@ -4245,8 +4982,8 @@
         position: absolute;
         top: 2px;
         left: 2px;
-        width: 14px;
-        height: 14px;
+        width: 10px;
+        height: 10px;
         background: var(--text-muted);
         border-radius: 50%;
         transition: all 0.2s ease;
@@ -4257,12 +4994,12 @@
       }
 
       .timestamp-toggle input:checked + .timestamp-toggle-switch::after {
-        left: 16px;
+        left: 14px;
         background: white;
       }
 
       .timestamp-preview {
-        font-size: 11px;
+        font-size: 9px;
         color: var(--accent);
         font-weight: 500;
       }
@@ -4274,8 +5011,8 @@
         align-items: center;
         justify-content: center;
         color: var(--text-muted);
-        font-size: 12px;
-        padding: 20px;
+        font-size: 11px;
+        padding: 16px;
         text-align: center;
       }
 
@@ -5003,11 +5740,19 @@
       .grid-card-art {
         aspect-ratio: 1;
         position: relative;
+        overflow: hidden;
+        border-radius: 6px;
       }
 
       .grid-card-art svg {
         width: 100%;
         height: 100%;
+      }
+
+      .grid-card-art img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
 
       .grid-card-badges {
@@ -6283,7 +7028,11 @@
           }'); clearSelection();">
             <div class="multi-select-thumb">
               ${
-                idea.thumbnail_url
+                idea.cover_image_url
+                  ? `<img src="${escapeHtml(
+                      idea.cover_image_url
+                    )}" alt="" style="width: 100%; height: 100%; object-fit: cover;">`
+                  : idea.thumbnail_url
                   ? `<img src="${escapeHtml(idea.thumbnail_url)}" alt="">`
                   : generateAlbumArt(idea.title)
               }
@@ -8245,12 +8994,18 @@
             const primaryProject = projects[0];
             const hasMore = projects.length > 1;
 
-            // Generate thumbnail
-            const thumbnail = generateThumbnail(
-              idea.title,
-              idea.tags || "",
-              idea.project_name || ""
-            );
+            // Generate thumbnail - check for custom cover first
+            const hasCustomCover =
+              idea.cover_image_url && idea.cover_image_url.trim() !== "";
+            const thumbnail = hasCustomCover
+              ? `<img src="${escapeHtml(
+                  idea.cover_image_url
+                )}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">`
+              : generateThumbnail(
+                  idea.title,
+                  idea.tags || "",
+                  idea.project_name || ""
+                );
 
             // Mini stars for excitement
             const excitement = idea.excitement || 0;
@@ -8407,12 +9162,18 @@
                 ? gridTitleParts.slice(1).join(" - ").trim()
                 : idea.title;
 
-            // Generate album art
-            const albumArt = generateAlbumArt(
-              idea.title,
-              idea.tags || "",
-              idea.project_name || ""
-            );
+            // Generate album art - check for custom cover first
+            const hasCustomCover =
+              idea.cover_image_url && idea.cover_image_url.trim() !== "";
+            const albumArt = hasCustomCover
+              ? `<img src="${escapeHtml(
+                  idea.cover_image_url
+                )}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">`
+              : generateAlbumArt(
+                  idea.title,
+                  idea.tags || "",
+                  idea.project_name || ""
+                );
 
             // Excitement indicator
             const excitement = idea.excitement || 0;
@@ -10250,9 +11011,21 @@
           getUnsplashSearchTerm(currentIdea)
         )}&sig=${hashString(currentIdea.id)}`;
 
-        const albumArtHtml = useUnsplash
-          ? `<img src="${unsplashUrl}" alt="Album art" loading="lazy" onerror="this.style.display='none'">`
-          : albumArtSvg;
+        // Check for custom cover image first
+        const hasCustomCover =
+          currentIdea.cover_image_url &&
+          currentIdea.cover_image_url.trim() !== "";
+
+        let albumArtHtml;
+        if (hasCustomCover) {
+          albumArtHtml = `<img src="${escapeHtml(
+            currentIdea.cover_image_url
+          )}" alt="Album art" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">`;
+        } else if (useUnsplash) {
+          albumArtHtml = `<img src="${unsplashUrl}" alt="Album art" loading="lazy" onerror="this.style.display='none'">`;
+        } else {
+          albumArtHtml = albumArtSvg;
+        }
 
         // Version selector - always show as clickable
         const versionHtml = (() => {
@@ -10440,6 +11213,122 @@
         <div class="album-art">
           ${albumArtHtml}
         </div>
+        
+        <!-- Frosted Glass Track Info -->
+        <div class="album-art-frosted">
+          ${(() => {
+            const parts = (currentIdea.title || "").split(" - ");
+            const hasArtist = parts.length > 1;
+            const artistName = hasArtist ? parts[0].trim() : "";
+            const trackTitle = hasArtist
+              ? parts.slice(1).join(" - ").trim()
+              : currentIdea.title;
+            const projects = (currentIdea.project_name || "Unassigned")
+              .split(",")
+              .map((p) => p.trim())
+              .filter((p) => p);
+            const primaryProject = projects[0];
+            const moreCount = projects.length - 1;
+            const excitement = currentIdea.excitement || 0;
+            const version = currentIdea.version || "";
+            const stage = getStage(currentIdea.stage || "seed");
+            const isFavorite = currentIdea.is_favorite;
+
+            // Determine category label and color
+            let categoryLabel = stage.name.toUpperCase();
+            let categoryColor = stage.color;
+            if (isFavorite) {
+              categoryLabel = "♥ FAVORITE";
+              categoryColor = "#ef4444";
+            }
+
+            return `
+              <div class="frosted-info">
+                <div class="frosted-category" style="color: ${categoryColor};">${categoryLabel}</div>
+                <div class="frosted-header">
+                  ${
+                    hasArtist
+                      ? `<div class="frosted-artist">${escapeHtml(
+                          artistName
+                        )}</div>`
+                      : ""
+                  }
+                  ${
+                    version
+                      ? `<span class="frosted-version">v${escapeHtml(
+                          version
+                        )}</span>`
+                      : ""
+                  }
+                </div>
+                <div class="frosted-title-row">
+                  <div class="frosted-title">${escapeHtml(trackTitle)}</div>
+                  <div class="frosted-rating">
+                    ${[1, 2, 3, 4, 5]
+                      .map(
+                        (i) =>
+                          `<button class="frosted-star ${
+                            i <= excitement ? "filled" : ""
+                          }" onclick="setExcitement(${i})">${
+                            i <= excitement ? "★" : "☆"
+                          }</button>`
+                      )
+                      .join("")}
+                  </div>
+                </div>
+                <div class="frosted-meta">
+                  <span class="frosted-project" onclick="event.stopPropagation(); toggleProjectDropdown(event, '${
+                    currentIdea.id
+                  }')" title="${projects.join(", ")}">
+                    <span class="frosted-project-thumb">${generateProjectThumbnail(
+                      primaryProject
+                    )}</span>
+                    ${escapeHtml(primaryProject)}
+                  </span>
+                  ${
+                    moreCount > 0
+                      ? `<span class="frosted-more" title="${projects
+                          .slice(1)
+                          .join(", ")}">+${moreCount}</span>`
+                      : ""
+                  }
+                </div>
+              </div>
+              
+              <div class="frosted-player">
+                <div class="frosted-progress">
+                  <div class="frosted-progress-bar" onclick="seekAudio(event)">
+                    <div class="frosted-progress-fill" id="progress-bar"></div>
+                  </div>
+                  <div class="frosted-time">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                  </div>
+                </div>
+                <div class="frosted-controls">
+                  <button class="frosted-skip-btn" onclick="skipBack()">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="19 20 9 12 19 4 19 20"/>
+                      <rect x="5" y="4" width="2" height="16"/>
+                    </svg>
+                  </button>
+                  <button class="frosted-play-btn" onclick="togglePlay()" ${
+                    isLoading ? "disabled" : ""
+                  }>
+                    ${playBtnContent}
+                  </button>
+                  <button class="frosted-skip-btn" onclick="skipForward()">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 4 15 12 5 20 5 4"/>
+                      <rect x="17" y="4" width="2" height="16"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            `;
+          })()}
+        </div>
+        
         <div class="album-art-left-overlay">
           <div class="album-art-due-date ${getDueDateClass(
             currentIdea.due_date
@@ -10452,105 +11341,46 @@
           </div>
           ${renderCollaboratorAvatars(currentIdea.collaborators)}
         </div>
-        <button class="album-art-info" onclick="openTrackInfoModal()" title="Track Info">
+        <button class="album-art-info" onclick="openTrackInfoModal()" title="Track Details">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="16" x2="12" y2="12"/>
             <line x1="12" y1="8" x2="12.01" y2="8"/>
           </svg>
         </button>
-        <button class="album-art-settings" onclick="openTrackSettingsModal()" title="Track Settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
-        </button>
         <button class="album-art-toggle" onclick="toggleAlbumArtMode()">
-          ${useUnsplash ? "✨ Generative" : "📷 Photo"}
-        </button>
-        <div class="player-overlay">
-          <div class="overlay-progress">
-            <div class="overlay-progress-bar" onclick="seekAudio(event)">
-              <div class="overlay-progress-fill" id="progress-bar"></div>
-            </div>
-            <div class="overlay-time">
-              <span id="current-time">0:00</span>
-              <span id="duration">0:00</span>
-            </div>
-          </div>
-          <div class="overlay-controls">
-            <button class="overlay-skip-btn" onclick="skipBack()">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="19 20 9 12 19 4 19 20"/>
-                <rect x="5" y="4" width="2" height="16"/>
-              </svg>
-            </button>
-            <button class="overlay-play-btn" onclick="togglePlay()" ${
-              isLoading ? "disabled" : ""
-            }>
-              ${playBtnContent}
-            </button>
-            <button class="overlay-skip-btn" onclick="skipForward()">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="5 4 15 12 5 20 5 4"/>
-                <rect x="17" y="4" width="2" height="16"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Track Info -->
-    <div class="track-info-section">
-      ${(() => {
-        // Parse title: "Artist - Track Title" format
-        const parts = (currentIdea.title || "").split(" - ");
-        const hasArtist = parts.length > 1;
-        const artistName = hasArtist ? parts[0].trim() : "";
-        const trackTitle = hasArtist
-          ? parts.slice(1).join(" - ").trim()
-          : currentIdea.title;
-
-        return `
           ${
-            hasArtist
-              ? `<div class="now-playing-artist">${escapeHtml(
-                  artistName
-                )}</div>`
-              : ""
+            hasCustomCover
+              ? "🖼️ Custom"
+              : useUnsplash
+              ? "✨ Generative"
+              : "📷 Photo"
           }
-          <div class="track-title-row">
-            <div class="now-playing-title">${escapeHtml(trackTitle)}</div>
-            ${versionHtml}
-          </div>
-          <div class="now-playing-project-tags">
-            ${(currentIdea.project_name || "Unassigned")
-              .split(",")
-              .map(
-                (p) => `
-              <span class="project-tag">
-                <span class="project-tag-thumb">${generateProjectThumbnail(
-                  p.trim()
-                )}</span>
-                ${escapeHtml(p.trim())}
-              </span>
-            `
-              )
-              .join("")}
-          </div>
-        `;
-      })()}
-      <div class="inline-excitement" id="inline-excitement">
-        ${excitementHtml}
+        </button>
       </div>
     </div>
     
-    <!-- Task Tags -->
-    <div class="task-tags" id="task-tags-container">
-      ${renderTaskTags(currentIdea.task_tags || "")}
-      <div style="position: relative; display: inline-block;">
-        <button class="add-tag-btn" onclick="toggleTagDropdown(event)">
+    <!-- Workflow Tags -->
+    <div class="workflow-tags-section" id="task-tags-container">
+      ${(() => {
+        const tags = (currentIdea.task_tags || "")
+          .split(",")
+          .map((t) => t.trim())
+          .filter((t) => t);
+        const chips = tags
+          .map((tagId) => {
+            const tag = ALL_TASK_TAGS.find((t) => t.id === tagId);
+            if (!tag) return "";
+            return `<span class="workflow-chip" style="background: ${tag.color}20; color: ${tag.color};">
+            <span class="workflow-chip-dot" style="background: ${tag.color};"></span>
+            ${tag.label}
+          </span>`;
+          })
+          .join("");
+        return chips;
+      })()}
+      <div class="workflow-edit-wrapper">
+        <button class="workflow-edit-btn" onclick="toggleTagDropdown(event)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 10px; height: 10px;">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -10565,36 +11395,22 @@
     
     <!-- Tab Navigation -->
     <div class="player-tabs">
-      ${
-        getTabVisibility().notes !== false
-          ? `
-      <button class="player-tab active" onclick="switchPlayerTab('notes')" data-tab="notes">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      <button class="player-tab active" onclick="switchPlayerTab('info')" data-tab="info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
         </svg>
-        Notes
+        Info
       </button>
-      `
-          : ""
-      }
-      ${
-        getTabVisibility().comments !== false
-          ? `
       <button class="player-tab" onclick="switchPlayerTab('comments')" data-tab="comments">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
-        Comments
+        Chat
       </button>
-      `
-          : ""
-      }
-      ${
-        getTabVisibility().collaborators !== false
-          ? `
       <button class="player-tab" onclick="switchPlayerTab('collaborators')" data-tab="collaborators">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
           <circle cx="9" cy="7" r="4"/>
           <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
@@ -10602,32 +11418,86 @@
         </svg>
         Team
       </button>
-      `
-          : ""
-      }
-      ${
-        getTabVisibility().todo !== false
-          ? `
       <button class="player-tab" onclick="switchPlayerTab('todo')" data-tab="todo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 11l3 3L22 4"/>
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
         </svg>
         Todo
       </button>
-      `
-          : ""
-      }
+      <button class="player-tab" onclick="switchPlayerTab('files')" data-tab="files">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+        Files
+      </button>
     </div>
     
     <!-- Tab Content -->
     <div class="tab-content">
+      <!-- Info Tab -->
+      <div class="tab-panel active" id="tab-info">
+        <div class="info-tab-content">
+          <div class="info-section">
+            <div class="info-section-title">Track Status</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Stage</span>
+                <span class="info-value">${(() => {
+                  const stage = getStage(currentIdea.stage || "seed");
+                  return `<span style="color: ${stage.color};">${stage.icon} ${stage.name}</span>`;
+                })()}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Priority</span>
+                <span class="info-value ${
+                  currentIdea.priority
+                    ? "priority-" + currentIdea.priority.toLowerCase()
+                    : ""
+                }">${currentIdea.priority || "Not set"}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Due Date</span>
+                <span class="info-value ${getDueDateClass(
+                  currentIdea.due_date
+                )}">${
+          currentIdea.due_date ? formatDueDate(currentIdea.due_date) : "Not set"
+        }</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Created</span>
+                <span class="info-value">${
+                  currentIdea.created_at
+                    ? new Date(currentIdea.created_at).toLocaleDateString()
+                    : "Unknown"
+                }</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-section">
+            <div class="info-section-title">Tags</div>
+            <div class="info-tags">
+              ${
+                (currentIdea.tags || "")
+                  .split(",")
+                  .filter((t) => t.trim())
+                  .map(
+                    (tag) =>
+                      `<span class="info-tag">${escapeHtml(tag.trim())}</span>`
+                  )
+                  .join("") || '<span class="info-empty">No tags</span>'
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <!-- Notes Tab -->
-      <div class="tab-panel ${
-        getTabVisibility().notes !== false ? "active" : ""
-      }" id="tab-notes" style="${
-          getTabVisibility().notes === false ? "display:none;" : ""
-        }">
+      <div class="tab-panel" id="tab-notes" style="${
+        getTabVisibility().notes === false ? "display:none;" : ""
+      }">
         <div class="tab-panel-header">
           <span class="tab-panel-title">Track Notes</span>
           <button class="bookmark-add-btn" onclick="openBookmarkModal()" title="Add Bookmark">
@@ -10653,9 +11523,7 @@
       </div>
       
       <!-- Comments Tab -->
-      <div class="tab-panel" id="tab-comments" style="${
-        getTabVisibility().comments === false ? "display:none;" : ""
-      }">
+      <div class="tab-panel" id="tab-comments">
         <div class="comments-container">
           <div class="comments-list" id="comments-list">
             ${renderComments(currentIdea.id)}
@@ -10683,9 +11551,7 @@
       </div>
       
       <!-- Collaborators Tab -->
-      <div class="tab-panel" id="tab-collaborators" style="${
-        getTabVisibility().collaborators === false ? "display:none;" : ""
-      }">
+      <div class="tab-panel" id="tab-collaborators">
         <div class="tab-panel-header">
           <span class="tab-panel-title">Team & Splits</span>
         </div>
@@ -10702,9 +11568,7 @@
       </div>
       
       <!-- Todo Tab -->
-      <div class="tab-panel" id="tab-todo" style="${
-        getTabVisibility().todo === false ? "display:none;" : ""
-      }">
+      <div class="tab-panel" id="tab-todo">
         <div class="tab-panel-header">
           <span class="tab-panel-title">Tasks</span>
         </div>
@@ -10712,6 +11576,84 @@
           ${renderTodoItems(currentIdea.todos || [])}
         </div>
         <input class="add-todo-input" type="text" placeholder="Add a task and press Enter..." onkeypress="if(event.key==='Enter'){addTodoItem(this.value);this.value='';}">
+      </div>
+      
+      <!-- Files Tab -->
+      <div class="tab-panel" id="tab-files">
+        <div class="tab-panel-header">
+          <span class="tab-panel-title">Referenced Files</span>
+        </div>
+        <div class="files-list">
+          ${
+            currentIdea.audio_url
+              ? `
+            <div class="file-item">
+              <div class="file-icon audio">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18V5l12-2v13"/>
+                  <circle cx="6" cy="18" r="3"/>
+                  <circle cx="18" cy="16" r="3"/>
+                </svg>
+              </div>
+              <div class="file-details">
+                <span class="file-name">${escapeHtml(
+                  currentIdea.title || "Audio File"
+                )}.wav</span>
+                <span class="file-meta">Audio • Main Track</span>
+              </div>
+              <button class="file-action" onclick="window.open('${escapeHtml(
+                currentIdea.audio_url
+              )}', '_blank')" title="Open">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+              </button>
+            </div>
+          `
+              : ""
+          }
+          ${
+            currentIdea.project_folder_path
+              ? `
+            <div class="file-item">
+              <div class="file-icon folder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+              </div>
+              <div class="file-details">
+                <span class="file-name">Project Folder</span>
+                <span class="file-meta">${escapeHtml(
+                  currentIdea.project_folder_path
+                )}</span>
+              </div>
+              <button class="file-action" onclick="openProject()" title="Open Folder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+              </button>
+            </div>
+          `
+              : ""
+          }
+          ${
+            !currentIdea.audio_url && !currentIdea.project_folder_path
+              ? `
+            <div class="files-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 32px; height: 32px; opacity: 0.3; margin-bottom: 8px;">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <span>No files linked to this track</span>
+            </div>
+          `
+              : ""
+          }
+        </div>
       </div>
     </div>
     </div><!-- end full-player-content -->
@@ -10750,17 +11692,24 @@
       }
 
       // Tab switching
-      let currentPlayerTab = "notes";
+      let currentPlayerTab = "info";
       let notesDirty = false;
       let metadataDirty = false;
 
       function switchPlayerTab(tabName) {
-        // Check if the tab is visible
+        // Check if the tab is visible - info and files are always visible
         const visibility = getTabVisibility();
-        if (visibility[tabName] === false) {
+        if (
+          visibility[tabName] === false &&
+          tabName !== "info" &&
+          tabName !== "files"
+        ) {
           // Find first visible tab
-          const tabs = ["notes", "comments", "collaborators", "todo"];
-          tabName = tabs.find((t) => visibility[t] !== false) || "notes";
+          const tabs = ["info", "comments", "collaborators", "todo", "files"];
+          tabName =
+            tabs.find(
+              (t) => visibility[t] !== false || t === "info" || t === "files"
+            ) || "info";
         }
 
         currentPlayerTab = tabName;
@@ -13151,25 +14100,68 @@
         const updatedDate = idea.updated_at
           ? new Date(idea.updated_at).toLocaleDateString()
           : "Unknown";
+        const hasCustomImage =
+          idea.cover_image_url && idea.cover_image_url.trim() !== "";
+
+        // Generate album art preview
+        const albumArtSvg = generateAlbumArt(
+          idea.title,
+          idea.tags || "",
+          idea.project_name || ""
+        );
 
         modal.innerHTML = `
-    <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-content" style="max-width: 550px;">
       <div class="modal-header">
-        <h3>Track Info</h3>
+        <h3>Track Details</h3>
         <button class="modal-close" onclick="closeTrackInfoModal()">×</button>
       </div>
       <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        
+        <!-- Cover Image Section -->
+        <div class="info-section" style="text-align: center;">
+          <div class="cover-image-preview" id="cover-image-preview">
+            ${
+              hasCustomImage
+                ? `<img src="${escapeHtml(
+                    idea.cover_image_url
+                  )}" alt="Cover" style="width: 120px; height: 120px; border-radius: 8px; object-fit: cover;">`
+                : `<div style="width: 120px; height: 120px; border-radius: 8px; overflow: hidden; margin: 0 auto;">${albumArtSvg}</div>`
+            }
+          </div>
+          <div style="display: flex; gap: 8px; justify-content: center; margin-top: 12px;">
+            <label class="btn btn-secondary btn-sm" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Upload Image
+              <input type="file" accept="image/*" onchange="uploadCoverImage(this)" style="display: none;">
+            </label>
+            ${
+              hasCustomImage
+                ? `
+              <button class="btn btn-secondary btn-sm" onclick="useGeneratedArt()" style="display: inline-flex; align-items: center; gap: 6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                  <path d="M3 3v5h5"/>
+                </svg>
+                Use Generated
+              </button>
+            `
+                : ""
+            }
+          </div>
+        </div>
+        
+        <!-- Basic Info -->
         <div class="info-section">
           <div class="info-section-title">Basic Info</div>
-          <div class="metadata-grid" style="grid-template-columns: 120px 1fr;">
+          <div class="metadata-grid" style="grid-template-columns: 100px 1fr;">
             <span class="metadata-label">Title</span>
             <input class="metadata-input" type="text" id="info-title" value="${escapeHtml(
               idea.title || ""
-            )}">
-            
-            <span class="metadata-label">Artist</span>
-            <input class="metadata-input" type="text" id="info-artist" value="${escapeHtml(
-              idea.artist || ""
             )}">
             
             <span class="metadata-label">Project</span>
@@ -13198,90 +14190,90 @@
           </div>
         </div>
         
+        <!-- Audio Details -->
         <div class="info-section">
           <div class="info-section-title">Audio Details</div>
-          <div class="metadata-grid" style="grid-template-columns: 120px 1fr;">
+          <div class="metadata-grid" style="grid-template-columns: 100px 1fr;">
             <span class="metadata-label">BPM</span>
-            <input class="metadata-input" type="text" id="info-bpm" value="${escapeHtml(
+            <input class="metadata-input" type="text" id="info-bpm" placeholder="120" value="${escapeHtml(
               idea.bpm || ""
             )}">
             
             <span class="metadata-label">Key</span>
-            <input class="metadata-input" type="text" id="info-key" value="${escapeHtml(
+            <input class="metadata-input" type="text" id="info-key" placeholder="C minor" value="${escapeHtml(
               idea.musical_key || ""
             )}">
             
             <span class="metadata-label">Genre</span>
-            <input class="metadata-input" type="text" id="info-genre" value="${escapeHtml(
+            <input class="metadata-input" type="text" id="info-genre" placeholder="Electronic" value="${escapeHtml(
               idea.genre || ""
             )}">
             
             <span class="metadata-label">Tags</span>
-            <input class="metadata-input" type="text" id="info-tags" value="${escapeHtml(
+            <input class="metadata-input" type="text" id="info-tags" placeholder="ambient, synth" value="${escapeHtml(
               idea.tags || ""
             )}">
             
             <span class="metadata-label">Duration</span>
             <input class="metadata-input" type="text" id="info-duration" value="${escapeHtml(
               idea.duration || ""
-            )}" placeholder="e.g. 3:45">
+            )}" placeholder="3:45">
           </div>
         </div>
         
+        <!-- Version & Grouping -->
         <div class="info-section">
-          <div class="info-section-title">File Paths</div>
-          <div class="metadata-grid" style="grid-template-columns: 120px 1fr;">
-            <span class="metadata-label">Audio URL</span>
-            <input class="metadata-input" type="text" id="info-audio-url" value="${escapeHtml(
-              idea.supabase_url || idea.dropbox_url || ""
-            )}">
-            
-            <span class="metadata-label">Project File</span>
-            <input class="metadata-input" type="text" id="info-project-file" value="${escapeHtml(
-              idea.project_file_path || ""
-            )}">
-            
-            <span class="metadata-label">Original File</span>
-            <input class="metadata-input" type="text" id="info-original-file" value="${escapeHtml(
-              idea.original_filename || ""
-            )}" readonly style="opacity: 0.6;">
-          </div>
-        </div>
-        
-        <div class="info-section">
-          <div class="info-section-title">Version & Grouping</div>
-          <div class="metadata-grid" style="grid-template-columns: 120px 1fr;">
+          <div class="info-section-title">Version</div>
+          <div class="metadata-grid" style="grid-template-columns: 100px 1fr;">
             <span class="metadata-label">Version</span>
-            <input class="metadata-input" type="text" id="info-version" value="${escapeHtml(
+            <input class="metadata-input" type="text" id="info-version" placeholder="1.0" value="${escapeHtml(
               idea.version || ""
             )}">
             
             <span class="metadata-label">Base Name</span>
-            <input class="metadata-input" type="text" id="info-base-name" value="${escapeHtml(
+            <input class="metadata-input" type="text" id="info-base-name" placeholder="For grouping versions" value="${escapeHtml(
               idea.base_name || ""
             )}">
           </div>
         </div>
         
+        <!-- File Paths -->
+        <div class="info-section">
+          <div class="info-section-title">Files</div>
+          <div class="metadata-grid" style="grid-template-columns: 100px 1fr;">
+            <span class="metadata-label">Audio URL</span>
+            <input class="metadata-input" type="text" id="info-audio-url" placeholder="https://..." value="${escapeHtml(
+              idea.supabase_url || idea.dropbox_url || ""
+            )}">
+            
+            <span class="metadata-label">Project File</span>
+            <input class="metadata-input" type="text" id="info-project-file" placeholder=".als, .logicx path" value="${escapeHtml(
+              idea.project_file_path || ""
+            )}">
+          </div>
+        </div>
+        
+        <!-- Dates -->
         <div class="info-section">
           <div class="info-section-title">Dates</div>
-          <div class="metadata-grid" style="grid-template-columns: 120px 1fr;">
-            <span class="metadata-label">Created</span>
-            <span class="metadata-value">${createdDate}</span>
-            
-            <span class="metadata-label">Last Updated</span>
-            <span class="metadata-value">${updatedDate}</span>
-            
+          <div class="metadata-grid" style="grid-template-columns: 100px 1fr;">
             <span class="metadata-label">Due Date</span>
             <input class="metadata-input" type="date" id="info-due-date" value="${
               idea.due_date || ""
             }">
+            
+            <span class="metadata-label">Created</span>
+            <span class="metadata-value" style="font-size: 11px; color: var(--text-muted);">${createdDate}</span>
+            
+            <span class="metadata-label">Updated</span>
+            <span class="metadata-value" style="font-size: 11px; color: var(--text-muted);">${updatedDate}</span>
           </div>
         </div>
         
+        <!-- Description -->
         <div class="info-section">
           <div class="info-section-title">Description</div>
-          <textarea class="metadata-input" id="info-description" rows="3" placeholder="Add a description...">${escapeHtml(
+          <textarea class="metadata-input" id="info-description" rows="2" placeholder="Add a description..." style="resize: vertical;">${escapeHtml(
             idea.description || ""
           )}</textarea>
         </div>
@@ -13296,6 +14288,96 @@
         modal.classList.add("open");
       }
 
+      // Upload cover image
+      async function uploadCoverImage(input) {
+        if (!input.files || !input.files[0] || !currentIdea) return;
+
+        const file = input.files[0];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+
+        if (file.size > maxSize) {
+          alert("Image must be less than 5MB");
+          return;
+        }
+
+        try {
+          // Upload to Supabase storage
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${currentIdea.id}_cover.${fileExt}`;
+          const filePath = `covers/${fileName}`;
+
+          const { data: uploadData, error: uploadError } =
+            await supabase.storage
+              .from("idea-covers")
+              .upload(filePath, file, { upsert: true });
+
+          if (uploadError) throw uploadError;
+
+          // Get public URL
+          const { data: urlData } = supabase.storage
+            .from("idea-covers")
+            .getPublicUrl(filePath);
+
+          const coverUrl = urlData.publicUrl + "?t=" + Date.now(); // Cache bust
+
+          // Update database
+          const { error: updateError } = await supabase
+            .from("idea_tracks")
+            .update({ cover_image_url: coverUrl })
+            .eq("id", currentIdea.id);
+
+          if (updateError) throw updateError;
+
+          // Update local data
+          currentIdea.cover_image_url = coverUrl;
+          const idx = allIdeas.findIndex((i) => i.id === currentIdea.id);
+          if (idx !== -1) allIdeas[idx].cover_image_url = coverUrl;
+
+          // Update preview
+          const preview = document.getElementById("cover-image-preview");
+          if (preview) {
+            preview.innerHTML = `<img src="${coverUrl}" alt="Cover" style="width: 120px; height: 120px; border-radius: 8px; object-fit: cover;">`;
+          }
+
+          // Re-open modal to show "Use Generated" button
+          openTrackInfoModal();
+          renderPlayerPanel();
+          renderIdeasTable();
+
+          showToast("Cover image uploaded");
+        } catch (err) {
+          console.error("Error uploading cover:", err);
+          alert("Error uploading image: " + err.message);
+        }
+      }
+
+      // Switch back to generated art
+      async function useGeneratedArt() {
+        if (!currentIdea) return;
+
+        try {
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update({ cover_image_url: null })
+            .eq("id", currentIdea.id);
+
+          if (error) throw error;
+
+          currentIdea.cover_image_url = null;
+          const idx = allIdeas.findIndex((i) => i.id === currentIdea.id);
+          if (idx !== -1) allIdeas[idx].cover_image_url = null;
+
+          openTrackInfoModal();
+          renderPlayerPanel();
+          renderIdeasTable();
+
+          showToast("Using generated artwork");
+        } catch (err) {
+          console.error("Error:", err);
+          alert("Error: " + err.message);
+        }
+      }
+
       function closeTrackInfoModal() {
         const modal = document.getElementById("track-info-modal");
         if (modal) modal.classList.remove("open");
@@ -13308,7 +14390,6 @@
           title:
             document.getElementById("info-title")?.value?.trim() ||
             currentIdea.title,
-          artist: document.getElementById("info-artist")?.value?.trim() || null,
           project_name:
             document.getElementById("info-project")?.value?.trim() || null,
           stage: document.getElementById("info-stage")?.value || "seed",
@@ -13397,6 +14478,57 @@
       }
 
       document.addEventListener("keydown", (e) => {
+        // ESC to close any open modal
+        if (e.key === "Escape") {
+          // Close due date modal
+          const dueDateModal = document.getElementById("due-date-modal");
+          if (dueDateModal && dueDateModal.classList.contains("open")) {
+            closeDueDateModal();
+            return;
+          }
+
+          // Close collaborator modal
+          const collabModal = document.getElementById("collaborator-modal");
+          if (collabModal && collabModal.classList.contains("open")) {
+            closeCollaboratorModal();
+            return;
+          }
+
+          // Close track settings modal
+          const trackSettingsModal = document.getElementById(
+            "track-settings-modal"
+          );
+          if (
+            trackSettingsModal &&
+            trackSettingsModal.classList.contains("open")
+          ) {
+            closeTrackSettingsModal();
+            return;
+          }
+
+          // Close project settings modal
+          const projectSettingsModal = document.querySelector(
+            ".project-settings-modal.open"
+          );
+          if (projectSettingsModal) {
+            closeProjectSettings();
+            return;
+          }
+
+          // Close track info modal
+          const trackInfoModal = document.getElementById("track-info-modal");
+          if (trackInfoModal && trackInfoModal.classList.contains("open")) {
+            closeTrackInfoModal();
+            return;
+          }
+
+          // Close any dropdown
+          closeTagDropdown();
+          closeAllStageDropdowns();
+          closeAllPriorityDropdowns();
+          return;
+        }
+
         // Don't trigger shortcuts when typing in inputs
         if (e.target.matches("input, textarea, [contenteditable]")) return;
 
