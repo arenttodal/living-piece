@@ -321,7 +321,28 @@
       }
 
       .idea-project {
-        color: var(--text-soft);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 6px;
+        color: var(--text);
+        font-weight: 500;
+        font-size: 12px;
+      }
+
+      .idea-project-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .idea-project-thumb svg {
+        width: 100%;
+        height: 100%;
       }
 
       .idea-tags {
@@ -384,9 +405,12 @@
       }
 
       .player-header {
-        padding: 16px;
+        padding: 12px 16px;
         border-bottom: 1px solid var(--border);
         flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
       .player-header-title {
@@ -395,6 +419,45 @@
         text-transform: uppercase;
         letter-spacing: 0.05em;
         color: var(--text-muted);
+      }
+
+      .player-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .player-header-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        transition: all 0.15s ease;
+      }
+
+      .player-header-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+      }
+
+      .player-header-btn.active {
+        color: var(--warning);
+      }
+
+      .player-header-btn.danger:hover {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+      }
+
+      .player-header-btn svg {
+        width: 16px;
+        height: 16px;
       }
 
       .player-content {
@@ -416,14 +479,20 @@
         padding: 20px;
       }
 
-      /* Album Art */
-      .album-art {
+      /* Album Art with Overlay Controls */
+      .album-art-container {
+        position: relative;
         width: 100%;
         aspect-ratio: 1;
         border-radius: 12px;
         margin-bottom: 16px;
         overflow: hidden;
         background: var(--bg-input);
+      }
+
+      .album-art {
+        width: 100%;
+        height: 100%;
         position: relative;
       }
 
@@ -436,6 +505,186 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+
+      /* Overlay Controls */
+      .player-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 16px;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.8) 0%,
+          rgba(0, 0, 0, 0.4) 60%,
+          transparent 100%
+        );
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .overlay-progress {
+        width: 100%;
+      }
+
+      .overlay-progress-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .overlay-progress-fill {
+        height: 100%;
+        background: white;
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+
+      .overlay-time {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 4px;
+      }
+
+      .overlay-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+      }
+
+      .overlay-play-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: all 0.2s ease;
+      }
+
+      .overlay-play-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+      }
+
+      .overlay-play-btn svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .overlay-skip-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.8);
+        transition: all 0.2s ease;
+      }
+
+      .overlay-skip-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+
+      .overlay-skip-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .album-art-toggle {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 4px 8px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 4px;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .album-art-toggle:hover {
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+      }
+
+      /* Track Info Row */
+      .track-info-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .track-info-left {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .track-title-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+
+      .now-playing-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .inline-excitement {
+        display: flex;
+        gap: 2px;
+        flex-shrink: 0;
+      }
+
+      .inline-excitement-star {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 14px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.1s ease;
+        line-height: 1;
+      }
+
+      .inline-excitement-star:hover,
+      .inline-excitement-star.hovered {
+        color: var(--warning);
+        transform: scale(1.1);
+      }
+
+      .inline-excitement-star.active {
+        color: var(--warning);
       }
 
       .album-art-toggle {
@@ -477,101 +726,431 @@
         gap: 12px;
       }
 
+      .now-playing-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+
       .now-playing-title {
         font-size: 18px;
         font-weight: 600;
-        margin-bottom: 4px;
         color: var(--text);
+      }
+
+      .version-selector {
+        padding: 2px 6px;
+        font-size: 11px;
+        font-weight: 500;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--text-soft);
+        cursor: pointer;
+        outline: none;
+        font-family: inherit;
+      }
+
+      .version-selector:hover {
+        border-color: var(--accent);
+        color: var(--text);
+      }
+
+      .version-selector:focus {
+        border-color: var(--accent);
+      }
+
+      .version-badge {
+        padding: 2px 6px;
+        font-size: 11px;
+        font-weight: 500;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--text-muted);
       }
 
       .now-playing-project {
         font-size: 13px;
         color: var(--text-soft);
-        margin-bottom: 16px;
+        margin-bottom: 12px;
       }
 
-      /* Audio Controls */
-      .audio-controls {
+      /* Task Tags */
+      .task-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
         margin-bottom: 20px;
       }
 
-      .progress-bar-container {
-        height: 4px;
-        background: var(--bg-input);
-        border-radius: 2px;
-        margin-bottom: 12px;
-        cursor: pointer;
-        position: relative;
-      }
-
-      .progress-bar {
-        height: 100%;
-        background: var(--accent);
-        border-radius: 2px;
-        width: 0%;
-        transition: width 0.1s linear;
-      }
-
-      .time-display {
-        display: flex;
-        justify-content: space-between;
+      .task-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 20px;
         font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+      }
+
+      .task-tag.needs-lyrics {
+        background: rgba(139, 92, 246, 0.15);
+        color: #a78bfa;
+        border-color: rgba(139, 92, 246, 0.3);
+      }
+
+      .task-tag.needs-mix {
+        background: rgba(236, 72, 153, 0.15);
+        color: #f472b6;
+        border-color: rgba(236, 72, 153, 0.3);
+      }
+
+      .task-tag.needs-master {
+        background: rgba(34, 197, 94, 0.15);
+        color: #4ade80;
+        border-color: rgba(34, 197, 94, 0.3);
+      }
+
+      .task-tag.needs-vocals {
+        background: rgba(251, 146, 60, 0.15);
+        color: #fb923c;
+        border-color: rgba(251, 146, 60, 0.3);
+      }
+
+      .task-tag.needs-arrangement {
+        background: rgba(56, 189, 248, 0.15);
+        color: #38bdf8;
+        border-color: rgba(56, 189, 248, 0.3);
+      }
+
+      .task-tag.needs-rework {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+
+      .task-tag .remove-tag {
+        width: 14px;
+        height: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        margin-left: 2px;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+
+      .task-tag:hover .remove-tag {
+        opacity: 1;
+      }
+
+      .add-tag-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px dashed rgba(255, 255, 255, 0.2);
         color: var(--text-muted);
-        margin-bottom: 12px;
-      }
-
-      .playback-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-      }
-
-      .play-btn {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background: var(--accent);
-        border: none;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        transition: all 0.15s ease;
+        transition: all 0.2s ease;
       }
 
-      .play-btn:hover {
-        background: var(--accent-hover);
-        transform: scale(1.05);
-      }
-
-      .play-btn svg {
-        width: 24px;
-        height: 24px;
-      }
-
-      .skip-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: var(--bg-input);
-        border: 1px solid var(--border);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      .add-tag-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.3);
         color: var(--text-soft);
+      }
+
+      .tag-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px;
+        min-width: 160px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        z-index: 100;
+      }
+
+      .tag-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+
+      .tag-dropdown-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .tag-dropdown-item .tag-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      /* Tab System */
+      .player-tabs {
+        display: flex;
+        gap: 4px;
+        padding: 4px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        margin-bottom: 16px;
+      }
+
+      .player-tab {
+        flex: 1;
+        padding: 8px 12px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--text-muted);
+        cursor: pointer;
         transition: all 0.15s ease;
       }
 
-      .skip-btn:hover {
-        background: var(--bg-hover);
+      .player-tab:hover {
+        color: var(--text-soft);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .player-tab.active {
+        background: rgba(255, 255, 255, 0.08);
         color: var(--text);
       }
 
-      .skip-btn svg {
+      .tab-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .tab-panel {
+        display: none;
+        flex: 1;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .tab-panel.active {
+        display: flex;
+      }
+
+      /* Notes/Comments Tab */
+      .notes-textarea {
+        flex: 1;
+        min-height: 120px;
+        padding: 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 13px;
+        font-family: inherit;
+        resize: none;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .notes-textarea:focus {
+        border-color: var(--accent);
+      }
+
+      .notes-textarea::placeholder {
+        color: var(--text-muted);
+      }
+
+      /* Metadata Tab */
+      .metadata-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px 12px;
+        font-size: 12px;
+      }
+
+      .metadata-label {
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+
+      .metadata-value {
+        color: var(--text);
+      }
+
+      .metadata-input {
+        padding: 6px 10px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-size: 12px;
+        font-family: inherit;
+        outline: none;
+        width: 100%;
+      }
+
+      .metadata-input:focus {
+        border-color: var(--accent);
+      }
+
+      /* Collaborators Tab */
+      .collaborators-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .collaborator-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+      }
+
+      .collaborator-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), #38bdf8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: white;
+      }
+
+      .collaborator-info {
+        flex: 1;
+      }
+
+      .collaborator-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      .collaborator-role {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
+      .add-collaborator-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px;
+        background: transparent;
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: var(--text-muted);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .add-collaborator-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* Todo Tab */
+      .todo-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .todo-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+      }
+
+      .todo-checkbox {
         width: 16px;
         height: 16px;
+        border-radius: 4px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+      }
+
+      .todo-checkbox:hover {
+        border-color: var(--accent);
+      }
+
+      .todo-checkbox.checked {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .todo-checkbox.checked svg {
+        color: white;
+      }
+
+      .todo-text {
+        flex: 1;
+        font-size: 12px;
+        color: var(--text);
+      }
+
+      .todo-item.completed .todo-text {
+        color: var(--text-muted);
+        text-decoration: line-through;
+      }
+
+      .add-todo-input {
+        padding: 10px 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-size: 12px;
+        font-family: inherit;
+        outline: none;
+        margin-top: 8px;
+      }
+
+      .add-todo-input:focus {
+        border-color: var(--accent);
+      }
+
+      .add-todo-input::placeholder {
+        color: var(--text-muted);
       }
 
       /* Notes Section */
@@ -855,11 +1434,32 @@
       }
 
       .grid-card-project {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 8px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 5px;
         font-size: 11px;
-        color: var(--text-muted);
+        font-weight: 500;
+        color: var(--text-soft);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        max-width: 100%;
+      }
+
+      .grid-card-project-thumb {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .grid-card-project-thumb svg {
+        width: 100%;
+        height: 100%;
       }
 
       .grid-card-playing {
@@ -1155,6 +1755,41 @@
       /* Player panel - hide favorites button since we have icon now */
       .player-favorite {
         display: none;
+      }
+
+      /* Discover button - pulsing when there are unrated ideas */
+      #discover-btn {
+        position: relative;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        border: none;
+        color: white;
+      }
+
+      #discover-btn:hover {
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+      }
+
+      #discover-btn .badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: var(--danger);
+        color: white;
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-weight: 600;
+      }
+
+      /* Ignite button */
+      .btn-ignite {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        border: none;
+        color: white;
+      }
+
+      .btn-ignite:hover {
+        background: linear-gradient(135deg, #ea580c, #c2410c);
       }
 
       /* ============ RESPONSIVE DESIGN ============ */
@@ -1593,6 +2228,34 @@
                 </svg>
               </button>
             </div>
+            <a
+              href="discover.html"
+              class="btn btn-secondary"
+              id="discover-btn"
+              style="display: none"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4M12 8h.01" />
+              </svg>
+              Discover
+            </a>
+            <a href="ignite.html" class="btn btn-ignite">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 2c0 4-4 6-4 10a4 4 0 108 0c0-4-4-6-4-10z" />
+              </svg>
+              Ignite
+            </a>
             <button class="btn btn-secondary" onclick="exportCSV()">
               <svg
                 viewBox="0 0 24 24"
@@ -1648,8 +2311,9 @@
 
       <!-- Right: Now Playing -->
       <aside class="player-panel">
-        <div class="player-header">
+        <div class="player-header" id="player-header">
           <div class="player-header-title">Now Playing</div>
+          <div class="player-header-actions" id="player-header-actions"></div>
         </div>
         <div class="player-content" id="player-content">
           <div class="player-empty">
@@ -2044,6 +2708,63 @@
         return generateAlbumArt(title, tags, project);
       }
 
+      // Generate subdued project thumbnail (circular with gradients)
+      function generateProjectThumbnail(project) {
+        const seed = hashString(project);
+
+        // Gradient color pairs (from, to) - dark green/blue/teal tones
+        const gradientPairs = [
+          ["#0d3d2d", "#1a6b52"],
+          ["#0d2d3d", "#1a526b"],
+          ["#0d3535", "#1a5a5a"],
+          ["#1a3545", "#2a5a70"],
+          ["#0f2a2a", "#1f4545"],
+          ["#152535", "#254555"],
+          ["#1a2f35", "#2a4f55"],
+          ["#0d352d", "#1a5a4a"],
+        ];
+
+        const gradientIndex = seed % gradientPairs.length;
+        const [color1, color2] = gradientPairs[gradientIndex];
+
+        // Gradient angle based on seed
+        const angle = (seed * 37) % 360;
+
+        // Optional accent dot
+        const showAccent = seed % 3 === 0;
+        const accentColors = [
+          "#4ade80",
+          "#38bdf8",
+          "#2dd4bf",
+          "#34d399",
+          "#22d3ee",
+        ];
+        const accentColor = accentColors[seed % accentColors.length];
+        const accentX = 30 + (seed % 40);
+        const accentY = 30 + ((seed * 7) % 40);
+        const accentR = 8 + (seed % 12);
+
+        return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="projGrad${seed}" gradientTransform="rotate(${angle})">
+        <stop offset="0%" stop-color="${color1}"/>
+        <stop offset="100%" stop-color="${color2}"/>
+      </linearGradient>
+      <radialGradient id="projRadial${seed}" cx="30%" cy="30%">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.15)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+    </defs>
+    <circle cx="50" cy="50" r="50" fill="url(#projGrad${seed})"/>
+    <circle cx="50" cy="50" r="50" fill="url(#projRadial${seed})"/>
+    ${
+      showAccent
+        ? `<circle cx="${accentX}" cy="${accentY}" r="${accentR}" fill="${accentColor}" opacity="0.6"/>`
+        : ""
+    }
+  </svg>`;
+      }
+
       // Initialize
       async function init() {
         loadViewMode();
@@ -2068,9 +2789,36 @@
 
           renderProjectList();
           renderIdeasTable();
+
+          // Check for unrated ideas and show Discover button
+          checkUnratedIdeas();
         } catch (err) {
           console.error("Error loading ideas:", err);
           ideasBody.innerHTML = `<tr><td colspan="5" style="color: var(--danger); padding: 20px;">Error loading ideas: ${err.message}</td></tr>`;
+        }
+      }
+
+      // Check for unrated ideas and show/hide Discover button
+      function checkUnratedIdeas() {
+        const unratedCount = allIdeas.filter(
+          (idea) =>
+            !idea.is_archived && (!idea.excitement || idea.excitement === 0)
+        ).length;
+
+        const discoverBtn = document.getElementById("discover-btn");
+        if (discoverBtn) {
+          if (unratedCount > 0) {
+            discoverBtn.style.display = "inline-flex";
+            // Add badge with count
+            const existingBadge = discoverBtn.querySelector(".badge");
+            if (existingBadge) existingBadge.remove();
+            const badge = document.createElement("span");
+            badge.className = "badge";
+            badge.textContent = unratedCount;
+            discoverBtn.appendChild(badge);
+          } else {
+            discoverBtn.style.display = "none";
+          }
         }
       }
 
@@ -2292,7 +3040,12 @@
           </div>
         </td>
         <td>
-          <span class="idea-project">${escapeHtml(primaryProject)}</span>
+          <span class="idea-project">
+            <span class="idea-project-thumb">${generateProjectThumbnail(
+              primaryProject
+            )}</span>
+            ${escapeHtml(primaryProject)}
+          </span>
           ${
             hasMore
               ? `<span class="tag" style="margin-left: 4px;">+${
@@ -2394,7 +3147,12 @@
         </div>
         <div class="grid-card-info">
           <div class="grid-card-title">${escapeHtml(idea.title)}</div>
-          <div class="grid-card-project">${escapeHtml(primaryProject)}</div>
+          <div class="grid-card-project">
+            <span class="grid-card-project-thumb">${generateProjectThumbnail(
+              primaryProject
+            )}</span>
+            ${escapeHtml(primaryProject)}
+          </div>
         </div>
       </div>
     `;
@@ -2490,6 +3248,27 @@
         if (currentIdea?.dropbox_url) {
           const previewUrl = currentIdea.dropbox_url.replace("dl=1", "dl=0");
           window.open(previewUrl, "_blank");
+        }
+      }
+
+      // Open Project folder using local server
+      function openProject() {
+        if (currentIdea?.project_folder_path) {
+          // Build the local file path for Dropbox
+          const localPath =
+            "/Users/arnsmacbook/Dropbox/Apps/IdeaVault" +
+            currentIdea.project_folder_path;
+
+          console.log("Opening folder:", localPath);
+
+          // Call local server to open folder
+          fetch(
+            "http://localhost:9123/open?path=" + encodeURIComponent(localPath)
+          ).catch(() => {
+            alert(
+              "Folder opener not running. Start it with:\npython3 ~/open-folder-server.py &"
+            );
+          });
         }
       }
 
@@ -2655,6 +3434,7 @@
       // Play an idea
       // Loading state
       let isLoading = false;
+      let currentVersions = []; // All versions of current track
 
       function playIdea(id) {
         const idea = allIdeas.find((i) => i.id === id);
@@ -2663,6 +3443,29 @@
         currentIdea = idea;
         isLoading = true;
         isPlaying = false;
+
+        // Find all versions of this track (same base_name)
+        if (idea.base_name) {
+          currentVersions = allIdeas
+            .filter(
+              (i) =>
+                i.base_name &&
+                i.base_name.toLowerCase() === idea.base_name.toLowerCase()
+            )
+            .sort((a, b) => {
+              // Sort by version number descending (newest first)
+              const vA = parseFloat(a.version) || 0;
+              const vB = parseFloat(b.version) || 0;
+              return vB - vA;
+            });
+          console.log(
+            `Found ${currentVersions.length} versions for "${idea.base_name}":`,
+            currentVersions.map((v) => v.version)
+          );
+        } else {
+          currentVersions = [idea];
+          console.log("No base_name, single version only");
+        }
 
         // Update table to show playing state
         renderIdeasTable();
@@ -2699,6 +3502,138 @@
         }
       }
 
+      // Switch to a different version
+      function switchVersion(versionId) {
+        const version = currentVersions.find((v) => v.id === versionId);
+        if (version) {
+          playIdea(version.id);
+        }
+      }
+
+      // ============ TASK TAGS ============
+
+      const TASK_TAG_LABELS = {
+        "needs-lyrics": "Needs Lyrics",
+        "needs-mix": "Needs Mix",
+        "needs-master": "Needs Master",
+        "needs-vocals": "Needs Vocals",
+        "needs-arrangement": "Needs Arrangement",
+        "needs-rework": "Needs Rework",
+      };
+
+      function renderTaskTags(tagString) {
+        if (!tagString) return "";
+        const tags = tagString
+          .split(",")
+          .map((t) => t.trim())
+          .filter((t) => t);
+        return tags
+          .map(
+            (tag) => `
+    <span class="task-tag ${tag}" onclick="removeTaskTag('${tag}')">
+      ${TASK_TAG_LABELS[tag] || tag}
+      <span class="remove-tag">×</span>
+    </span>
+  `
+          )
+          .join("");
+      }
+
+      function toggleTagDropdown(event) {
+        event.stopPropagation();
+        const dropdown = document.getElementById("tag-dropdown");
+        dropdown.style.display =
+          dropdown.style.display === "none" ? "block" : "none";
+
+        // Close when clicking outside
+        if (dropdown.style.display === "block") {
+          setTimeout(() => {
+            document.addEventListener("click", closeTagDropdown, {
+              once: true,
+            });
+          }, 0);
+        }
+      }
+
+      function closeTagDropdown() {
+        const dropdown = document.getElementById("tag-dropdown");
+        if (dropdown) dropdown.style.display = "none";
+      }
+
+      async function addTaskTag(tagName) {
+        if (!currentIdea) return;
+        closeTagDropdown();
+
+        // Parse existing tags
+        const currentTags = currentIdea.task_tags
+          ? currentIdea.task_tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter((t) => t)
+          : [];
+
+        // Check if already exists
+        if (currentTags.includes(tagName)) return;
+
+        // Add new tag
+        currentTags.push(tagName);
+        const newTagString = currentTags.join(",");
+
+        try {
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update({ task_tags: newTagString })
+            .eq("id", currentIdea.id);
+
+          if (error) throw error;
+
+          currentIdea.task_tags = newTagString;
+
+          // Update in allIdeas too
+          const idx = allIdeas.findIndex((i) => i.id === currentIdea.id);
+          if (idx !== -1) allIdeas[idx].task_tags = newTagString;
+
+          renderPlayerPanel();
+        } catch (err) {
+          console.error("Error adding task tag:", err);
+        }
+      }
+
+      async function removeTaskTag(tagName) {
+        if (!currentIdea) return;
+
+        // Parse existing tags
+        const currentTags = currentIdea.task_tags
+          ? currentIdea.task_tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter((t) => t)
+          : [];
+
+        // Remove the tag
+        const newTags = currentTags.filter((t) => t !== tagName);
+        const newTagString = newTags.join(",");
+
+        try {
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update({ task_tags: newTagString || null })
+            .eq("id", currentIdea.id);
+
+          if (error) throw error;
+
+          currentIdea.task_tags = newTagString;
+
+          // Update in allIdeas too
+          const idx = allIdeas.findIndex((i) => i.id === currentIdea.id);
+          if (idx !== -1) allIdeas[idx].task_tags = newTagString;
+
+          renderPlayerPanel();
+        } catch (err) {
+          console.error("Error removing task tag:", err);
+        }
+      }
+
       // Open in new tab (fallback for playback issues)
       function openInNewTab() {
         if (currentIdea?.dropbox_url) {
@@ -2710,7 +3645,10 @@
 
       // Render player panel
       function renderPlayerPanel() {
+        const headerActions = document.getElementById("player-header-actions");
+
         if (!currentIdea) {
+          headerActions.innerHTML = "";
           playerContent.innerHTML = `
       <div class="player-empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 40px; height: 40px; margin-bottom: 12px; opacity: 0.3;">
@@ -2723,21 +3661,41 @@
           return;
         }
 
-        const tags = currentIdea.tags
-          ? currentIdea.tags
-              .split(",")
-              .map((t) => t.trim())
-              .filter((t) => t)
-          : [];
-
-        // Loading indicator
-        const loadingIndicator = isLoading
-          ? `
-    <div style="text-align: center; padding: 12px; color: var(--text-muted); font-size: 12px;">
-      Loading audio...
-    </div>
-  `
-          : "";
+        // Update header action buttons
+        headerActions.innerHTML = `
+    <button class="player-header-btn ${
+      currentIdea.is_favorite ? "active" : ""
+    }" onclick="toggleFavorite('${currentIdea.id}')" title="${
+          currentIdea.is_favorite ? "Remove from favorites" : "Add to favorites"
+        }">
+      <svg viewBox="0 0 24 24" fill="${
+        currentIdea.is_favorite ? "currentColor" : "none"
+      }" stroke="currentColor" stroke-width="2">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </button>
+    ${
+      currentIdea.project_folder_path
+        ? `
+      <button class="player-header-btn" onclick="openProject()" title="Open Project Folder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+      </button>
+    `
+        : ""
+    }
+    <button class="player-header-btn danger ${
+      currentIdea.is_archived ? "active" : ""
+    }" onclick="toggleArchive('${currentIdea.id}')" title="${
+          currentIdea.is_archived ? "Unarchive" : "Archive"
+        }">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="21 8 21 21 3 21 3 8"/>
+        <rect x="1" y="3" width="22" height="5"/>
+      </svg>
+    </button>
+  `;
 
         // Play button content based on state
         let playBtnContent;
@@ -2746,33 +3704,15 @@
       <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="8"/>
     </svg>`;
         } else if (isPlaying) {
-          playBtnContent = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <rect x="6" y="4" width="4" height="16"/>
-      <rect x="14" y="4" width="4" height="16"/>
+          playBtnContent = `<svg viewBox="0 0 24 24" fill="currentColor">
+      <rect x="6" y="4" width="4" height="16" rx="1"/>
+      <rect x="14" y="4" width="4" height="16" rx="1"/>
     </svg>`;
         } else {
-          playBtnContent = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polygon points="5 3 19 12 5 21 5 3"/>
+          playBtnContent = `<svg viewBox="0 0 24 24" fill="currentColor">
+      <polygon points="6 3 20 12 6 21 6 3"/>
     </svg>`;
         }
-
-        // Determine audio source
-        const hasSupabaseUrl = !!currentIdea.supabase_url;
-        const sourceIndicator = hasSupabaseUrl
-          ? `<span style="display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--success); margin-left: 8px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-        Supabase
-       </span>`
-          : `<span style="display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--warning); margin-left: 8px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;">
-          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-          <polyline points="15 3 21 3 21 9"/>
-          <line x1="10" y1="14" x2="21" y2="3"/>
-        </svg>
-        Dropbox
-       </span>`;
 
         // Generate album art
         const albumArtSvg = generateAlbumArt(
@@ -2788,6 +3728,46 @@
           ? `<img src="${unsplashUrl}" alt="Album art" loading="lazy" onerror="this.style.display='none'">`
           : albumArtSvg;
 
+        // Version selector
+        const versionHtml = (() => {
+          if (currentVersions.length > 1) {
+            return `
+        <select class="version-selector" onchange="switchVersion(this.value)" title="Switch version">
+          ${currentVersions
+            .map(
+              (v) => `
+            <option value="${v.id}" ${
+                v.id === currentIdea.id ? "selected" : ""
+              }>
+              v${v.version || "1.0"}
+            </option>
+          `
+            )
+            .join("")}
+        </select>
+      `;
+          } else if (currentIdea.version) {
+            return `<span class="version-badge">v${currentIdea.version}</span>`;
+          }
+          return "";
+        })();
+
+        // Excitement stars
+        const excitementHtml = [1, 2, 3, 4, 5]
+          .map(
+            (n) => `
+    <button class="inline-excitement-star ${
+      (currentIdea.excitement || 0) >= n ? "active" : ""
+    }" 
+            onclick="event.stopPropagation(); setExcitement(${n})"
+            onmouseenter="previewInlineExcitement(${n})"
+            onmouseleave="resetInlineExcitementPreview()">
+      ★
+    </button>
+  `
+          )
+          .join("");
+
         playerContent.innerHTML = `
     <style>
       @keyframes spin {
@@ -2796,116 +3776,195 @@
       }
     </style>
     
-    <!-- Album Art - Full Width -->
-    <div class="album-art">
-      ${albumArtHtml}
+    <!-- Album Art with Overlay Controls -->
+    <div class="album-art-container">
+      <div class="album-art">
+        ${albumArtHtml}
+      </div>
       <button class="album-art-toggle" onclick="toggleAlbumArtMode()">
         ${useUnsplash ? "✨ Generative" : "📷 Photo"}
       </button>
-    </div>
-    
-    <!-- Title & Project -->
-    <div class="now-playing-title">${escapeHtml(currentIdea.title)}</div>
-    <div class="now-playing-project">${escapeHtml(
-      currentIdea.project_name || "Unassigned"
-    )}</div>
-    
-    <!-- Audio Controls -->
-    <div class="audio-controls">
-      <div class="progress-bar-container" onclick="seekAudio(event)">
-        <div class="progress-bar" id="progress-bar"></div>
-      </div>
-      <div class="time-display">
-        <span id="current-time">0:00</span>
-        <span id="duration">0:00</span>
-      </div>
-      <div class="playback-buttons">
-        <button class="skip-btn" onclick="skipBack()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="19 20 9 12 19 4 19 20"/>
-            <line x1="5" y1="19" x2="5" y2="5"/>
-          </svg>
-        </button>
-        <button class="play-btn" onclick="togglePlay()" ${
-          isLoading ? "disabled" : ""
-        }>
-          ${playBtnContent}
-        </button>
-        <button class="skip-btn" onclick="skipForward()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="5 4 15 12 5 20 5 4"/>
-            <line x1="19" y1="5" x2="19" y2="19"/>
-          </svg>
-        </button>
+      <div class="player-overlay">
+        <div class="overlay-progress">
+          <div class="overlay-progress-bar" onclick="seekAudio(event)">
+            <div class="overlay-progress-fill" id="progress-bar"></div>
+          </div>
+          <div class="overlay-time">
+            <span id="current-time">0:00</span>
+            <span id="duration">0:00</span>
+          </div>
+        </div>
+        <div class="overlay-controls">
+          <button class="overlay-skip-btn" onclick="skipBack()">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="19 20 9 12 19 4 19 20"/>
+              <rect x="5" y="4" width="2" height="16"/>
+            </svg>
+          </button>
+          <button class="overlay-play-btn" onclick="togglePlay()" ${
+            isLoading ? "disabled" : ""
+          }>
+            ${playBtnContent}
+          </button>
+          <button class="overlay-skip-btn" onclick="skipForward()">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 4 15 12 5 20 5 4"/>
+              <rect x="17" y="4" width="2" height="16"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
     
-    <!-- Excitement Rating -->
-    <div class="excitement-rating" id="excitement-rating">
-      <span class="excitement-label">Excitement:</span>
-      ${[1, 2, 3, 4, 5]
-        .map(
-          (n) => `
-        <button class="excitement-star ${
-          (currentIdea.excitement || 0) >= n ? "active" : ""
-        }" 
-                onclick="setExcitement(${n})"
-                onmouseenter="previewExcitement(${n})"
-                onmouseleave="resetExcitementPreview()">
-          ★
-        </button>
-      `
-        )
-        .join("")}
+    <!-- Track Info -->
+    <div class="track-info-row">
+      <div class="track-info-left">
+        <div class="track-title-row">
+          <div class="now-playing-title">${escapeHtml(currentIdea.title)}</div>
+          ${versionHtml}
+        </div>
+        <div class="now-playing-project">${escapeHtml(
+          currentIdea.project_name || "Unassigned"
+        )}</div>
+      </div>
+      <div class="inline-excitement" id="inline-excitement">
+        ${excitementHtml}
+      </div>
     </div>
     
-    <!-- Quick Actions Row - Icon buttons only -->
-    <div class="quick-actions">
-      <button class="icon-btn ${
-        currentIdea.is_favorite ? "active" : ""
-      }" onclick="toggleFavorite('${currentIdea.id}')" title="${
-          currentIdea.is_favorite ? "Remove from favorites" : "Add to favorites"
-        }">
-        <svg viewBox="0 0 24 24" fill="${
-          currentIdea.is_favorite ? "currentColor" : "none"
-        }" stroke="currentColor" stroke-width="2">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
-      </button>
-      ${
-        currentIdea.dropbox_url
-          ? `
-        <button class="icon-btn" onclick="openInDropbox()" title="Open in Dropbox">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-            <polyline points="15 3 21 3 21 9"/>
-            <line x1="10" y1="14" x2="21" y2="3"/>
+    <!-- Task Tags -->
+    <div class="task-tags" id="task-tags-container">
+      ${renderTaskTags(currentIdea.task_tags || "")}
+      <div style="position: relative; display: inline-block;">
+        <button class="add-tag-btn" onclick="toggleTagDropdown(event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
+          Add
         </button>
-      `
-          : ""
-      }
-      <button class="icon-btn ${
-        currentIdea.is_archived ? "active warning" : ""
-      }" onclick="toggleArchive('${currentIdea.id}')" title="${
-          currentIdea.is_archived ? "Unarchive" : "Archive"
-        }">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="21 8 21 21 3 21 3 8"/>
-          <rect x="1" y="3" width="22" height="5"/>
-          <line x1="10" y1="12" x2="14" y2="12"/>
-        </svg>
-      </button>
+        <div class="tag-dropdown" id="tag-dropdown" style="display: none;">
+          <div class="tag-dropdown-item" onclick="addTaskTag('needs-lyrics')">
+            <span class="tag-dot" style="background: #a78bfa;"></span>
+            Needs Lyrics
+          </div>
+          <div class="tag-dropdown-item" onclick="addTaskTag('needs-mix')">
+            <span class="tag-dot" style="background: #f472b6;"></span>
+            Needs Mix
+          </div>
+          <div class="tag-dropdown-item" onclick="addTaskTag('needs-master')">
+            <span class="tag-dot" style="background: #4ade80;"></span>
+            Needs Master
+          </div>
+          <div class="tag-dropdown-item" onclick="addTaskTag('needs-vocals')">
+            <span class="tag-dot" style="background: #fb923c;"></span>
+            Needs Vocals
+          </div>
+          <div class="tag-dropdown-item" onclick="addTaskTag('needs-arrangement')">
+            <span class="tag-dot" style="background: #38bdf8;"></span>
+            Needs Arrangement
+          </div>
+          <div class="tag-dropdown-item" onclick="addTaskTag('needs-rework')">
+            <span class="tag-dot" style="background: #f87171;"></span>
+            Needs Rework
+          </div>
+        </div>
+      </div>
     </div>
     
-    <!-- Notes Section -->
-    <div class="notes-section">
-      <textarea class="notes-textarea" id="notes-textarea" placeholder="Add notes...">${escapeHtml(
-        currentIdea.notes || ""
-      )}</textarea>
-      <button class="btn btn-primary btn-sm" onclick="saveNotes()">Save</button>
+    <!-- Tab Navigation -->
+    <div class="player-tabs">
+      <button class="player-tab active" onclick="switchPlayerTab('notes')" data-tab="notes">Notes</button>
+      <button class="player-tab" onclick="switchPlayerTab('metadata')" data-tab="metadata">Info</button>
+      <button class="player-tab" onclick="switchPlayerTab('collaborators')" data-tab="collaborators">Team</button>
+      <button class="player-tab" onclick="switchPlayerTab('todo')" data-tab="todo">Todo</button>
+    </div>
+    
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Notes Tab -->
+      <div class="tab-panel active" id="tab-notes">
+        <textarea class="notes-textarea" id="notes-textarea" placeholder="Add notes about this track...">${escapeHtml(
+          currentIdea.notes || ""
+        )}</textarea>
+      </div>
+      
+      <!-- Metadata Tab -->
+      <div class="tab-panel" id="tab-metadata">
+        <div class="metadata-grid">
+          <span class="metadata-label">BPM</span>
+          <input class="metadata-input" type="text" placeholder="120" value="${escapeHtml(
+            currentIdea.bpm || ""
+          )}" onchange="updateMetadata('bpm', this.value)">
+          
+          <span class="metadata-label">Key</span>
+          <input class="metadata-input" type="text" placeholder="C minor" value="${escapeHtml(
+            currentIdea.musical_key || ""
+          )}" onchange="updateMetadata('musical_key', this.value)">
+          
+          <span class="metadata-label">Genre</span>
+          <input class="metadata-input" type="text" placeholder="Electronic" value="${escapeHtml(
+            currentIdea.genre || ""
+          )}" onchange="updateMetadata('genre', this.value)">
+          
+          <span class="metadata-label">Tags</span>
+          <input class="metadata-input" type="text" placeholder="ambient, synth" value="${escapeHtml(
+            currentIdea.tags || ""
+          )}" onchange="updateMetadata('tags', this.value)">
+        </div>
+      </div>
+      
+      <!-- Collaborators Tab -->
+      <div class="tab-panel" id="tab-collaborators">
+        <div class="collaborators-list">
+          ${
+            (currentIdea.collaborators || []).length > 0
+              ? (currentIdea.collaborators || [])
+                  .map(
+                    (c) => `
+              <div class="collaborator-item">
+                <div class="collaborator-avatar">${
+                  c.name?.charAt(0) || "?"
+                }</div>
+                <div class="collaborator-info">
+                  <div class="collaborator-name">${escapeHtml(
+                    c.name || "Unknown"
+                  )}</div>
+                  <div class="collaborator-role">${escapeHtml(
+                    c.role || "Contributor"
+                  )}</div>
+                </div>
+              </div>
+            `
+                  )
+                  .join("")
+              : ""
+          }
+          <button class="add-collaborator-btn" onclick="addCollaborator()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add collaborator
+          </button>
+        </div>
+      </div>
+      
+      <!-- Todo Tab -->
+      <div class="tab-panel" id="tab-todo">
+        <div class="todo-list" id="todo-list">
+          ${renderTodoItems(currentIdea.todos || [])}
+        </div>
+        <input class="add-todo-input" type="text" placeholder="Add a task..." onkeypress="if(event.key==='Enter')addTodoItem(this.value)">
+      </div>
     </div>
   `;
+
+        // Auto-save notes on blur
+        const notesTextarea = document.getElementById("notes-textarea");
+        if (notesTextarea) {
+          notesTextarea.addEventListener("blur", saveNotes);
+        }
       }
 
       // Toggle play/pause
@@ -2934,6 +3993,164 @@
         const rect = event.currentTarget.getBoundingClientRect();
         const percent = (event.clientX - rect.left) / rect.width;
         audio.currentTime = percent * audio.duration;
+      }
+
+      // Tab switching
+      let currentPlayerTab = "notes";
+
+      function switchPlayerTab(tabName) {
+        currentPlayerTab = tabName;
+
+        // Update tab buttons
+        document.querySelectorAll(".player-tab").forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.tab === tabName);
+        });
+
+        // Update tab panels
+        document.querySelectorAll(".tab-panel").forEach((panel) => {
+          panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+        });
+      }
+
+      // Inline excitement preview
+      function previewInlineExcitement(level) {
+        const stars = document.querySelectorAll(".inline-excitement-star");
+        stars.forEach((star, i) => {
+          star.classList.toggle("hovered", i < level);
+        });
+      }
+
+      function resetInlineExcitementPreview() {
+        const stars = document.querySelectorAll(".inline-excitement-star");
+        stars.forEach((star) => star.classList.remove("hovered"));
+      }
+
+      // Update metadata
+      async function updateMetadata(field, value) {
+        if (!currentIdea) return;
+
+        try {
+          const update = {};
+          update[field] = value || null;
+
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update(update)
+            .eq("id", currentIdea.id);
+
+          if (error) throw error;
+
+          currentIdea[field] = value;
+
+          // Update in allIdeas
+          const idx = allIdeas.findIndex((i) => i.id === currentIdea.id);
+          if (idx !== -1) allIdeas[idx][field] = value;
+        } catch (err) {
+          console.error("Error updating metadata:", err);
+        }
+      }
+
+      // Collaborators
+      function addCollaborator() {
+        const name = prompt("Collaborator name:");
+        if (!name) return;
+
+        const role =
+          prompt("Role (e.g., Producer, Vocalist, Mixer):") || "Contributor";
+
+        // For now, store in a simple format - could be expanded to use a separate table
+        const collaborators = currentIdea.collaborators || [];
+        collaborators.push({ name, role });
+
+        updateMetadata("collaborators", JSON.stringify(collaborators));
+        currentIdea.collaborators = collaborators;
+        renderPlayerPanel();
+      }
+
+      // Todo items
+      function renderTodoItems(todos) {
+        if (!todos || todos.length === 0) return "";
+
+        const items = typeof todos === "string" ? JSON.parse(todos) : todos;
+
+        return items
+          .map(
+            (todo, i) => `
+    <div class="todo-item ${todo.done ? "completed" : ""}">
+      <div class="todo-checkbox ${
+        todo.done ? "checked" : ""
+      }" onclick="toggleTodo(${i})">
+        ${
+          todo.done
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:10px;height:10px;"><polyline points="20 6 9 17 4 12"/></svg>'
+            : ""
+        }
+      </div>
+      <span class="todo-text">${escapeHtml(todo.text)}</span>
+    </div>
+  `
+          )
+          .join("");
+      }
+
+      async function addTodoItem(text) {
+        if (!text || !currentIdea) return;
+
+        const todos = currentIdea.todos
+          ? typeof currentIdea.todos === "string"
+            ? JSON.parse(currentIdea.todos)
+            : currentIdea.todos
+          : [];
+        todos.push({ text, done: false });
+
+        try {
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update({ todos: JSON.stringify(todos) })
+            .eq("id", currentIdea.id);
+
+          if (error) throw error;
+
+          currentIdea.todos = todos;
+
+          // Clear input and re-render
+          const input = document.querySelector(".add-todo-input");
+          if (input) input.value = "";
+
+          const todoList = document.getElementById("todo-list");
+          if (todoList) todoList.innerHTML = renderTodoItems(todos);
+        } catch (err) {
+          console.error("Error adding todo:", err);
+        }
+      }
+
+      async function toggleTodo(index) {
+        if (!currentIdea) return;
+
+        const todos = currentIdea.todos
+          ? typeof currentIdea.todos === "string"
+            ? JSON.parse(currentIdea.todos)
+            : currentIdea.todos
+          : [];
+        if (index >= todos.length) return;
+
+        todos[index].done = !todos[index].done;
+
+        try {
+          const { error } = await supabase
+            .from("idea_tracks")
+            .update({ todos: JSON.stringify(todos) })
+            .eq("id", currentIdea.id);
+
+          if (error) throw error;
+
+          currentIdea.todos = todos;
+
+          const todoList = document.getElementById("todo-list");
+          if (todoList) todoList.innerHTML = renderTodoItems(todos);
+        } catch (err) {
+          console.error("Error toggling todo:", err);
+        }
       }
 
       // Update progress bar
