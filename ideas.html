@@ -321,19 +321,19 @@
       }
 
       .project-icon {
-        width: 18px;
-        height: 18px;
-        border-radius: 4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 10px;
+        font-size: 8px;
       }
 
       .project-icon svg {
-        width: 10px;
-        height: 10px;
+        width: 7px;
+        height: 7px;
       }
 
       .project-name {
@@ -680,9 +680,9 @@
       }
 
       .settings-project-icon {
-        width: 18px;
-        height: 18px;
-        border-radius: 4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
         flex-shrink: 0;
       }
 
@@ -1205,7 +1205,7 @@
       .idea-project {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
         padding: 4px 0;
         background: transparent;
         color: var(--text);
@@ -1214,8 +1214,8 @@
       }
 
       .idea-project-thumb {
-        width: 18px;
-        height: 18px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
         overflow: hidden;
         flex-shrink: 0;
@@ -1224,6 +1224,12 @@
       .idea-project-thumb svg {
         width: 100%;
         height: 100%;
+      }
+
+      .idea-project.unassigned {
+        color: var(--text-soft);
+        font-weight: 400;
+        opacity: 0.5;
       }
 
       /* Stage System */
@@ -1567,14 +1573,14 @@
       }
 
       .due-date-badge.empty {
-        color: var(--text-muted);
+        color: var(--text-soft);
         background: transparent;
-        border: 1px dashed var(--border);
+        border: none;
+        opacity: 0.5;
       }
 
       .due-date-badge.empty:hover {
-        border-color: var(--text-soft);
-        color: var(--text-soft);
+        opacity: 0.8;
       }
 
       .due-date-badge.green {
@@ -1871,15 +1877,21 @@
       .idea-project-clickable,
       .idea-tags-clickable {
         cursor: pointer;
-        padding: 4px 8px;
-        margin: -4px -8px;
-        border-radius: 6px;
-        transition: background 0.15s ease;
+        padding: 2px 6px;
+        border-radius: 4px;
+        transition: all 0.15s ease;
+        border: 1px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        width: fit-content;
+        max-width: 100%;
       }
 
       .idea-project-clickable:hover,
       .idea-tags-clickable:hover {
-        background: var(--bg-hover);
+        background: transparent;
+        border-color: var(--border);
       }
 
       .idea-tags {
@@ -1896,6 +1908,16 @@
         color: var(--text-soft);
       }
 
+      .tag.tag-empty {
+        background: transparent;
+        color: var(--text-soft);
+        opacity: 0.5;
+      }
+
+      .idea-tags-clickable:hover .tag.tag-empty {
+        opacity: 0.8;
+      }
+
       .priority-badge {
         padding: 3px 8px;
         border-radius: 4px;
@@ -1906,17 +1928,20 @@
       }
 
       .priority-badge.priority-empty {
-        width: 20px;
-        height: 20px;
-        padding: 0;
+        padding: 2px 8px;
         background: transparent;
-        border: 1px dashed transparent;
+        border: none;
+        border-radius: 4px;
+        color: var(--text-soft);
+        font-size: 10px;
+        font-weight: 400;
+        text-transform: none;
+        opacity: 0.5;
         transition: all 0.15s ease;
       }
 
       .idea-priority-clickable:hover .priority-badge.priority-empty {
-        border-color: var(--border);
-        background: var(--bg-hover);
+        opacity: 0.8;
       }
 
       .priority-high {
@@ -2424,63 +2449,65 @@
       }
 
       .player-header {
-        padding: 12px 16px;
+        padding: 16px 16px;
         border-bottom: 1px solid var(--border);
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
-      }
-
-      .player-header-title {
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
+        min-height: 80px;
       }
 
       .player-header-actions {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 12px;
       }
 
       .player-header-btn {
-        width: 28px;
-        height: 28px;
-        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
         background: transparent;
         border: none;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
+        color: var(--text-soft);
+        opacity: 0.5;
         transition: all 0.15s ease;
+        padding: 4px 6px;
+        border-radius: 6px;
       }
 
       .player-header-btn:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: var(--text);
+        opacity: 0.8;
+        background: rgba(255, 255, 255, 0.05);
       }
 
       .player-header-btn.active {
         color: #ef4444;
+        opacity: 1;
       }
 
       .player-header-btn.danger:hover {
-        background: rgba(239, 68, 68, 0.15);
         color: var(--danger);
       }
 
       .player-header-btn.danger.active {
         color: var(--danger);
+        opacity: 1;
       }
 
       .player-header-btn svg {
         width: 16px;
         height: 16px;
+      }
+
+      .player-header-btn-label {
+        font-size: 8px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
       }
 
       .player-content {
@@ -2876,7 +2903,7 @@
       .project-tag {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
         padding: 4px 10px 4px 4px;
         background: var(--bg-hover);
         border-radius: 6px;
@@ -2885,8 +2912,8 @@
       }
 
       .project-tag-thumb {
-        width: 16px;
-        height: 16px;
+        width: 11px;
+        height: 11px;
         border-radius: 50%;
         overflow: hidden;
         flex-shrink: 0;
@@ -2960,6 +2987,170 @@
         display: flex;
         align-items: center;
         gap: 12px;
+        position: relative;
+        padding-left: 24px;
+      }
+
+      /* Row Selection Checkbox */
+      .idea-select-checkbox {
+        position: absolute;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--border);
+        border-radius: 4px;
+        background: transparent;
+        opacity: 0;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .idea-select-checkbox svg {
+        width: 12px;
+        height: 12px;
+        stroke: white;
+        stroke-width: 3;
+        display: none;
+      }
+
+      .ideas-table tr:hover .idea-select-checkbox {
+        opacity: 0.5;
+      }
+
+      .ideas-table tr.selected .idea-select-checkbox,
+      .idea-select-checkbox:hover {
+        opacity: 1;
+        border-color: var(--primary);
+      }
+
+      .ideas-table tr.selected .idea-select-checkbox {
+        background: var(--primary);
+      }
+
+      .ideas-table tr.selected .idea-select-checkbox svg {
+        display: block;
+      }
+
+      .ideas-table tr.selected {
+        background: rgba(59, 130, 246, 0.1);
+      }
+
+      .ideas-table tr.selected:hover {
+        background: rgba(59, 130, 246, 0.15);
+      }
+
+      /* Multi-Select Panel */
+      .multi-select-panel {
+        padding: 20px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .multi-select-header {
+        margin-bottom: 16px;
+      }
+
+      .multi-select-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+
+      .multi-select-count {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+
+      .multi-select-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 12px;
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 16px;
+      }
+
+      .multi-select-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        transition: background 0.15s ease;
+      }
+
+      .multi-select-item:hover {
+        background: var(--bg-hover);
+      }
+
+      .multi-select-thumb {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--bg-input);
+        position: relative;
+      }
+
+      .multi-select-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .multi-select-thumb svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .multi-select-remove {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 18px;
+        height: 18px;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+        opacity: 0;
+        transition: opacity 0.15s;
+        cursor: pointer;
+      }
+
+      .multi-select-item:hover .multi-select-remove {
+        opacity: 1;
+      }
+
+      .multi-select-name {
+        font-size: 11px;
+        color: var(--text-soft);
+        text-align: center;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .multi-select-actions {
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+      }
+
+      .multi-select-actions .btn {
+        flex: 1;
       }
 
       .now-playing-header {
@@ -3321,6 +3512,328 @@
 
       .notes-textarea::placeholder {
         color: var(--text-muted);
+      }
+
+      /* Bookmark System */
+      .bookmark-add-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        background: var(--bg-hover);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-size: 10px;
+        color: var(--text-soft);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .bookmark-add-btn:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+      }
+
+      .bookmark-tabs {
+        display: flex;
+        gap: 6px;
+        padding: 8px 0;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        scrollbar-width: thin;
+      }
+
+      .bookmark-tabs:empty {
+        display: none;
+        padding: 0;
+      }
+
+      .bookmark-tab {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        font-size: 12px;
+        color: var(--text-soft);
+        cursor: pointer;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .bookmark-tab:hover {
+        background: var(--bg-hover);
+        color: var(--text);
+      }
+
+      .bookmark-tab.active {
+        background: var(--bg-hover);
+        border-color: var(--text-soft);
+        color: var(--text);
+      }
+
+      .bookmark-tab .bookmark-time {
+        font-size: 10px;
+        opacity: 0.6;
+      }
+
+      .bookmark-tab .bookmark-delete {
+        margin-left: 2px;
+        opacity: 0.5;
+        font-size: 14px;
+        line-height: 1;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+
+      .bookmark-tab:hover .bookmark-delete {
+        opacity: 0.7;
+      }
+
+      .bookmark-tab .bookmark-delete:hover {
+        opacity: 1;
+      }
+
+      .bookmark-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+      }
+
+      /* Bookmark Modal */
+      .bookmark-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 480px;
+        max-width: 95vw;
+        max-height: 85vh;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        z-index: 10001;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .bookmark-modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .bookmark-modal-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .bookmark-modal-close {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        border-radius: 6px;
+        font-size: 18px;
+      }
+
+      .bookmark-modal-close:hover {
+        background: var(--bg-hover);
+        color: var(--text);
+      }
+
+      .bookmark-modal-body {
+        padding: 20px;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .bookmark-name-input {
+        width: 100%;
+        padding: 10px 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 14px;
+        color: var(--text);
+        margin-bottom: 16px;
+      }
+
+      .bookmark-name-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      /* Timeline Scrubber */
+      .bookmark-timeline-container {
+        margin-bottom: 16px;
+      }
+
+      .bookmark-timeline-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .bookmark-timeline {
+        position: relative;
+        height: 48px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .bookmark-waveform {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0 4px;
+      }
+
+      .bookmark-waveform-bar {
+        width: 2px;
+        background: var(--text-muted);
+        border-radius: 1px;
+        opacity: 0.3;
+      }
+
+      .bookmark-selection {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background: rgba(59, 130, 246, 0.3);
+        border-left: 2px solid var(--primary);
+        border-right: 2px solid var(--primary);
+      }
+
+      .bookmark-handle {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 12px;
+        height: 24px;
+        background: var(--primary);
+        border-radius: 4px;
+        cursor: ew-resize;
+        z-index: 5;
+      }
+
+      .bookmark-handle-start {
+        left: -6px;
+      }
+
+      .bookmark-handle-end {
+        right: -6px;
+      }
+
+      .bookmark-playhead {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--accent);
+        z-index: 3;
+        pointer-events: none;
+      }
+
+      .bookmark-time-display {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 6px;
+      }
+
+      .bookmark-time-selected {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      /* Bookmark Playback Controls */
+      .bookmark-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .bookmark-play-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--primary);
+        border: none;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+      }
+
+      .bookmark-play-btn:hover {
+        transform: scale(1.05);
+        background: var(--primary-hover);
+      }
+
+      .bookmark-play-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .bookmark-note-input {
+        width: 100%;
+        min-height: 80px;
+        padding: 10px 12px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 13px;
+        color: var(--text);
+        resize: none;
+        font-family: inherit;
+      }
+
+      .bookmark-note-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .bookmark-modal-footer {
+        padding: 16px 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .bookmark-modal-footer .btn {
+        padding: 8px 16px;
       }
 
       /* Metadata Tab */
@@ -4367,6 +4880,52 @@
         justify-content: flex-end;
         padding: 16px 20px;
         border-top: 1px solid var(--border);
+      }
+
+      /* Artwork Style Preview (in filter panel) */
+      .style-preview {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+
+      .style-preview.vibrant {
+        background: linear-gradient(
+          135deg,
+          #ff3366 0%,
+          #33ccff 50%,
+          #ffcc00 100%
+        );
+      }
+
+      .style-preview.vintage {
+        background: linear-gradient(
+          135deg,
+          #c47d5e 0%,
+          #319b8a 50%,
+          #e8c9a0 100%
+        );
+      }
+
+      .style-preview.minimal {
+        background: linear-gradient(
+          135deg,
+          #2c2c2c 0%,
+          #5a5a5a 50%,
+          #9e9e9e 100%
+        );
+      }
+
+      .artwork-style-options {
+        display: flex;
+        gap: 8px;
+      }
+
+      .artwork-style-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       /* View Toggle */
@@ -5518,7 +6077,6 @@
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </button>
-          <div class="player-header-title">Now Playing</div>
           <div class="player-header-actions" id="player-header-actions"></div>
         </div>
         <div class="player-content" id="player-content">
@@ -5640,6 +6198,126 @@
       let useUnsplash = false; // Toggle between generative SVG and Unsplash
       let unsplashCache = {}; // Cache Unsplash images
       let viewMode = "list"; // 'list' or 'grid'
+      let selectedTracks = new Set(); // Multi-select track IDs
+
+      // Track Selection Functions
+      function toggleTrackSelection(trackId, event) {
+        if (event) {
+          event.stopPropagation();
+        }
+
+        if (selectedTracks.has(trackId)) {
+          selectedTracks.delete(trackId);
+        } else {
+          selectedTracks.add(trackId);
+        }
+
+        renderIdeasTable();
+        updatePanelForSelection();
+      }
+
+      function handleTrackClick(event, trackId) {
+        // Check if Command (Mac) or Ctrl (Windows) is held
+        if (event.metaKey || event.ctrlKey) {
+          event.preventDefault();
+          toggleTrackSelection(trackId, event);
+          return;
+        }
+
+        // Normal click - clear selection and play
+        if (selectedTracks.size > 0) {
+          selectedTracks.clear();
+        }
+        window.playIdea(trackId);
+      }
+
+      function clearSelection() {
+        selectedTracks.clear();
+        renderIdeasTable();
+        if (currentIdea) {
+          renderPlayerPanel();
+        }
+      }
+
+      function removeFromSelection(trackId) {
+        selectedTracks.delete(trackId);
+        renderIdeasTable();
+        updatePanelForSelection();
+      }
+
+      function updatePanelForSelection() {
+        if (selectedTracks.size > 1) {
+          renderMultiSelectPanel();
+        } else if (selectedTracks.size === 1) {
+          // Single selection - play that track
+          const trackId = Array.from(selectedTracks)[0];
+          window.playIdea(trackId);
+          selectedTracks.clear();
+        } else if (currentIdea) {
+          renderPlayerPanel();
+        }
+      }
+
+      function renderMultiSelectPanel() {
+        if (!playerContent) return;
+
+        const selectedIdeas = allIdeas.filter((idea) =>
+          selectedTracks.has(idea.id)
+        );
+
+        playerContent.innerHTML = `
+    <div class="multi-select-panel">
+      <div class="multi-select-header">
+        <div class="multi-select-title">Selected Tracks</div>
+        <div class="multi-select-count">${
+          selectedIdeas.length
+        } tracks selected</div>
+      </div>
+      
+      <div class="multi-select-grid">
+        ${selectedIdeas
+          .map(
+            (idea) => `
+          <div class="multi-select-item" onclick="window.playIdea('${
+            idea.id
+          }'); clearSelection();">
+            <div class="multi-select-thumb">
+              ${
+                idea.thumbnail_url
+                  ? `<img src="${escapeHtml(idea.thumbnail_url)}" alt="">`
+                  : generateAlbumArt(idea.title)
+              }
+              <div class="multi-select-remove" onclick="event.stopPropagation(); removeFromSelection('${
+                idea.id
+              }')">×</div>
+            </div>
+            <div class="multi-select-name">${escapeHtml(
+              (idea.title || "").split(" - ").length > 1
+                ? (idea.title || "").split(" - ").slice(1).join(" - ").trim()
+                : idea.title
+            )}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+      
+      <div class="multi-select-actions">
+        <button class="btn btn-secondary" onclick="clearSelection()">Clear Selection</button>
+        <button class="btn btn-primary" onclick="alert('Sharing feature coming soon!')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 6px;">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          Share
+        </button>
+      </div>
+    </div>
+  `;
+      }
 
       // Stage System
       const STAGES = [
@@ -5726,9 +6404,9 @@
         return x - Math.floor(x);
       }
 
-      // Bold, vibrant color palettes
-      function generatePalette(seed) {
-        const palettes = [
+      // Artwork style palettes
+      const artworkStyles = {
+        vibrant: [
           // Bold primaries
           ["#FF3366", "#33CCFF", "#FFCC00", "#00CC99", "#9933FF", "#FF6600"],
           // Electric
@@ -5749,7 +6427,70 @@
           ["#2D3436", "#00B894", "#FDCB6E", "#E17055", "#6C5CE7", "#00CEC9"],
           // Minimal bold
           ["#000000", "#FFFFFF", "#FF5733", "#33FF57", "#3357FF", "#FF33F5"],
-        ];
+        ],
+        vintage: [
+          // Terracotta ceramic
+          ["#C47D5E", "#D4A574", "#E8C9A0", "#319B8A", "#2C7A6E", "#8B4D3B"],
+          // Desert dusk
+          ["#B5838D", "#E5989B", "#FFB4A2", "#D9AE94", "#8E7162", "#5C4033"],
+          // Earthy moss
+          ["#606C38", "#283618", "#FEFAE0", "#DDA15E", "#BC6C25", "#9B7B5B"],
+          // Dusty sage
+          ["#87A28E", "#6B8E7A", "#D4C5A9", "#C9B896", "#A67C52", "#8B7355"],
+          // Muted coral
+          ["#E07A5F", "#F2CC8F", "#81B29A", "#3D405B", "#F4F1DE", "#B08968"],
+          // Canyon sunset
+          ["#D08C60", "#997B66", "#886F68", "#7D6E7D", "#5E5B52", "#C4A77D"],
+          // Warm ceramic
+          ["#CB997E", "#DDBEA9", "#FFE8D6", "#B7B7A4", "#A5A58D", "#6B705C"],
+          // Tuscan earth
+          ["#9C6644", "#CC8B65", "#E9C46A", "#2A9D8F", "#264653", "#F4A261"],
+          // Mediterranean clay
+          ["#C19A6B", "#A67B5B", "#8B7355", "#6B8E7A", "#4A7C6F", "#DDD5B7"],
+          // Rustic autumn
+          ["#9B7B5B", "#C47D5E", "#E8C9A0", "#7A9B76", "#5E7D5A", "#D4A574"],
+        ],
+        minimal: [
+          // Charcoal whisper
+          ["#2C2C2C", "#404040", "#5A5A5A", "#787878", "#9E9E9E", "#F5F5F5"],
+          // Warm gray
+          ["#3D3D3D", "#5C524D", "#7A6F66", "#A69A8C", "#D4C8BA", "#F2EDE7"],
+          // Deep espresso
+          ["#1A1614", "#2D2822", "#4A433B", "#6B6055", "#8C8175", "#D4C8BA"],
+          // Slate monochrome
+          ["#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#F1F5F9"],
+          // Sepia tone
+          ["#3B2F2F", "#5D4E4E", "#816E6E", "#A69393", "#D4BCBC", "#F2E9E9"],
+          // Olive shadow
+          ["#2D3329", "#454A40", "#5E6458", "#787F72", "#A3A89B", "#E8EBE4"],
+          // Ink wash
+          ["#0D0D0D", "#1F1F1F", "#363636", "#525252", "#7A7A7A", "#E5E5E5"],
+          // Dusty brown
+          ["#2E2821", "#4D443A", "#6B5E52", "#8A7B6C", "#B5A393", "#E8DFD5"],
+          // Stone gray
+          ["#3A3A3A", "#525252", "#6B6B6B", "#858585", "#ADADAD", "#F0F0F0"],
+          // Muted taupe
+          ["#3B3633", "#57504A", "#746B63", "#92877D", "#B5AAA0", "#E5DDD5"],
+        ],
+      };
+
+      // Get current artwork style from localStorage
+      function getArtworkStyle() {
+        return localStorage.getItem("ideas-artwork-style") || "vintage";
+      }
+
+      // Set artwork style
+      function setArtworkStyle(style) {
+        localStorage.setItem("ideas-artwork-style", style);
+        // Re-render to show new colors
+        renderIdeasTable();
+        renderRightPanel();
+      }
+
+      // Bold, vibrant color palettes
+      function generatePalette(seed) {
+        const style = getArtworkStyle();
+        const palettes = artworkStyles[style] || artworkStyles.vintage;
 
         return palettes[seed % palettes.length];
       }
@@ -6390,6 +7131,7 @@
       // Initialize
       async function init() {
         loadViewMode();
+        loadArtworkStyle();
         loadSidebarState();
         loadPlayerState();
         loadSavedViews();
@@ -7522,21 +8264,33 @@
               .map((col) => {
                 switch (col.id) {
                   case "title":
+                    // Parse title: "Artist - Track Title" format
+                    const titleParts = (idea.title || "").split(" - ");
+                    const displayTitle =
+                      titleParts.length > 1
+                        ? titleParts.slice(1).join(" - ").trim()
+                        : idea.title;
                     return `<td>
             <div class="idea-title-cell">
+              <div class="idea-select-checkbox" onclick="event.stopPropagation(); toggleTrackSelection('${
+                idea.id
+              }', event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
               <div class="idea-thumbnail">${thumbnail}</div>
-              <span class="idea-title">${escapeHtml(idea.title)}</span>
+              <span class="idea-title">${escapeHtml(displayTitle)}</span>
               ${miniStars}
             </div>
           </td>`;
                   case "stage":
                     return `<td>${renderStageIndicator(idea)}</td>`;
                   case "project":
+                    const isUnassigned = primaryProject === "Unassigned";
                     return `<td>
             <div class="idea-project-clickable" onclick="event.stopPropagation(); toggleProjectDropdown(event, '${
               idea.id
             }')">
-              <span class="idea-project">
+              <span class="idea-project ${isUnassigned ? "unassigned" : ""}">
                 <span class="idea-project-thumb">${generateProjectThumbnail(
                   primaryProject
                 )}</span>
@@ -7563,7 +8317,7 @@
                         .slice(0, 3)
                         .map((t) => `<span class="tag">${escapeHtml(t)}</span>`)
                         .join("")
-                    : '<span class="tag" style="opacity: 0.5;">+ Add tags</span>'
+                    : '<span class="tag tag-empty">+ Add tags</span>'
                 }
                 ${
                   tags.length > 3
@@ -7593,7 +8347,7 @@
                   ? `<span class="priority-badge ${priorityClass}">${escapeHtml(
                       idea.priority
                     )}</span>`
-                  : '<span class="priority-badge priority-empty"></span>'
+                  : '<span class="priority-badge priority-empty">+ Add</span>'
               }
             </div>
           </td>`;
@@ -7615,9 +8369,14 @@
               })
               .join("");
 
+            const isSelected = selectedTracks.has(idea.id);
+
             return `
-      <tr class="${isCurrentlyPlaying ? "playing" : ""}" 
-          onclick="playIdea('${idea.id}')"
+      <tr class="${isCurrentlyPlaying ? "playing" : ""} ${
+              isSelected ? "selected" : ""
+            }" 
+          data-track-id="${idea.id}"
+          onclick="handleTrackClick(event, '${idea.id}')"
           draggable="true"
           ondragstart="handleRowDragStart(event, '${idea.id}')"
           ondragend="handleRowDragEnd(event)">
@@ -7640,6 +8399,13 @@
               .map((p) => p.trim())
               .filter((p) => p);
             const primaryProject = projects[0];
+
+            // Parse title: "Artist - Track Title" format
+            const gridTitleParts = (idea.title || "").split(" - ");
+            const gridDisplayTitle =
+              gridTitleParts.length > 1
+                ? gridTitleParts.slice(1).join(" - ").trim()
+                : idea.title;
 
             // Generate album art
             const albumArt = generateAlbumArt(
@@ -7687,7 +8453,7 @@
           }
         </div>
         <div class="grid-card-info">
-          <div class="grid-card-title">${escapeHtml(idea.title)}</div>
+          <div class="grid-card-title">${escapeHtml(gridDisplayTitle)}</div>
           <div class="grid-card-project">
             <span class="grid-card-project-thumb">${generateProjectThumbnail(
               primaryProject
@@ -7727,6 +8493,24 @@
       function loadViewMode() {
         const savedMode = localStorage.getItem("ideas-view-mode") || "list";
         setViewMode(savedMode);
+      }
+
+      // Select artwork style
+      function selectArtworkStyle(style) {
+        localStorage.setItem("ideas-artwork-style", style);
+
+        // Re-render filter panel to show active state
+        renderFilterPanelBody();
+
+        // Re-render to show new colors
+        renderIdeasTable();
+        renderRightPanel();
+      }
+
+      // Load saved artwork style (called on init, no UI update needed)
+      function loadArtworkStyle() {
+        // Style is loaded from localStorage by getArtworkStyle()
+        // No UI to update on init since filter panel renders dynamically
       }
 
       // Toggle sidebar visibility
@@ -7920,6 +8704,47 @@
         if (savedWidth) {
           sidebar.style.width = savedWidth;
         }
+      }
+
+      // Share idea
+      async function shareIdea(id) {
+        const idea = allIdeas.find((i) => i.id === id);
+        if (!idea) return;
+
+        // Create share data
+        const shareData = {
+          title: idea.title,
+          text: `Check out "${idea.title}"`,
+          url: idea.dropbox_url || window.location.href,
+        };
+
+        // Try native share API first (mobile)
+        if (navigator.share) {
+          try {
+            await navigator.share(shareData);
+            showToast("Shared successfully");
+          } catch (err) {
+            if (err.name !== "AbortError") {
+              // Fall back to clipboard
+              copyShareLink(idea);
+            }
+          }
+        } else {
+          // Fall back to clipboard
+          copyShareLink(idea);
+        }
+      }
+
+      function copyShareLink(idea) {
+        const url = idea.dropbox_url || window.location.href;
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            showToast("Link copied to clipboard");
+          })
+          .catch(() => {
+            showToast("Could not copy link", "error");
+          });
       }
 
       // Toggle archive status
@@ -8166,8 +8991,10 @@
         isLoading = true;
         isPlaying = false;
 
-        // Load comments for this track
+        // Load comments and bookmarks for this track
         loadComments(id);
+        loadBookmarks(id);
+        currentBookmarkTab = "general"; // Reset to general tab
 
         // Find all versions of this track (same base_name)
         if (idea.base_name) {
@@ -9357,6 +10184,7 @@
       }" stroke="currentColor" stroke-width="2">
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
       </svg>
+      <span class="player-header-btn-label">Fav</span>
     </button>
     ${
       currentIdea.project_folder_path
@@ -9365,10 +10193,23 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
         </svg>
+        <span class="player-header-btn-label">Open</span>
       </button>
     `
         : ""
     }
+    <button class="player-header-btn" onclick="shareIdea('${
+      currentIdea.id
+    }')" title="Share">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="18" cy="5" r="3"/>
+        <circle cx="6" cy="12" r="3"/>
+        <circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </svg>
+      <span class="player-header-btn-label">Share</span>
+    </button>
     <button class="player-header-btn danger ${
       currentIdea.is_archived ? "active" : ""
     }" onclick="toggleArchive('${currentIdea.id}')" title="${
@@ -9378,6 +10219,7 @@
         <polyline points="21 8 21 21 3 21 3 8"/>
         <rect x="1" y="3" width="22" height="5"/>
       </svg>
+      <span class="player-header-btn-label">Archive</span>
     </button>
   `;
 
@@ -9788,11 +10630,26 @@
         }">
         <div class="tab-panel-header">
           <span class="tab-panel-title">Track Notes</span>
+          <button class="bookmark-add-btn" onclick="openBookmarkModal()" title="Add Bookmark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Bookmark
+          </button>
+        </div>
+        
+        <!-- Bookmark Tabs (only shown when bookmarks exist) -->
+        <div class="bookmark-tabs" id="bookmark-tabs">
+          ${renderBookmarkTabs(currentIdea.id)}
+        </div>
+        
+        <div class="bookmark-content" id="bookmark-content">
+          <textarea class="notes-textarea" id="notes-textarea" placeholder="${getCurrentBookmarkPlaceholder()}" oninput="markNotesDirty()">${escapeHtml(
+          getCurrentBookmarkNotes()
+        )}</textarea>
           <button class="tab-save-btn" id="notes-save-btn" onclick="saveNotes()">Save</button>
         </div>
-        <textarea class="notes-textarea" id="notes-textarea" placeholder="Add notes about this track..." oninput="markNotesDirty()">${escapeHtml(
-          currentIdea.notes || ""
-        )}</textarea>
       </div>
       
       <!-- Comments Tab -->
@@ -10306,6 +11163,431 @@
     `;
         }
       }
+
+      // ============ BOOKMARK SYSTEM ============
+
+      let trackBookmarks = {}; // Cache bookmarks by track ID
+      let currentBookmarkTab = "general";
+      let bookmarkModalState = {
+        startTime: 0,
+        endTime: 10,
+        isPlaying: false,
+        duration: 0,
+      };
+
+      // Load bookmarks from localStorage
+      function loadBookmarks(trackId) {
+        if (!trackId) return;
+
+        try {
+          const saved = localStorage.getItem(`ideas-bookmarks-${trackId}`);
+          if (saved) {
+            trackBookmarks[trackId] = JSON.parse(saved);
+          } else {
+            trackBookmarks[trackId] = [];
+          }
+        } catch (e) {
+          trackBookmarks[trackId] = [];
+        }
+      }
+
+      // Save bookmarks to localStorage
+      function saveBookmarks(trackId) {
+        if (!trackId) return;
+        localStorage.setItem(
+          `ideas-bookmarks-${trackId}`,
+          JSON.stringify(trackBookmarks[trackId] || [])
+        );
+      }
+
+      // Get current bookmark notes based on active bookmark tab
+      function getCurrentBookmarkNotes() {
+        if (!currentIdea) return "";
+
+        if (currentBookmarkTab === "general") {
+          return currentIdea.notes || "";
+        }
+
+        const bookmarks = trackBookmarks[currentIdea.id] || [];
+        const bookmark = bookmarks.find((b) => b.id === currentBookmarkTab);
+        return bookmark ? bookmark.notes || "" : currentIdea.notes || "";
+      }
+
+      // Get current bookmark placeholder
+      function getCurrentBookmarkPlaceholder() {
+        if (!currentIdea || currentBookmarkTab === "general") {
+          return "Add notes about this track...";
+        }
+
+        const bookmarks = trackBookmarks[currentIdea.id] || [];
+        const bookmark = bookmarks.find((b) => b.id === currentBookmarkTab);
+        return bookmark
+          ? `Notes for "${bookmark.name}"...`
+          : "Add notes about this track...";
+      }
+
+      // Render bookmark tabs
+      function renderBookmarkTabs(trackId) {
+        const bookmarks = trackBookmarks[trackId] || [];
+        if (bookmarks.length === 0) return "";
+
+        return bookmarks
+          .map(
+            (bm) => `
+    <button class="bookmark-tab ${
+      currentBookmarkTab === bm.id ? "active" : ""
+    }" 
+            data-bookmark="${bm.id}" 
+            onclick="event.stopPropagation(); switchBookmarkTab('${bm.id}')">
+      🔖 ${escapeHtml(bm.name)}
+      <span class="bookmark-delete" onclick="event.stopPropagation(); deleteBookmark('${
+        bm.id
+      }')" title="Delete">×</span>
+    </button>
+  `
+          )
+          .join("");
+      }
+
+      // Switch bookmark tab
+      function switchBookmarkTab(bookmarkId) {
+        currentBookmarkTab = bookmarkId;
+
+        // Update tab active states
+        document.querySelectorAll(".bookmark-tab").forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.bookmark === bookmarkId);
+        });
+
+        // Load the appropriate notes
+        const textarea = document.getElementById("notes-textarea");
+        if (!textarea || !currentIdea) return;
+
+        if (bookmarkId === "general") {
+          textarea.value = currentIdea.notes || "";
+          textarea.placeholder = "Add notes about this track...";
+        } else {
+          const bookmarks = trackBookmarks[currentIdea.id] || [];
+          const bookmark = bookmarks.find((b) => b.id === bookmarkId);
+          if (bookmark) {
+            textarea.value = bookmark.notes || "";
+            textarea.placeholder = `Notes for "${bookmark.name}"...`;
+
+            // Seek to bookmark start time (don't trigger re-render)
+            if (audio && audio.src && !audio.paused) {
+              audio.currentTime = bookmark.startTime;
+            }
+          } else {
+            // Bookmark not found, switch back to general
+            currentBookmarkTab = "general";
+            textarea.value = currentIdea.notes || "";
+            textarea.placeholder = "Add notes about this track...";
+          }
+        }
+      }
+
+      // Delete bookmark
+      function deleteBookmark(bookmarkId) {
+        if (!currentIdea) return;
+        if (!confirm("Delete this bookmark?")) return;
+
+        trackBookmarks[currentIdea.id] = (
+          trackBookmarks[currentIdea.id] || []
+        ).filter((b) => b.id !== bookmarkId);
+        saveBookmarks(currentIdea.id);
+
+        if (currentBookmarkTab === bookmarkId) {
+          currentBookmarkTab = "general";
+        }
+
+        // Re-render tabs
+        const tabsContainer = document.getElementById("bookmark-tabs");
+        if (tabsContainer) {
+          tabsContainer.innerHTML = renderBookmarkTabs(currentIdea.id);
+        }
+
+        switchBookmarkTab(currentBookmarkTab);
+      }
+
+      // Open bookmark modal
+      function openBookmarkModal() {
+        if (!currentIdea) return;
+
+        // Initialize state
+        const duration = audio?.duration || 180;
+        bookmarkModalState = {
+          startTime: 0,
+          endTime: Math.min(30, duration),
+          isPlaying: false,
+          duration: duration,
+        };
+
+        let modal = document.getElementById("bookmark-modal-overlay");
+        if (!modal) {
+          modal = document.createElement("div");
+          modal.id = "bookmark-modal-overlay";
+          modal.className = "modal-overlay";
+          modal.onclick = (e) => {
+            if (e.target === modal) closeBookmarkModal();
+          };
+          document.body.appendChild(modal);
+        }
+
+        // Generate fake waveform bars
+        const waveformBars = Array.from(
+          { length: 100 },
+          () =>
+            `<div class="bookmark-waveform-bar" style="height: ${
+              10 + Math.random() * 30
+            }px;"></div>`
+        ).join("");
+
+        const startPercent = (bookmarkModalState.startTime / duration) * 100;
+        const endPercent = (bookmarkModalState.endTime / duration) * 100;
+
+        modal.innerHTML = `
+    <div class="bookmark-modal">
+      <div class="bookmark-modal-header">
+        <span class="bookmark-modal-title">Add Bookmark</span>
+        <button class="bookmark-modal-close" onclick="closeBookmarkModal()">×</button>
+      </div>
+      <div class="bookmark-modal-body">
+        <input type="text" class="bookmark-name-input" id="bookmark-name-input" placeholder="Bookmark name (e.g., Intro, Chorus, Bridge)..." autofocus>
+        
+        <div class="bookmark-timeline-container">
+          <div class="bookmark-timeline-label">
+            <span>Select Duration</span>
+            <span class="bookmark-time-selected" id="bookmark-duration-display">
+              ${formatTime(bookmarkModalState.startTime)} - ${formatTime(
+          bookmarkModalState.endTime
+        )}
+            </span>
+          </div>
+          <div class="bookmark-timeline" id="bookmark-timeline" onmousedown="startTimelineClick(event)">
+            <div class="bookmark-waveform">${waveformBars}</div>
+            <div class="bookmark-selection" id="bookmark-selection" style="left: ${startPercent}%; width: ${
+          endPercent - startPercent
+        }%;">
+              <div class="bookmark-handle bookmark-handle-start" onmousedown="startHandleDrag(event, 'start')"></div>
+              <div class="bookmark-handle bookmark-handle-end" onmousedown="startHandleDrag(event, 'end')"></div>
+            </div>
+            <div class="bookmark-playhead" id="bookmark-playhead" style="left: ${startPercent}%;"></div>
+          </div>
+          <div class="bookmark-time-display">
+            <span>0:00</span>
+            <span>${formatTime(duration)}</span>
+          </div>
+        </div>
+        
+        <div class="bookmark-controls">
+          <button class="bookmark-play-btn" id="bookmark-play-btn" onclick="toggleBookmarkPlay()">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="6 3 20 12 6 21 6 3"/>
+            </svg>
+          </button>
+        </div>
+        
+        <textarea class="bookmark-note-input" id="bookmark-note-input" placeholder="Add a note for this section (optional)..."></textarea>
+      </div>
+      <div class="bookmark-modal-footer">
+        <button class="btn btn-secondary" onclick="closeBookmarkModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveBookmark()">Save Bookmark</button>
+      </div>
+    </div>
+  `;
+
+        modal.classList.add("open");
+      }
+
+      // Close bookmark modal
+      function closeBookmarkModal() {
+        const modal = document.getElementById("bookmark-modal-overlay");
+        if (modal) modal.classList.remove("open");
+
+        // Stop playback if playing
+        if (bookmarkModalState.isPlaying) {
+          bookmarkModalState.isPlaying = false;
+        }
+      }
+
+      // Handle timeline click
+      function startTimelineClick(event) {
+        if (
+          event.target.classList.contains("bookmark-handle") ||
+          event.target.classList.contains("bookmark-handle-start") ||
+          event.target.classList.contains("bookmark-handle-end")
+        ) {
+          return;
+        }
+
+        const timeline = document.getElementById("bookmark-timeline");
+        const rect = timeline.getBoundingClientRect();
+        const clickPercent = (event.clientX - rect.left) / rect.width;
+        const clickTime = clickPercent * bookmarkModalState.duration;
+
+        // Seek audio to clicked position
+        if (audio && audio.src) {
+          audio.currentTime = clickTime;
+        }
+
+        updateBookmarkPlayhead();
+      }
+
+      // Handle drag for start/end handles
+      let currentDragHandle = null;
+
+      function startHandleDrag(event, handle) {
+        event.stopPropagation();
+        currentDragHandle = handle;
+
+        document.addEventListener("mousemove", handleDrag);
+        document.addEventListener("mouseup", stopHandleDrag);
+      }
+
+      function handleDrag(event) {
+        if (!currentDragHandle) return;
+
+        const timeline = document.getElementById("bookmark-timeline");
+        const rect = timeline.getBoundingClientRect();
+        let percent = Math.max(
+          0,
+          Math.min(1, (event.clientX - rect.left) / rect.width)
+        );
+        let time = percent * bookmarkModalState.duration;
+
+        if (currentDragHandle === "start") {
+          bookmarkModalState.startTime = Math.min(
+            time,
+            bookmarkModalState.endTime - 1
+          );
+        } else {
+          bookmarkModalState.endTime = Math.max(
+            time,
+            bookmarkModalState.startTime + 1
+          );
+        }
+
+        updateBookmarkSelection();
+      }
+
+      function stopHandleDrag() {
+        currentDragHandle = null;
+        document.removeEventListener("mousemove", handleDrag);
+        document.removeEventListener("mouseup", stopHandleDrag);
+      }
+
+      // Update selection visual
+      function updateBookmarkSelection() {
+        const selection = document.getElementById("bookmark-selection");
+        const display = document.getElementById("bookmark-duration-display");
+        const duration = bookmarkModalState.duration;
+
+        const startPercent = (bookmarkModalState.startTime / duration) * 100;
+        const endPercent = (bookmarkModalState.endTime / duration) * 100;
+
+        if (selection) {
+          selection.style.left = `${startPercent}%`;
+          selection.style.width = `${endPercent - startPercent}%`;
+        }
+
+        if (display) {
+          display.textContent = `${formatTime(
+            bookmarkModalState.startTime
+          )} - ${formatTime(bookmarkModalState.endTime)}`;
+        }
+      }
+
+      // Update playhead position
+      function updateBookmarkPlayhead() {
+        const playhead = document.getElementById("bookmark-playhead");
+        if (!playhead || !audio) return;
+
+        const percent = (audio.currentTime / bookmarkModalState.duration) * 100;
+        playhead.style.left = `${percent}%`;
+      }
+
+      // Toggle bookmark playback
+      function toggleBookmarkPlay() {
+        if (!audio || !audio.src) return;
+
+        const btn = document.getElementById("bookmark-play-btn");
+
+        if (bookmarkModalState.isPlaying) {
+          audio.pause();
+          bookmarkModalState.isPlaying = false;
+          if (btn)
+            btn.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
+        } else {
+          audio.currentTime = bookmarkModalState.startTime;
+          audio.play();
+          bookmarkModalState.isPlaying = true;
+          if (btn)
+            btn.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
+
+          // Monitor playback to stop at end time
+          const checkPlayback = () => {
+            if (!bookmarkModalState.isPlaying) return;
+
+            updateBookmarkPlayhead();
+
+            if (audio.currentTime >= bookmarkModalState.endTime) {
+              audio.pause();
+              audio.currentTime = bookmarkModalState.startTime;
+              bookmarkModalState.isPlaying = false;
+              if (btn)
+                btn.innerHTML =
+                  '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
+              return;
+            }
+
+            requestAnimationFrame(checkPlayback);
+          };
+          checkPlayback();
+        }
+      }
+
+      // Save bookmark
+      function saveBookmark() {
+        if (!currentIdea) return;
+
+        const nameInput = document.getElementById("bookmark-name-input");
+        const noteInput = document.getElementById("bookmark-note-input");
+
+        const name = nameInput?.value?.trim() || "Section";
+        const notes = noteInput?.value?.trim() || "";
+
+        const bookmark = {
+          id: "bm_" + Date.now(),
+          name: name,
+          startTime: bookmarkModalState.startTime,
+          endTime: bookmarkModalState.endTime,
+          notes: notes,
+          createdAt: new Date().toISOString(),
+        };
+
+        if (!trackBookmarks[currentIdea.id]) {
+          trackBookmarks[currentIdea.id] = [];
+        }
+
+        trackBookmarks[currentIdea.id].push(bookmark);
+        saveBookmarks(currentIdea.id);
+
+        closeBookmarkModal();
+
+        // Re-render tabs
+        const tabsContainer = document.getElementById("bookmark-tabs");
+        if (tabsContainer) {
+          tabsContainer.innerHTML = renderBookmarkTabs(currentIdea.id);
+        }
+
+        // Switch to new bookmark
+        switchBookmarkTab(bookmark.id);
+      }
+
+      // Modify saveNotes to handle bookmarks
+      const originalSaveNotes =
+        typeof saveNotes === "function" ? saveNotes : null;
 
       // ============ COMMENTS SYSTEM ============
 
@@ -10974,12 +12256,38 @@
 
       // Save notes
       async function saveNotes() {
-        if (!currentIdea || !notesDirty) return;
+        if (!currentIdea) return;
 
         const textarea = document.getElementById("notes-textarea");
         if (!textarea) return;
 
         const notes = textarea.value;
+
+        // Check if we're saving a bookmark note or general notes
+        if (currentBookmarkTab !== "general") {
+          // Save bookmark note locally
+          const bookmarks = trackBookmarks[currentIdea.id] || [];
+          const bookmark = bookmarks.find((b) => b.id === currentBookmarkTab);
+          if (bookmark) {
+            bookmark.notes = notes;
+            saveBookmarks(currentIdea.id);
+
+            // Show saved feedback
+            const btn = document.getElementById("notes-save-btn");
+            if (btn) {
+              btn.classList.add("saved");
+              btn.textContent = "Saved!";
+              setTimeout(() => {
+                btn.classList.remove("visible", "saved");
+                btn.textContent = "Save";
+              }, 1500);
+            }
+          }
+          return;
+        }
+
+        // Save general notes to database
+        if (!notesDirty) return;
 
         try {
           const { error } = await supabase
@@ -11441,6 +12749,34 @@
         }" 
              onclick="toggleFilterOption('priorities', 'unrated')">
           ☆ Unrated
+        </div>
+      </div>
+    </div>
+    
+    <!-- Artwork Style -->
+    <div class="filter-section">
+      <div class="filter-section-title">Artwork Style</div>
+      <div class="filter-options artwork-style-options">
+        <div class="filter-option artwork-style-item ${
+          getArtworkStyle() === "vibrant" ? "selected" : ""
+        }" 
+             onclick="selectArtworkStyle('vibrant')">
+          <span class="style-preview vibrant"></span>
+          Vibrant
+        </div>
+        <div class="filter-option artwork-style-item ${
+          getArtworkStyle() === "vintage" ? "selected" : ""
+        }" 
+             onclick="selectArtworkStyle('vintage')">
+          <span class="style-preview vintage"></span>
+          Vintage
+        </div>
+        <div class="filter-option artwork-style-item ${
+          getArtworkStyle() === "minimal" ? "selected" : ""
+        }" 
+             onclick="selectArtworkStyle('minimal')">
+          <span class="style-preview minimal"></span>
+          Minimal
         </div>
       </div>
     </div>
